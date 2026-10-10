@@ -1,0 +1,63 @@
+{
+  "name": "markdown",
+  "version": "1.0.0",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "node --experimental-transform-types --import ./test/register.mjs --disable-warning=ExperimentalWarning --test \"test/*.test.ts\""
+  },
+  "exports": {
+    ".": "./index.tsx",
+    "./StaticMarkdownRenderer": "./StaticMarkdownRenderer.tsx",
+    "./RegistryContext": "./RegistryContext.tsx",
+    "./pipeline": "./pipeline.ts",
+    "./frontmatter": "./frontmatter.ts",
+    "./bibliography": "./bibliography.ts",
+    "./bibliography-server": "./bibliography-server.ts",
+    "./bibliography-client": "./bibliography-client.ts",
+    "./CustomMarkdown.module.css": "./CustomMarkdown.module.css"
+  },
+  "files": [
+    "index.tsx",
+    "StaticMarkdownRenderer.tsx",
+    "RegistryContext.tsx",
+    "pipeline.ts",
+    "frontmatter.ts",
+    "bibliography.ts",
+    "bibliography-server.ts",
+    "bibliography-client.ts",
+    "bibtex.ts",
+    "registry.ts",
+    "handlers.ts",
+    "AlgorithmPseudocode.tsx",
+    "MusicAbc.tsx",
+    "CustomMarkdown.module.css",
+    "plugins"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@types/hast": "^3.0.5",
+    "@types/katex": "^0.16.8",
+    "@types/mdast": "^4.0.4",
+    "abcjs": "^6.7.1",
+    "katex": "^0.19.0",
+    "mdast-util-to-hast": "^13.2.1",
+    "micromark-util-types": "^2.0.3",
+    "pseudocode": "^2.4.1",
+    "rehype": "^13.0.2",
+    "rehype-highlight": "^7.0.2",
+    "rehype-raw": "^7.0.0",
+    "rehype-react": "^8.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "vfile": "^6.0.3",
+    "yaml": "^2.9.1"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

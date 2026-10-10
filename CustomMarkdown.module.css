@@ -1,0 +1,953 @@
+/**
+ * CustomMarkdown.module.css
+ *
+ * GitHub-style Markdown rendering with extensions for:
+ *  - Theorem environments
+ *  - Alerts (NOTE, TIP, IMPORTANT, WARNING, CAUTION)
+ *  - Highlighted text (==...==)
+ *  - Definition lists
+ *  - Footnotes
+ *  - Labeled figures and tables
+ *  - Cross-references
+ *  - KaTeX math
+ *  - highlight.js code blocks
+ *
+ * The .markdownBody class is the single entry point — apply it to the
+ * wrapping <div> and all children are styled automatically.
+ *
+ * Color tokens follow GitHub's documented CSS variables so the component
+ * automatically adapts if you add a [data-color-mode="dark"] wrapper.
+ */
+
+/* ─── Reset & base ──────────────────────────────────────────────────────── */
+.markdownBody {
+  --color-fg-default: #1f2328;
+  --color-fg-muted: #636c76;
+  --color-fg-subtle: #6e7781;
+  --color-canvas-default: #ffffff;
+  --color-canvas-subtle: #f6f8fa;
+  --color-border-default: #d0d7de;
+  --color-border-muted: hsla(210, 18%, 87%, 1);
+  --color-accent-fg: #0969da;
+  --color-accent-emphasis: #0969da;
+  --color-neutral-muted: rgba(175, 184, 193, 0.2);
+  --color-success-subtle: #dafbe1;
+  --color-success-fg: #1a7f37;
+  --color-attention-subtle: #fff8c5;
+  --color-attention-fg: #9a6700;
+  --color-severe-subtle: #fff1e5;
+  --color-severe-fg: #bc4c00;
+  --color-danger-subtle: #ffebe9;
+  --color-danger-fg: #cf222e;
+  --color-done-subtle: #ffffff;
+  --color-done-fg: #000000;
+  --color-rule: #000000;
+
+  --font-body: var(--font-global-sans);
+  --font-mono: var(--font-global-mono);
+
+  font-family: var(--font-body);
+
+  /* Shared indent for floated elements (figures, listings, theorem envs) */
+  --float-margin: 2.5ch;
+
+  /* Width reserved for equation numbers — keeps KaTeX centered */
+  --eq-number-width: 5ch;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  color: var(--color-fg-default);
+  background-color: var(--color-canvas-default);
+  /* Fill container — no max-width, margin, or padding here */
+  box-sizing: border-box;
+}
+
+/* ─── Dark mode ─────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .markdownBody {
+    --color-fg-default: #e6edf3;
+    --color-fg-muted: #848d97;
+    --color-fg-subtle: #6e7681;
+    --color-canvas-default: #0d1117;
+    --color-canvas-subtle: #161b22;
+    --color-border-default: #30363d;
+    --color-border-muted: #21262d;
+    --color-accent-fg: #58a6ff;
+    --color-accent-emphasis: #1f6feb;
+    --color-neutral-muted: rgba(110, 118, 129, 0.4);
+    --color-success-subtle: rgba(46, 160, 67, 0.15);
+    --color-success-fg: #3fb950;
+    --color-attention-subtle: rgba(187, 128, 9, 0.15);
+    --color-attention-fg: #d29922;
+    --color-severe-subtle: rgba(188, 76, 0, 0.15);
+    --color-severe-fg: #db6d28;
+    --color-danger-subtle: rgba(248, 81, 73, 0.15);
+    --color-danger-fg: #f85149;
+    --color-done-subtle: rgba(130, 80, 223, 0.15);
+    --color-done-fg: #a371f7;
+    --color-rule: #ffffff;
+  }
+}
+
+:global(:root[data-theme="dark"]) .markdownBody {
+  --color-fg-default: #e6edf3;
+  --color-fg-muted: #848d97;
+  --color-fg-subtle: #6e7681;
+  --color-canvas-default: #0d1117;
+  --color-canvas-subtle: #161b22;
+  --color-border-default: #30363d;
+  --color-border-muted: #21262d;
+  --color-accent-fg: #58a6ff;
+  --color-accent-emphasis: #1f6feb;
+  --color-neutral-muted: rgba(110, 118, 129, 0.4);
+  --color-success-subtle: rgba(46, 160, 67, 0.15);
+  --color-success-fg: #3fb950;
+  --color-attention-subtle: rgba(187, 128, 9, 0.15);
+  --color-attention-fg: #d29922;
+  --color-severe-subtle: rgba(188, 76, 0, 0.15);
+  --color-severe-fg: #db6d28;
+  --color-danger-subtle: rgba(248, 81, 73, 0.15);
+  --color-danger-fg: #f85149;
+  --color-done-subtle: rgba(130, 80, 223, 0.15);
+  --color-done-fg: #a371f7;
+  --color-rule: #ffffff;
+}
+
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+.markdownBody>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdownBody>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdownBody p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* ─── Headings ───────────────────────────────────────────────────────────── */
+.markdownBody h1,
+.markdownBody h2,
+.markdownBody h3,
+.markdownBody h4,
+.markdownBody h5,
+.markdownBody h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdownBody h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.markdownBody h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.markdownBody h3 {
+  font-size: 1.25em;
+}
+
+.markdownBody h4 {
+  font-size: 1em;
+}
+
+.markdownBody h5 {
+  font-size: 0.875em;
+}
+
+.markdownBody h6 {
+  font-size: 0.85em;
+  color: var(--color-fg-muted);
+}
+
+/* ─── Links ──────────────────────────────────────────────────────────────── */
+.markdownBody a {
+  color: var(--color-accent-fg);
+  text-decoration: none;
+}
+
+.markdownBody a:hover {
+  text-decoration: underline;
+}
+
+/* Cross-reference links */
+.markdownBody :global(.xref) {
+  color: var(--color-accent-fg);
+  font-style: italic;
+  text-decoration: none;
+}
+
+.markdownBody :global(.xref):hover {
+  text-decoration: underline;
+}
+
+.markdownBody :global(.xref-unresolved) {
+  opacity: 0.5;
+  text-decoration: underline dotted;
+}
+
+/* Citations and the References list */
+.markdownBody :global(.citation) {
+  text-decoration: none;
+}
+
+.markdownBody :global(.citation):hover {
+  text-decoration: underline;
+}
+
+.markdownBody ul:global(.references) {
+  list-style: none;
+  padding-left: 0;
+}
+
+.markdownBody ul:global(.references) li {
+  padding-left: 2em;
+  text-indent: -2em;
+}
+
+.markdownBody :global(.references) li:target {
+  background: var(--color-attention-subtle);
+}
+
+/* ─── Lists ──────────────────────────────────────────────────────────────── */
+/* .markdownBody ul,
+.markdownBody ol {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-left: 2em;
+} */
+
+.markdownBody ol {
+  list-style-type: decimal;
+  padding-left: 2em;
+}
+
+.markdownBody ul {
+  list-style-type: disc;
+  padding-left: 2em;
+}
+
+.markdownBody li {
+  margin-bottom: 0.25em;
+}
+
+.markdownBody ul ul,
+.markdownBody ul ol,
+.markdownBody ol ol,
+.markdownBody ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdownBody li {
+  word-wrap: break-all;
+}
+
+.markdownBody li+li {
+  margin-top: 0.25em;
+}
+
+/* Task list checkboxes */
+.markdownBody :global(.task-list-item) {
+  list-style-type: none;
+}
+
+.markdownBody :global(.task-list-item) input[type="checkbox"] {
+  margin: 0 0.2em 0.25em -1.4em;
+  vertical-align: middle;
+  /* Rendered enabled so it takes the system accent color; keep it read-only. */
+  pointer-events: none;
+}
+
+/* ─── Definition lists ───────────────────────────────────────────────────── */
+.markdownBody dl {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.markdownBody dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.markdownBody dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+  margin-left: 0;
+}
+
+/* ─── Blockquotes ────────────────────────────────────────────────────────── */
+/* .markdownBody blockquote {
+  margin: 0 0 16px;
+  padding: 0 1em;
+  color: var(--color-fg-muted);
+  border-left: 0.25em solid var(--color-border-default);
+} */
+
+.markdownBody :global(.blockquote) {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1em;
+  color: #6b7280;
+  margin: 1em 0;
+}
+
+.markdownBody blockquote> :first-child {
+  margin-top: 0;
+}
+
+.markdownBody blockquote> :last-child {
+  margin-bottom: 0;
+}
+
+/* ─── Horizontal rule ────────────────────────────────────────────────────── */
+.markdownBody hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--color-border-default);
+  border: 0;
+}
+
+/* ─── Code ───────────────────────────────────────────────────────────────── */
+.markdownBody code {
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  white-space: break-spaces;
+  background-color: var(--color-neutral-muted);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+}
+
+.markdownBody pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  color: var(--color-fg-default);
+  background-color: var(--color-canvas-subtle);
+  border-radius: 0px;
+  border: 1px solid var(--color-border-default);
+}
+
+.markdownBody pre code {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+  font-size: 100%;
+}
+
+/* ─── Tables
+─────────────────────────────────────────────────────────────── */
+.markdownBody table {
+  display: block;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--float-margin));
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 0 auto 16px;
+}
+
+.markdownBody table caption {
+  display: block;
+  text-align: center;
+  font-weight: 700;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto 8px;
+}
+
+.markdownBody table thead,
+.markdownBody table tbody {
+  display: table;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.markdownBody table th {
+  font-weight: 600;
+}
+
+.markdownBody table th,
+.markdownBody table td {
+  padding: 6px 13px;
+  border: 1px solid var(--color-border-default);
+}
+
+.markdownBody table td> :last-child {
+  margin-bottom: 0;
+}
+
+.markdownBody table tr {
+  background-color: var(--color-canvas-default);
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.markdownBody table tr:nth-child(2n) {
+  background-color: var(--color-canvas-subtle);
+}
+
+/* ─── Images & figures ───────────────────────────────────────────────────── */
+.markdownBody img {
+  max-width: 100%;
+  box-sizing: content-box;
+  border-style: none;
+}
+
+.markdownBody :global(.labeled-figure) {
+  margin: 0 var(--float-margin) 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.markdownBody :global(.labeled-figure) img {
+  max-width: 100%;
+}
+
+/* ─── Shared caption styling (figcaption for figures and listings) ────────── */
+/* figcaption should not be restricted to the image width */
+.markdownBody figcaption {
+  margin-top: 8px;
+  text-align: center;
+  font-weight: 700;
+  max-width: calc(100% - 2 * var(--float-margin));
+  /* same margins as the container */
+  width: max-content;
+  align-self: center;
+}
+
+/* ─── Code listings ──────────────────────────────────────────────────────── */
+.markdownBody :global(.code-listing) {
+  margin: 0 var(--float-margin) 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.markdownBody :global(.code-listing) figcaption {
+  align-self: center;
+}
+
+/* ─── Highlight (==text==) ───────────────────────────────────────────────── */
+.markdownBody mark {
+  background-color: #fff3b0;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .markdownBody mark {
+    background-color: #5a4a00;
+    color: #e6edf3;
+  }
+}
+
+:global(:root[data-theme="dark"]) .markdownBody mark {
+  background-color: #5a4a00;
+  color: #e6edf3;
+}
+
+
+/* ─── Strikethrough ──────────────────────────────────────────────────────── */
+.markdownBody del {
+  color: var(--color-fg-muted);
+}
+
+/* ─── Math (KaTeX) ───────────────────────────────────────────────────────── */
+.markdownBody :global(.equation-wrapper) {
+  margin: 16px calc(2 * var(--float-margin));
+  /* double float-margin on right */
+}
+
+/* Each row is a 3-column grid: [spacer | equation | number] */
+.markdownBody :global(.equation-row) {
+  display: grid;
+  grid-template-columns: var(--eq-number-width) 1fr var(--eq-number-width);
+  align-items: center;
+}
+
+.markdownBody :global(.equation-block) {
+  grid-column: 2;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.markdownBody :global(.equation-number) {
+  grid-column: 3;
+  text-align: right;
+  font-size: 0.9em;
+  color: var(--color-fg-muted);
+  white-space: nowrap;
+  padding-left: 0.5ch;
+}
+
+.markdownBody :global(.equation-number-spacer) {
+  grid-column: 1;
+}
+
+.markdownBody :global(.equation-anchor) {
+  position: absolute;
+  visibility: hidden;
+}
+
+/* ─── Alerts ─────────────────────────────────────────────────────────────── */
+/* Colors match the blog's palette bar (gold, blue, ruby, slate, green). */
+.markdownBody :global(.alert) {
+  --alert-color: var(--color-fg-default);
+  margin: 0 var(--float-margin) 24px;
+  padding: 16px 20px;
+  border-radius: 0;
+  border: 1px solid var(--alert-color);
+  /* Tint toward the canvas: lighter in light mode, darker in dark mode. */
+  background-color: color-mix(in srgb, var(--alert-color) var(--alert-tint, 14%), var(--color-canvas-default));
+}
+
+.markdownBody :global(.alert) :global(.alert-title) {
+  color: var(--alert-color);
+  font-weight: 700;
+  margin: 0 0 8px;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.markdownBody :global(.alert) > :last-child {
+  margin-bottom: 0;
+}
+
+.markdownBody :global(.alert-note)      { --alert-color: #4782b4; }
+.markdownBody :global(.alert-tip)       { --alert-color: #84b067; }
+.markdownBody :global(.alert-important) { --alert-color: #6d8196; }
+.markdownBody :global(.alert-warning)   { --alert-color: #ff0000; --alert-tint: 14%; }
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.alert-warning) { --alert-tint: 14%; }
+}
+:global(:root[data-theme="dark"]) .markdownBody :global(.alert-warning) { --alert-tint: 14%; }
+.markdownBody :global(.alert-caution)   { --alert-color: #efbf04; }
+
+/* ─── Theorem environments ───────────────────────────────────────────────── */
+.markdownBody :global(.theorem-env) {
+  margin: 24px var(--float-margin);
+  padding: 0;
+  /* remove padding */
+  border-radius: 0;
+  /* remove border-radius */
+  border-left: none;
+  /* remove border */
+  background-color: transparent;
+  /* no background */
+}
+
+/* remove per-environment background colors and borders */
+.markdownBody :global(.theorem-theorem),
+.markdownBody :global(.theorem-lemma),
+.markdownBody :global(.theorem-corollary),
+.markdownBody :global(.theorem-proposition),
+.markdownBody :global(.theorem-definition),
+.markdownBody :global(.theorem-conjecture),
+.markdownBody :global(.theorem-hypothesis) {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.markdownBody :global(.theorem-example),
+.markdownBody :global(.theorem-exercise) {
+  border: 1px solid var(--color-rule);
+  border-radius: 0px;
+  padding: 16px 20px;
+}
+
+
+
+/* ─── Footnotes ──────────────────────────────────────────────────────────── */
+.markdownBody :global(.footnotes) {
+  margin-top: 32px;
+  padding-top: 16px;
+  font-size: 0.875em;
+  color: inherit;
+}
+
+.markdownBody :global(.footnote-list) {
+  padding-left: 1.5em;
+}
+
+.markdownBody :global(.footnote-item) {
+  margin-bottom: 8px;
+}
+
+.markdownBody :global(.footnote-ref) {
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 0;
+  color: var(--color-accent-fg);
+  text-decoration: none;
+}
+
+.markdownBody :global(.footnote-backref) {
+  color: var(--color-accent-fg);
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+/* ─── highlight.js theme (GitHub-compatible) ─────────────────────────────── */
+/* Light */
+.markdownBody :global(.hljs) {
+  color: #24292e;
+  background: var(--color-canvas-subtle);
+}
+
+.markdownBody :global(.hljs-doctag),
+.markdownBody :global(.hljs-keyword),
+.markdownBody :global(.hljs-meta .hljs-keyword),
+.markdownBody :global(.hljs-template-tag),
+.markdownBody :global(.hljs-template-variable),
+.markdownBody :global(.hljs-type),
+.markdownBody :global(.hljs-variable.language_) {
+  color: #d73a49;
+}
+
+.markdownBody :global(.hljs-title),
+.markdownBody :global(.hljs-title.class_),
+.markdownBody :global(.hljs-title.class_.inherited__),
+.markdownBody :global(.hljs-title.function_) {
+  color: #6f42c1;
+}
+
+.markdownBody :global(.hljs-attr),
+.markdownBody :global(.hljs-attribute),
+.markdownBody :global(.hljs-literal),
+.markdownBody :global(.hljs-meta),
+.markdownBody :global(.hljs-number),
+.markdownBody :global(.hljs-operator),
+.markdownBody :global(.hljs-selector-attr),
+.markdownBody :global(.hljs-selector-class),
+.markdownBody :global(.hljs-selector-id),
+.markdownBody :global(.hljs-variable) {
+  color: #005cc5;
+}
+
+.markdownBody :global(.hljs-meta .hljs-string),
+.markdownBody :global(.hljs-regexp),
+.markdownBody :global(.hljs-string) {
+  color: #032f62;
+}
+
+.markdownBody :global(.hljs-built_in),
+.markdownBody :global(.hljs-symbol) {
+  color: #e36209;
+}
+
+.markdownBody :global(.hljs-code),
+.markdownBody :global(.hljs-comment),
+.markdownBody :global(.hljs-formula) {
+  color: #6a737d;
+}
+
+.markdownBody :global(.hljs-name),
+.markdownBody :global(.hljs-quote),
+.markdownBody :global(.hljs-selector-pseudo),
+.markdownBody :global(.hljs-selector-tag) {
+  color: #22863a;
+}
+
+.markdownBody :global(.hljs-subst) {
+  color: #24292e;
+}
+
+.markdownBody :global(.hljs-section) {
+  color: #005cc5;
+  font-weight: 700;
+}
+
+.markdownBody :global(.hljs-bullet) {
+  color: #735c0f;
+}
+
+.markdownBody :global(.hljs-emphasis) {
+  color: #24292e;
+  font-style: italic;
+}
+
+.markdownBody :global(.hljs-strong) {
+  color: #24292e;
+  font-weight: 700;
+}
+
+.markdownBody :global(.hljs-addition) {
+  color: #22863a;
+  background-color: #f0fff4;
+}
+
+.markdownBody :global(.hljs-deletion) {
+  color: #b31d28;
+  background-color: #ffeef0;
+}
+
+
+/* Dark mode highlight.js */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs) {
+    color: #c9d1d9;
+    background: var(--color-canvas-subtle);
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-doctag),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-keyword),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-meta .hljs-keyword),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-template-tag),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-template-variable),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-type),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-variable.language_) {
+    color: #ff7b72;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-title),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-title.class_),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-title.class_.inherited__),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-title.function_) {
+    color: #d2a8ff;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-attr),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-attribute),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-literal),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-meta),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-number),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-operator),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-selector-attr),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-selector-class),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-selector-id),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-variable) {
+    color: #79c0ff;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-meta .hljs-string),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-regexp),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-string) {
+    color: #a5d6ff;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-built_in),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-symbol) {
+    color: #ffa657;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-code),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-comment),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-formula) {
+    color: #8b949e;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-name),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-quote),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-selector-pseudo),
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-selector-tag) {
+    color: #7ee787;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-subst) {
+    color: #c9d1d9;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-section) {
+    color: #1f6feb;
+    font-weight: 700;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-bullet) {
+    color: #f2cc60;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-emphasis) {
+    color: #c9d1d9;
+    font-style: italic;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-strong) {
+    color: #c9d1d9;
+    font-weight: 700;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-addition) {
+    color: #aff5b4;
+    background-color: #033a16;
+  }
+
+  :global(:root:not([data-theme="light"])) .markdownBody :global(.hljs-deletion) {
+    color: #ffdcd7;
+    background-color: #67060c;
+  }
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs) {
+  color: #c9d1d9;
+  background: var(--color-canvas-subtle);
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-doctag),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-keyword),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-meta .hljs-keyword),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-template-tag),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-template-variable),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-type),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-variable.language_) {
+  color: #ff7b72;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-title),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-title.class_),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-title.class_.inherited__),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-title.function_) {
+  color: #d2a8ff;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-attr),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-attribute),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-literal),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-meta),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-number),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-operator),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-selector-attr),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-selector-class),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-selector-id),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-variable) {
+  color: #79c0ff;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-meta .hljs-string),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-regexp),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-string) {
+  color: #a5d6ff;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-built_in),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-symbol) {
+  color: #ffa657;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-code),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-comment),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-formula) {
+  color: #8b949e;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-name),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-quote),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-selector-pseudo),
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-selector-tag) {
+  color: #7ee787;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-subst) {
+  color: #c9d1d9;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-section) {
+  color: #1f6feb;
+  font-weight: 700;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-bullet) {
+  color: #f2cc60;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-emphasis) {
+  color: #c9d1d9;
+  font-style: italic;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-strong) {
+  color: #c9d1d9;
+  font-weight: 700;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-addition) {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+
+:global(:root[data-theme="dark"]) .markdownBody :global(.hljs-deletion) {
+  color: #ffdcd7;
+  background-color: #67060c;
+}
+
+
+/* ─── Algorithms ──────────────────────────────────────────────────────────── */
+
+.markdownBody :global(.algorithm-block) {
+  margin: 24px var(--float-margin);
+  margin: 24px var(--float-margin);
+  padding: 0;
+  /* remove padding */
+  border-radius: 0;
+  /* remove border-radius */
+  border-left: none;
+  /* remove border */
+  background-color: transparent;
+  /* no background */
+}
+
+.markdownBody :global(.algorithm-caption) {
+  text-align: center;
+  padding-bottom: 8px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* pseudocode.js hard-codes black rules above, below, and under the caption. */
+.markdownBody :global(.ps-root) :global(.ps-algorithm),
+.markdownBody :global(.ps-root) :global(.ps-algorithm.with-caption) > :global(.ps-line):first-child {
+  border-color: var(--color-rule);
+}
+
+/* ─── Music ──────────────────────────────────────────────────────────── */
+
+.markdownBody :global(.music-block) {
+  margin: 24px var(--float-margin);
+  margin: 24px var(--float-margin);
+  padding: 0;
+  /* remove padding */
+  border-radius: 0;
+  /* remove border-radius */
+  border-left: none;
+  /* remove border */
+  background-color: transparent;
+  /* no background */
+}
+
+.markdownBody :global(.music-caption) {
+  text-align: center;
+  padding-bottom: 8px;
+  font-weight: 700;
+  margin: 0;
+}
