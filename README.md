@@ -77,7 +77,20 @@ registry.
   same length. Nothing here reaches the network: see "No network access" below.
 - **No raw HTML.** Anything the parser reads as HTML (`<sup>a</sup>`, `<br>`, `<div>`) is shown as text, in document
   and slide mode alike (`plugins/no-html.ts`). HTML comments `<!-- … -->` are kept: they are invisible and vfm's slide
-  directives travel as comments. For superscripts use the Unicode characters (ᵃ ᵇ ² ⁺) or math (`$x^2$`).
+  directives travel as comments. For superscripts and subscripts use `^{2}` and `_{2}` (below) or math (`$x^2$`).
+- **Subscripts and superscripts** outside math: `H_{2}O`, `x^{2}`, `10^{-3}`. The braces hold inline Markdown and may
+  nest (`a^{b_{c}}`); a pair needs text and must close on its line, otherwise it stays literal; `\^{x}` is literal; code and math
+  are untouched (`plugins/sub-sup.ts`). Braces rather than `~x~` / `^x^` because a single tilde is underline and `[^1]` is a footnote.
+- **Captions hold inline Markdown**: `$math$`, `H_{2}O`, emphasis, code. This holds for figures, tables, listings,
+  algorithms, scores and diagrams (`plugins/caption-nodes.ts`). Plain text stays plain; a `$` that never closes is a dollar sign.
+- **Video** uses the image syntax: `![Caption](clip.mov)`. `.mov`, `.mp4`, `.m4v`, `.webm` and `.ogv` (any case, query and
+  fragment ignored) become `<video controls preload="metadata" playsinline>` inside the same figure as an image, with the same
+  numbering, and on slides they are placed and scaled like images. The browser plays the file itself, with no `type` attribute
+  (Chromium may reject `video/quicktime` for a `.mov` it can play), so the codec must be playable there (H.264/AAC is).
+- **Theme color**: `theme-color: "#1a6ea8"` in the YAML header (`#rgb`, `#rrggbb`, `rgb()`, `hsl()` or a CSS color name; see
+  `slides/themeColor.ts`). Slides draw the rule under each title in it, and the title and section slides use a 14 % tint of it,
+  in white, as background with dark text. An invalid value is reported (`theme-color`) and ignored.
+- **Table text** is 0.9 times the surrounding size, in documents and on slides.
 - **Front matter**: YAML with title, authors, affiliations, abstract, etc.
 
 ## Options
@@ -187,6 +200,8 @@ These fill gaps the spec leaves open; the spec itself is unchanged.
 - **Floats.** Theorem environments, admonitions, quotes, code listings, tables, algorithms and
   scores are placed like images: the slide holds at most one, `rtext` / `ltext` put it in the image
   region, `2col` falls back to one column for that slide, and an extra one spills onto its own slide.
+  The exception is a `2col` slide that holds images and no text: with two images, each has its own column (a third
+  starts a new slide). Pictures and videos always shrink to fit their region, keeping their aspect ratio.
   When no text shares the slide, `rtext` / `ltext` revert to a single column. Floats are never
   dropped by the cross-reference filter. A reference inside one that cannot resolve renders as plain
   text, with a `check` warning.
@@ -204,7 +219,10 @@ These fill gaps the spec leaves open; the spec itself is unchanged.
 - **Title-only blocks.** `@slide[Title]` with nothing inside is always its own slide, one large title.
   It never joins an agenda, and it breaks a run of dividers.
 - **Title slide.** A YAML header with a `title` makes slide 1 from `title`, `subtitle`, `authors`
-  (with numbered affiliations) and `date`.
+  (with numbered affiliations) and `date`. An affiliation is read from `name`, `institution`, `organization` or `department`; a
+  top-level `affiliations:` list that no author refers to is listed as it is, without numbers.
+- **Source lines.** The title region of a slide carries `data-line` (the `@slide[title]` line, or the heading the title came
+  from) and the lead-in carries the line of its `@end(...)`, so a host can jump to them. `Slide.titleLine` / `leadinLine`.
 - **Slide number** in the lower right of every slide except the title slide; the title slide counts
   as slide 1. The viewer passes it to `renderSlide(slide, ctx, { number })`.
 

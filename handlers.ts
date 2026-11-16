@@ -115,7 +115,9 @@ export const headingHandler: Handler = (state, node) => {
     );
   }
 
-  return el(`h${heading.depth}`, id ? { id } : {}, children);
+  // Classes set by the slide builder (the large title of a section slide, "continued" headings) survive.
+  const className = data?.hProperties?.className;
+  return el(`h${heading.depth}`, { ...(id ? { id } : {}), ...(className ? { className } : {}) }, children);
 };
 
 // ─── Figure handler ───────────────────────────────────────────────────────────
