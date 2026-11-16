@@ -130,6 +130,11 @@
     "UC-43": [
       "REQ-317"
     ],
+    "UC-47": [
+      "REQ-318",
+      "REQ-319",
+      "REQ-320"
+    ],
     "UC-44": [
       "REQ-301",
       "REQ-302",
@@ -1275,6 +1280,132 @@
       ],
       "use_cases": [
         "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::the example decks: there are eleven, each builds with no error, renders every slide, and renders as a document": {
+      "requirements": [
+        "REQ-318"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 01: a title slide from the header, a title from the heading with a lead-in, a title from the override": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 02: heading, override and blank titles; dividers merge into one agenda; a title-only block stands alone": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 03: rtext and ltext with a picture, two columns of text, two pictures one per column, a table": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 04: steplists reveals one item per step, stepleadin adds the lead-in last, and the default shows everything": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 05: paragraphs become slide text by shape, and a --- line ends the slide": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 06: a reference stays on its own slide, is dropped from another, noxrefs drops all, an equation is numbered, nodoc stays out of the document": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 07: showrefs lists each reference once, notes are for the presenter only, a footnote shows on its own slide": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 08: the cover image and numbered affiliations, the separator color, and colored section slides": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 09: math, a diagram, an algorithm, a score and code, one per slide": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 10: @include splices in the agenda and the closing slide, and diagnostics name the files": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::deck 11: the whole talk has eight slides that use titles, an agenda, steps, notes, a picture, a table and a citation together": {
+      "requirements": [
+        "REQ-319"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::every @slide example in the tutorial builds as a deck without an error": {
+      "requirements": [
+        "REQ-320"
+      ],
+      "use_cases": [
+        "UC-47"
+      ],
+      "kind": "automated"
+    },
+    "tests/slides-tutorial.test.ts::the tutorial names every example deck, and every deck it names exists": {
+      "requirements": [
+        "REQ-320"
+      ],
+      "use_cases": [
+        "UC-47"
       ],
       "kind": "automated"
     },
