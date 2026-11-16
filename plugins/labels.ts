@@ -71,16 +71,22 @@ declare module "mdast" {
     label?: string | null;
     labelType?: string | null;
     caption?: string | null;
+    /** The caption as written (inline Markdown), so math and sub/superscripts survive; `caption` is plain text. */
+    captionSource?: string | null;
   }
   interface TableData {
     label?: string | null;
     labelType?: string | null;
     caption?: string | null;
+    /** The caption as written (inline Markdown), so math and sub/superscripts survive; `caption` is plain text. */
+    captionSource?: string | null;
   }
   interface CodeData {
     label?: string | null;
     labelType?: string | null;
     caption?: string | null;
+    /** The caption as written (inline Markdown), so math and sub/superscripts survive; `caption` is plain text. */
+    captionSource?: string | null;
   }
 }
 
@@ -150,11 +156,35 @@ function processHeading(node: Heading): void {
 
 // ─── Figure handler ───────────────────────────────────────────────────────────
 
-function processFigureParagraph(para: Paragraph): void {
+/** The label of an image as written, `![label](url)` → `label`, or undefined when the source is not at hand. */
+function rawImageLabel(img: Image, source: string): string | undefined {
+  const start = img.position?.start.offset;
+  const end = img.position?.end.offset;
+  if (start == null || end == null) return undefined;
+  const raw = source.slice(start, end);
+  if (!raw.startsWith("![")) return undefined;
+  let depth = 0;
+  for (let i = 1; i < raw.length; i++) {
+    const c = raw[i];
+    if (c === "\\") i++;
+    else if (c === "[") depth++;
+    else if (c === "]" && --depth === 0) return raw.slice(2, i);
+  }
+  return undefined;
+}
+
+function processFigureParagraph(para: Paragraph, source: string): void {
   const imgIdx = para.children.findIndex((c) => c.type === "image");
   if (imgIdx === -1) return;
 
   const img = para.children[imgIdx] as Image;
+  const rawLabel = rawImageLabel(img, source);
+  /** Records the caption as written, without a `{#label}` that is embedded in it. */
+  const keepSource = () => {
+    if (rawLabel === undefined) return;
+    img.data = img.data ?? {};
+    img.data.captionSource = (extractLabel(rawLabel)?.textBefore ?? rawLabel) || null;
+  };
 
   // Case 1: label is in a trailing text node after the image
   const after = para.children.slice(imgIdx + 1);
@@ -171,6 +201,7 @@ function processFigureParagraph(para: Paragraph): void {
         img.data.label = parsed.label;
         img.data.labelType = parsed.labelType;
         img.data.caption = img.alt || null;
+        keepSource();
         return;
       }
     }
@@ -185,6 +216,7 @@ function processFigureParagraph(para: Paragraph): void {
       img.data.label = parsed.label;
       img.data.labelType = parsed.labelType;
       img.data.caption = img.alt || null;
+      keepSource();
       return;
     }
   }
@@ -194,6 +226,7 @@ function processFigureParagraph(para: Paragraph): void {
   img.data.label = null;
   img.data.labelType = "fig";
   img.data.caption = img.alt || null;
+  keepSource();
 }
 
 // ─── Table handler ────────────────────────────────────────────────────────────
@@ -201,7 +234,7 @@ function processFigureParagraph(para: Paragraph): void {
 function extractTextContent(nodes: PhrasingContent[]): string {
   return nodes
     .map((n) => {
-      if (n.type === "text") return (n as Text).value;
+      if (n.type === "text" || n.type === "inlineMath" || n.type === "inlineCode") return (n as any).value;
       if ("children" in n && Array.isArray((n as any).children)) {
         return extractTextContent((n as any).children);
       }
@@ -210,13 +243,13 @@ function extractTextContent(nodes: PhrasingContent[]): string {
     .join("");
 }
 
-function processTables(nodes: any[]): void {
+function processTables(nodes: any[], source: string): void {
   let i = 0;
   while (i < nodes.length) {
     const node = nodes[i];
 
     if (node.type === "blockquote") {
-      processTables(node.children);
+      processTables(node.children, source);
       i++;
       continue;
     }
@@ -238,6 +271,11 @@ function processTables(nodes: any[]): void {
       const captionPara = nodes[i - 1] as Paragraph;
       const rawCaption = extractTextContent(captionPara.children);
       const parsed = extractLabel(rawCaption);
+      // The paragraph as written, for the caption's math and sub/superscripts.
+      const start = captionPara.position?.start.offset;
+      const end = captionPara.position?.end.offset;
+      const written = start != null && end != null ? source.slice(start, end) : undefined;
+      if (written !== undefined) table.data.captionSource = (extractLabel(written)?.textBefore ?? written) || null;
 
       if (parsed) {
         table.data.label = parsed.label;
@@ -280,19 +318,22 @@ function processCodeBlock(node: Code): void {
   if (parsed) {
     node.data.label = parsed.label;
     node.data.caption = parsed.textBefore || null;
+    node.data.captionSource = parsed.textBefore || null;
     node.meta = parsed.textBefore || null;
   } else {
     node.data.label = null;
     node.data.caption = meta.trim();
+    node.data.captionSource = meta.trim();
   }
 }
 
 // ─── Remark plugin ────────────────────────────────────────────────────────────
 
 const remarkLabels: Plugin<[], Root> = function () {
-  return (tree: Root) => {
+  return (tree: Root, file: { toString(): string }) => {
+    const source = String(file);
     // Tables require looking at siblings so are handled separately
-    processTables(tree.children as any[]);
+    processTables(tree.children as any[], source);
 
     visit(tree, (node) => {
       switch (node.type) {
@@ -300,7 +341,7 @@ const remarkLabels: Plugin<[], Root> = function () {
           processHeading(node as Heading);
           break;
         case "paragraph":
-          processFigureParagraph(node as Paragraph);
+          processFigureParagraph(node as Paragraph, source);
           break;
         case "code":
           processCodeBlock(node as Code);

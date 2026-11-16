@@ -25,6 +25,7 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkUnderline from "../plugins/underline";
+import remarkSubSup from "../plugins/sub-sup";
 import remarkMath from "remark-math";
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
@@ -340,7 +341,7 @@ export function preprocessSlideDirectives(
 
 // ─── Inline markdown for [title] and (lead-in) ───────────────────────────────
 
-const inlineProcessor = unified().use(remarkParse).use(remarkGfm, { singleTilde: false }).use(remarkUnderline).use(remarkMath);
+const inlineProcessor = unified().use(remarkParse).use(remarkGfm, { singleTilde: false }).use(remarkUnderline).use(remarkSubSup).use(remarkMath);
 
 export function parseInline(source: string): Inline[] {
   if (!source.trim()) return [];

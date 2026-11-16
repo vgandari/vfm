@@ -21,29 +21,15 @@ import type { Heading, Image, Table, Code } from "mdast";
 import type { FencedDivNode } from "./plugins/fenced-divs";
 import type { EquationLabelData } from "./plugins/equation-labels";
 import { highlightHandler } from "./plugins/highlight";
+import { inlineMathHandler } from "./plugins/inline-math";
+import { captionNodes } from "./plugins/caption-nodes";
+import { isVideoUrl } from "./plugins/video-url";
 
 export { highlightHandler };
+export { inlineMathHandler };
 
 // ─── Inline math handler ──────────────────────────────────────────────────────
-// remark-math produces `inlineMath` nodes which remarkRehype doesn't know
-// about, falling back to rendering them as <code>. We handle them directly
-// using KaTeX in inline mode.
-
-export const inlineMathHandler: Handler = (_state, node: any) => {
-  let katexHtml: string;
-  try {
-    katexHtml = katex.renderToString(node.value ?? "", {
-      displayMode: false,
-      throwOnError: false,
-      trust: true,
-    });
-  } catch {
-    katexHtml = `<span class="katex-error">${node.value}</span>`;
-  }
-  return el("span", { className: ["math", "math-inline"] }, [
-    { type: "raw", value: katexHtml } as any,
-  ]);
-};
+// Lives in plugins/inline-math.ts (captions use it too); re-exported here.
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -77,21 +63,22 @@ function ensurePeriod(s: string): string {
   return /[.!?]$/.test(trimmed) ? trimmed : trimmed + ".";
 }
 
+// "Figure 1.2: " followed by the caption, which is inline Markdown (math, sub/superscripts, emphasis).
+// `caption` is the caption's source text, not its plain text.
+function captionParts(displayText: string | undefined, caption: string | undefined): ElementContent[] {
+  if (displayText && caption) return [text(`${displayText}: `), ...captionNodes(ensurePeriod(caption))];
+  if (displayText) return [text(displayText)];
+  if (caption) return captionNodes(ensurePeriod(caption));
+  return [];
+}
+
 // Builds a unified <figcaption> element used by figures and code listings.
 // Structure: <figcaption><strong>Label N.N: Caption text.</strong></figcaption>
 function buildFigcaption(
   displayText: string | undefined,
   caption: string | undefined
 ): Element | null {
-  const parts: ElementContent[] = [];
-
-  if (displayText && caption) {
-    parts.push(text(`${displayText}: ${ensurePeriod(caption)}`));
-  } else if (displayText) {
-    parts.push(text(displayText));
-  } else if (caption) {
-    parts.push(text(ensurePeriod(caption)));
-  }
+  const parts = captionParts(displayText, caption);
 
   if (parts.length === 0) return null;
 
@@ -104,15 +91,7 @@ function buildTableCaptionChildren(
   displayText: string | undefined,
   caption: string | undefined
 ): ElementContent[] {
-  const parts: ElementContent[] = [];
-
-  if (displayText && caption) {
-    parts.push(text(`${displayText}: ${ensurePeriod(caption)}`));
-  } else if (displayText) {
-    parts.push(text(displayText));
-  } else if (caption) {
-    parts.push(text(ensurePeriod(caption)));
-  }
+  const parts = captionParts(displayText, caption);
 
   if (parts.length === 0) return [];
   return [el("strong", {}, parts)];
@@ -172,17 +151,29 @@ export const paragraphHandler: Handler = (state, node) => {
 
   const data = imgNode.data as any;
   const displayText: string | undefined = data?.suppressLabel ? undefined : data?.displayText;
-  const caption: string | undefined = data?.caption ?? imgNode.alt ?? undefined;
+  const plain: string | undefined = data?.caption ?? imgNode.alt ?? undefined;
+  const caption: string | undefined = data?.captionSource ?? plain;
   const id: string | undefined = data?.label ?? undefined;
 
-  const imgEl = el("img", {
-    src: imgNode.url,
-    alt: caption ?? "",
-    ...(imgNode.title ? { title: imgNode.title } : {}),
-  }, []);
+  // A video uses the image syntax; the browser plays it natively (REQ-141, REQ-143). No `type` attribute:
+  // "video/quicktime" makes Chromium refuse a .mov it could play.
+  const mediaEl = isVideoUrl(imgNode.url)
+    ? el("video", {
+        src: imgNode.url,
+        controls: true,
+        preload: "metadata",
+        playsInline: true,
+        ...(plain ? { ariaLabel: plain } : {}),
+        ...(imgNode.title ? { title: imgNode.title } : {}),
+      }, [])
+    : el("img", {
+        src: imgNode.url,
+        alt: plain ?? "",
+        ...(imgNode.title ? { title: imgNode.title } : {}),
+      }, []);
 
   const figcaption = buildFigcaption(displayText, caption ?? undefined);
-  const children: ElementContent[] = [imgEl];
+  const children: ElementContent[] = [mediaEl];
   if (figcaption) children.push(figcaption);
 
   return el("figure", {
@@ -203,7 +194,7 @@ export const tableHandler: Handler = (state, node) => {
   const table = node as Table;
   const data = table.data as any;
   const displayText: string | undefined = data?.suppressLabel ? undefined : data?.displayText;
-  const caption: string | undefined = data?.caption ?? undefined;
+  const caption: string | undefined = data?.captionSource ?? data?.caption ?? undefined;
   const id: string | undefined = data?.label ?? undefined;
 
   // Let state.all render the thead/tbody rows normally

@@ -31,6 +31,7 @@ import type { Root, RootContent, Code } from "mdast";
 import type { Handler } from "mdast-util-to-hast";
 import type { Element, Properties } from "hast";
 import { extractLangFences } from "./lang-fences";
+import { captionNodes } from "./caption-nodes";
 
 // ─── AST node type ────────────────────────────────────────────────────────────
 
@@ -192,7 +193,7 @@ export const musicBlockHandler: Handler = (_state, node: any): Element => {
         }
 
         if (block.caption) {
-            captionChildren.push({ type: "text", value: block.caption });
+            captionChildren.push(...captionNodes(block.caption));
         }
 
         children.push({

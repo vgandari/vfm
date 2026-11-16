@@ -17,7 +17,7 @@ import { visit } from "unist-util-visit";
 const COMMENT = /^\s*<!--[\s\S]*-->\s*$/;
 
 /** Parents whose children are inline text, where an html node can simply become a text node. */
-const PHRASING = new Set(["paragraph", "heading", "emphasis", "strong", "delete", "link", "linkReference", "tableCell", "highlight", "underline"]);
+const PHRASING = new Set(["paragraph", "heading", "emphasis", "strong", "delete", "link", "linkReference", "tableCell", "highlight", "underline", "subSup"]);
 
 const remarkNoHtml: Plugin<[], Root> = function () {
   return (tree: Root) => {

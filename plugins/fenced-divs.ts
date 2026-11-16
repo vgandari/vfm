@@ -61,6 +61,7 @@ import remarkMath from "remark-math";
 import { visit } from "unist-util-visit";
 import remarkHighlight from "./highlight";
 import remarkUnderline from "./underline";
+import remarkSubSup from "./sub-sup";
 import type { Plugin } from "unified";
 import type { Root, RootContent, Code } from "mdast";
 import type { Handler } from "mdast-util-to-hast";
@@ -316,6 +317,7 @@ function parseInnerContent(content: string, startLine: number): RootContent[] {
     .use(remarkParse)
     .use(remarkGfm, { singleTilde: false })
     .use(remarkUnderline)
+    .use(remarkSubSup)
     .use(remarkHighlight)
     .use(remarkMath);
   // remarkFencedDivs intentionally NOT included — recursion guard

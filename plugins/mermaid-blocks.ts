@@ -20,6 +20,7 @@ import type { Root, RootContent, Code } from "mdast";
 import type { Handler } from "mdast-util-to-hast";
 import type { Element, Properties } from "hast";
 import { extractLangFences } from "./lang-fences";
+import { captionNodes } from "./caption-nodes";
 
 export interface MermaidBlockNode {
   type: "mermaidBlock";
@@ -121,7 +122,7 @@ export const mermaidBlockHandler: Handler = (_state, node: any): Element => {
       });
       if (block.caption) caption.push({ type: "text", value: ": " });
     }
-    if (block.caption) caption.push({ type: "text", value: block.caption });
+    if (block.caption) caption.push(...captionNodes(block.caption));
     children.push({ type: "element", tagName: "p", properties: { className: ["mermaid-caption"] }, children: caption });
   }
 

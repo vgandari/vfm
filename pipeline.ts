@@ -17,6 +17,7 @@ import {
 } from "./plugins/fenced-divs";
 import remarkHighlight from "./plugins/highlight";
 import remarkUnderline from "./plugins/underline";
+import remarkSubSup from "./plugins/sub-sup";
 import remarkNoHtml from "./plugins/no-html";
 import remarkEquationLabels from "./plugins/equation-labels";
 import remarkLabels from "./plugins/labels";
@@ -158,6 +159,7 @@ function buildRemarkPipeline(
     .use(remarkParse)
     .use(remarkGfm, { singleTilde: false })
     .use(remarkUnderline)
+    .use(remarkSubSup)
     .use(remarkFencedDivs, { store })
     .use(remarkNoHtml)
     .use(remarkAlgorithmBlocks, { store: algorithmStore })
