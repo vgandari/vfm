@@ -94,6 +94,7 @@ registry.
   background of section slides exactly as written (default: `theme-color`), with light text when the color is dark (relative luminance below 0.179, where white has more contrast than the dark text) and dark text otherwise;
   `title-image: cover.jpg` replaces the title slide's background with that image under a dark scrim and white text. Invalid
   colors are reported (`separator-color`, `section-color`) and ignored; `title-image` without a `title` is reported and ignored.
+- **Slide typography** in the VS Code preview, the HTML export and the PDF is the document's (headings `##` 1.5em, `###` 1.25em, code 85 %, document list and paragraph spacing) at slide size: the `.vfm-slide` heading, paragraph, list and `pre` rules in `slides/slides.css` tie with the document's and lose. They apply to a host that renders slides outside `.markdownBody`.
 - **Table text** is 0.9 times the surrounding size in documents. On slides it is 0.9 too, and shrinks in steps of 0.05 to 0.6
   until the table fits; only then is a tall table split across slides, its header repeated. Cell padding and line height shrink with the text, and captions keep the surrounding size.
   A table is never dropped because the block has an `@end(lead-in)`.
