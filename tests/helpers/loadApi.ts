@@ -27,7 +27,7 @@ export function loadApi() {
     await build({ ...common, entryPoints: [join(root, "slides/index.ts")], outfile: join(out, "slides.mjs") });
     await build({
       ...common,
-      stdin: { contents: 'export { renderMarkdown } from "./pipeline.ts"; export { renderToStaticMarkup } from "react-dom/server";', resolveDir: root, sourcefile: "ssr.ts" },
+      stdin: { contents: 'export { renderMarkdown } from "./pipeline.ts"; export { renderSlide, renderNotes } from "./slides/index.ts"; export { renderToStaticMarkup } from "react-dom/server";', resolveDir: root, sourcefile: "ssr.ts" },
       outfile: join(out, "ssr.mjs"),
     });
     state.api = await import(pathToFileURL(join(out, "slides.mjs")).href);
