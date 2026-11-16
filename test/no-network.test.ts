@@ -17,7 +17,7 @@ function sources(dir: string): string[] {
 // The one module that talks to a server: it posts entries the user added (see README).
 const ALLOWED = new Set(["bibliography-client.ts"]);
 
-// Verifies REQ-031 (UC-10)
+// Verifies REQ-042 (UC-10)
 test("vfm sources never reach the network", () => {
   const bad: string[] = [];
   for (const file of sources(root)) {
@@ -32,7 +32,7 @@ test("vfm sources never reach the network", () => {
   assert.deepEqual(bad, []);
 });
 
-// Verifies REQ-031 (UC-10)
+// Verifies REQ-042 (UC-10)
 test("Mermaid is configured so it cannot fetch", () => {
   const src = readFileSync(join(root, "MermaidDiagram.tsx"), "utf8");
   assert.match(src, /securityLevel:\s*"strict"/);

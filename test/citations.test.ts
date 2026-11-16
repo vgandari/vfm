@@ -71,7 +71,7 @@ test("keys are case-sensitive", async () => {
   assert.equal(referenceItems(tree).length, 1);
 });
 
-// Verifies REQ-016, REQ-018 (UC-04, UC-11)
+// Verifies REQ-016, REQ-041 (UC-04, UC-11)
 test("an unknown key is red text inside the usual brackets, with none of its own", async () => {
   const apa = await run("A @cite(nope) B @cite(shannon1948, nope)");
   assert.equal(paragraph(apa.tree), "A (unknown citation: nope) B (Shannon, 1948; unknown citation: nope)");

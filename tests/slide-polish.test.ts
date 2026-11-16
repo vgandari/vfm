@@ -75,7 +75,7 @@ test("without theme-color the slides carry no color style and no tint", () => {
   assert.equal(deck.diagnostics.filter((d: any) => d.code === "theme-color").length, 0);
 });
 
-// Verifies REQ-101, REQ-102 by inspection of the stylesheet (UC-13)
+// Verifies REQ-101, REQ-102 (UC-13), by inspection of the stylesheet
 test("the stylesheet draws the title rule from the accent and mixes it 14% into white for tinted slides", () => {
   const sheet = css("slides/slides.css");
   assert.match(sheet, /\.vfm-slide-title \{[^}]*border-bottom: 3px solid var\(--_accent\)/s);
@@ -104,7 +104,7 @@ test("an invalid theme-color is reported at its header line and the defaults are
   assert.doesNotMatch(slideHtml(deck, 0), /--vfm-slide-accent/);
 });
 
-// Verifies REQ-106 by inspection (UC-13): the export bundles the same renderer, which writes the style inline
+// Verifies REQ-106 (UC-13), by inspection: the export bundles the same renderer, which writes the style inline
 test("the accent is inline on the slide element, so the HTML export carries it with the page", () => {
   const deck = api.buildSlideDeck(`${header("theme-color: teal\n")}@slide\nText.\n@end\n`);
   assert.match(slideHtml(deck, 1), /style="--vfm-slide-accent:teal"/);
@@ -307,7 +307,7 @@ test("on a slide a video is placed like an image, and is not preloaded as one", 
 
 // ─── Table text ──────────────────────────────────────────────────────────────
 
-// Verifies REQ-151, REQ-152 by inspection (UC-18)
+// Verifies REQ-151, REQ-152 (UC-18), by inspection
 test("table text is 0.9 times the text around it, in documents and slides; other text keeps its size", () => {
   const doc = css("CustomMarkdown.module.css");
   assert.match(doc, /\.markdownBody table \{[^}]*font-size: 0\.9em/s);
@@ -359,7 +359,7 @@ test("a section slide's heading carries its line, and lines follow the source ma
 
 // ─── Images ──────────────────────────────────────────────────────────────────
 
-// Verifies REQ-171 by inspection (UC-20)
+// Verifies REQ-171 (UC-20), by inspection
 test("the stylesheet lets a picture or video shrink to its region without cropping", () => {
   const sheet = css("slides/slides.css");
   assert.match(sheet, /\.vfm-slide \.vfm-region > figure,[^{]*\{[^}]*max-height: 100%[^}]*min-height: 0/s);

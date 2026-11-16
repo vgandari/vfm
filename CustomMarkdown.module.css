@@ -372,7 +372,7 @@
   border-collapse: collapse;
   margin: 0 auto 16px;
   /* Table text is slightly smaller than the text around it (REQ-151). */
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .markdownBody table caption {

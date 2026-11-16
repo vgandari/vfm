@@ -269,3 +269,10 @@ chose to add to their own server and is not part of rendering.
 
 `npm test` runs `test/*.test.ts` with Node's built-in runner (type stripping, no build step).
 `test/slides.test.ts` bundles the pipeline with esbuild first, because it imports `.tsx` components.
+
+## Use cases and requirements
+
+`vfm` is the core that `vfm-preview` builds on, so the use cases and requirements for rendering live here:
+[docs/USE_CASES.md](docs/USE_CASES.md) and [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md). `MAPPING.json` links use cases,
+requirements and test cases, and `python3 tools/check_mapping.py` checks that each use case and requirement has a test.
+Requirements about the editor extension are in `vfm-preview`; IDs are shared, and each requirement lives in one repository.

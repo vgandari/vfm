@@ -1,0 +1,1598 @@
+{
+  "use_cases": {
+    "UC-01": [
+      "REQ-040"
+    ],
+    "UC-02": [
+      "REQ-009",
+      "REQ-010",
+      "REQ-013"
+    ],
+    "UC-03": [
+      "REQ-004",
+      "REQ-005",
+      "REQ-006",
+      "REQ-007",
+      "REQ-008",
+      "REQ-011",
+      "REQ-012",
+      "REQ-022",
+      "REQ-039"
+    ],
+    "UC-04": [
+      "REQ-016",
+      "REQ-034",
+      "REQ-035",
+      "REQ-036",
+      "REQ-037",
+      "REQ-041"
+    ],
+    "UC-05": [
+      "REQ-019",
+      "REQ-020"
+    ],
+    "UC-06": [
+      "REQ-021",
+      "REQ-038"
+    ],
+    "UC-07": [
+      "REQ-043"
+    ],
+    "UC-09": [
+      "REQ-045"
+    ],
+    "UC-10": [
+      "REQ-042"
+    ],
+    "UC-11": [
+      "REQ-041",
+      "REQ-044"
+    ],
+    "UC-12": [
+      "REQ-014",
+      "REQ-015"
+    ],
+    "UC-13": [
+      "REQ-101",
+      "REQ-102",
+      "REQ-103",
+      "REQ-104",
+      "REQ-105"
+    ],
+    "UC-14": [
+      "REQ-111",
+      "REQ-112",
+      "REQ-113",
+      "REQ-114"
+    ],
+    "UC-15": [
+      "REQ-121",
+      "REQ-123"
+    ],
+    "UC-16": [
+      "REQ-131",
+      "REQ-132",
+      "REQ-133",
+      "REQ-134",
+      "REQ-136"
+    ],
+    "UC-17": [
+      "REQ-141",
+      "REQ-142",
+      "REQ-143",
+      "REQ-146"
+    ],
+    "UC-18": [
+      "REQ-151",
+      "REQ-152"
+    ],
+    "UC-19": [
+      "REQ-161",
+      "REQ-162"
+    ],
+    "UC-20": [
+      "REQ-171",
+      "REQ-172",
+      "REQ-173",
+      "REQ-174"
+    ]
+  },
+  "test_cases": {
+    "tests/slide-polish.test.ts::theme-color sets the accent on every slide and tints only the title and section slides": {
+      "requirements": [
+        "REQ-101",
+        "REQ-102",
+        "REQ-105"
+      ],
+      "use_cases": [
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::without theme-color the slides carry no color style and no tint": {
+      "requirements": [
+        "REQ-105"
+      ],
+      "use_cases": [
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the stylesheet draws the title rule from the accent and mixes it 14% into white for tinted slides": {
+      "requirements": [
+        "REQ-101",
+        "REQ-102"
+      ],
+      "use_cases": [
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::parseThemeColor accepts the listed forms and nothing else": {
+      "requirements": [
+        "REQ-103"
+      ],
+      "use_cases": [
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::an invalid theme-color is reported at its header line and the defaults are used": {
+      "requirements": [
+        "REQ-104"
+      ],
+      "use_cases": [
+        "UC-13",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the accent is inline on the slide element, so the HTML export carries it with the page": {
+      "requirements": [],
+      "use_cases": [
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the title slide lists numbered affiliations and marks each author": {
+      "requirements": [
+        "REQ-111",
+        "REQ-112"
+      ],
+      "use_cases": [
+        "UC-14"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::an affiliation may be named by institution or organization": {
+      "requirements": [
+        "REQ-113"
+      ],
+      "use_cases": [
+        "UC-14"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::top-level affiliations that no author refers to are listed once, without numbers": {
+      "requirements": [
+        "REQ-114"
+      ],
+      "use_cases": [
+        "UC-14"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::captions of figures, tables, listings, algorithms, scores and diagrams render $math$": {
+      "requirements": [
+        "REQ-121"
+      ],
+      "use_cases": [
+        "UC-15"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::math in a caption renders on a slide": {
+      "requirements": [
+        "REQ-121"
+      ],
+      "use_cases": [
+        "UC-15"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a $ that does not close in a caption stays a dollar sign, and plain captions stay plain": {
+      "requirements": [
+        "REQ-123"
+      ],
+      "use_cases": [
+        "UC-15"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::^{x} is a superscript and _{x} a subscript": {
+      "requirements": [
+        "REQ-131"
+      ],
+      "use_cases": [
+        "UC-16"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::sub/superscripts work in headings, list items, table cells, captions, slide titles and lead-ins": {
+      "requirements": [
+        "REQ-132"
+      ],
+      "use_cases": [
+        "UC-16"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::sub/superscript syntax is left alone in code, math and link destinations": {
+      "requirements": [
+        "REQ-133"
+      ],
+      "use_cases": [
+        "UC-16"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::braces hold inline Markdown and nest; empty or unclosed pairs stay literal": {
+      "requirements": [
+        "REQ-134"
+      ],
+      "use_cases": [
+        "UC-16"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a backslash makes the pair literal": {
+      "requirements": [
+        "REQ-136"
+      ],
+      "use_cases": [
+        "UC-16"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::underline, strikethrough and footnotes still work beside sub/superscripts": {
+      "requirements": [
+        "REQ-131"
+      ],
+      "use_cases": [
+        "UC-16"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::image destinations with a video extension become <video controls>": {
+      "requirements": [
+        "REQ-141"
+      ],
+      "use_cases": [
+        "UC-17"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a video is a figure: alt text is the caption and a label numbers it": {
+      "requirements": [
+        "REQ-142"
+      ],
+      "use_cases": [
+        "UC-17"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the video is left to the browser: metadata preload, inline playback, no type attribute": {
+      "requirements": [
+        "REQ-143"
+      ],
+      "use_cases": [
+        "UC-17"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::on a slide a video is placed like an image, and is not preloaded as one": {
+      "requirements": [
+        "REQ-146"
+      ],
+      "use_cases": [
+        "UC-17"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::table text is 0.9 times the text around it, in documents and slides; other text keeps its size": {
+      "requirements": [
+        "REQ-151",
+        "REQ-152"
+      ],
+      "use_cases": [
+        "UC-18"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the title region carries the line of its @slide[title] opener or of its heading": {
+      "requirements": [
+        "REQ-161"
+      ],
+      "use_cases": [
+        "UC-19"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a slide titled by the heading it starts with points at that heading": {
+      "requirements": [
+        "REQ-161"
+      ],
+      "use_cases": [
+        "UC-19"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the lead-in carries the line of its @end": {
+      "requirements": [
+        "REQ-162"
+      ],
+      "use_cases": [
+        "UC-19"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a section slide's heading carries its line, and lines follow the source map": {
+      "requirements": [
+        "REQ-161",
+        "REQ-162"
+      ],
+      "use_cases": [
+        "UC-19"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::the stylesheet lets a picture or video shrink to its region without cropping": {
+      "requirements": [
+        "REQ-171"
+      ],
+      "use_cases": [
+        "UC-20"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::two images on a 2col slide with no text each get a column": {
+      "requirements": [
+        "REQ-172"
+      ],
+      "use_cases": [
+        "UC-20"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a 2col slide with text, or with one image, stays one column in source order": {
+      "requirements": [
+        "REQ-173"
+      ],
+      "use_cases": [
+        "UC-20"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::a 2col block with more images than fit continues on a new slide": {
+      "requirements": [
+        "REQ-174"
+      ],
+      "use_cases": [
+        "UC-20"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-polish.test.ts::two videos on a 2col slide each get a column": {
+      "requirements": [
+        "REQ-172"
+      ],
+      "use_cases": [
+        "UC-20"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::directive syntax errors are fatal and located": {
+      "requirements": [
+        "REQ-044"
+      ],
+      "use_cases": [
+        "UC-11",
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::directives inside code fences are left alone": {
+      "requirements": [
+        "REQ-044"
+      ],
+      "use_cases": [
+        "UC-11",
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::document mode: wrappers are transparent, nodoc is removed": {
+      "requirements": [
+        "REQ-004"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::document mode: a reference into a nodoc block is an error, and so is an unknown label": {
+      "requirements": [
+        "REQ-004",
+        "REQ-044"
+      ],
+      "use_cases": [
+        "UC-03",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::slide mode keeps only @slide content, with title resolution": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a blank-title block without a heading has titleSource none": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::splitting is greedy, repeats the title, numbers continuations and puts the lead-in last": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a cross-reference unit is dropped when its target is on another slide": {
+      "requirements": [
+        "REQ-020"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a cross-reference unit survives when its target is on the same slide": {
+      "requirements": [
+        "REQ-020"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a reference to a label in no @slide block is dropped early; noxrefs drops all": {
+      "requirements": [
+        "REQ-020"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::adjacent dividers merge into one nested agenda": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a title-only block is its own slide and never joins an agenda": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::layouts: rtext sends images to the image region, 2col with an image goes single": {
+      "requirements": [
+        "REQ-006"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::steplists numbers list items in order; stepleadin follows the last item": {
+      "requirements": [
+        "REQ-013"
+      ],
+      "use_cases": [
+        "UC-02"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::step options with nothing to step are a no-op with a note": {
+      "requirements": [
+        "REQ-013"
+      ],
+      "use_cases": [
+        "UC-02"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a list continuation repeats the parent item": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a code listing or theorem that does not fit is left off the slide, with a hint, not an error": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::when a title is shared by several slides, every one of them shows its counter": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::@include expands recursively, detects cycles and maps lines to files": {
+      "requirements": [
+        "REQ-007",
+        "REQ-044"
+      ],
+      "use_cases": [
+        "UC-03",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::diagnostics from included text name the original file": {
+      "requirements": [
+        "REQ-007",
+        "REQ-044"
+      ],
+      "use_cases": [
+        "UC-03",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::at most one theorem, admonition, quote or listing per slide": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::floats take the image region in rtext / ltext, like images": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a second float spills onto its own slide in rtext": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::only referenced items are numbered; the rest keep just their caption": {
+      "requirements": [
+        "REQ-019",
+        "REQ-020"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::only footnotes defined inside the @slide block are shown, numbered per slide": {
+      "requirements": [
+        "REQ-039"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::footnote references are errors in a title or lead-in": {
+      "requirements": [
+        "REQ-039"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::tables are floats: one per slide, in the image region": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::rtext / ltext revert to one column when no text shares the slide": {
+      "requirements": [
+        "REQ-006"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::the YAML header makes a title slide": {
+      "requirements": [
+        "REQ-009",
+        "REQ-111"
+      ],
+      "use_cases": [
+        "UC-02",
+        "UC-14"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a slide number is rendered when given": {
+      "requirements": [
+        "REQ-010"
+      ],
+      "use_cases": [
+        "UC-02"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::notes go with the slide holding the content before them, and only that slide": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::several notes in one block are combined in order, and a note before any content goes to the first slide": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::notes in the next block belong to that block's slides": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a multi-line note keeps line numbers and is one note": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a note never appears in the document, and outside a block it is plain text": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::notes on dividers are combined, and renderNotes leaves them out of the slide": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::algorithm, music and mermaid blocks are fenced code with a language": {
+      "requirements": [
+        "REQ-021"
+      ],
+      "use_cases": [
+        "UC-06"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::the old @@@ and &&& delimiters are no longer special": {
+      "requirements": [
+        "REQ-021"
+      ],
+      "use_cases": [
+        "UC-06"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::preprocessing keeps line numbers: a node after a block reports its true line": {
+      "requirements": [
+        "REQ-021"
+      ],
+      "use_cases": [
+        "UC-06"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a document separator inside a @slide block starts a new slide and is not shown": {
+      "requirements": [
+        "REQ-008"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::sentences end at terminal punctuation plus a newline, with no abbreviation rules": {
+      "requirements": [
+        "REQ-015"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: a bold sentence is picked, bold is kept, brackets go": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: a list after a colon becomes bullets": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: a lone statistic becomes a callout": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: asides between commas and in brackets are removed": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: bold-only paragraph is verbatim, lead-ins go, ordinals make a numbered list": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: a long paragraph is split by topic; modes first-sentence, notes-only and full": {
+      "requirements": [
+        "REQ-045"
+      ],
+      "use_cases": [
+        "UC-09"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer output is always made of the paragraph's own words": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::block elements carry data-line, the line in the author's file (header and blocks included)": {
+      "requirements": [
+        "REQ-043"
+      ],
+      "use_cases": [
+        "UC-07"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::language defaults to English; another language gets no English rules": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a paragraph ending in a colon takes the list that follows it as its children": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a bold value with no leading word keeps its whole sentence as the caption": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::HTML comments never reach a slide": {
+      "requirements": [
+        "REQ-022"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a reduced paragraph stays on one slide when it fits": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a block with several sections that spans slides takes each slide's title from its heading": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a [title] on the block is kept; a block that fits on one slide keeps its heading in effect": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::numberCaptions: referenced numbers only what a cross-reference points to, without gaps": {
+      "requirements": [
+        "REQ-019",
+        "REQ-020"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a series of same-level headings with no content between them still becomes a bulleted list": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::one block holding only a run of same-level headings is a bulleted list slide": {
+      "requirements": [
+        "REQ-005"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: only asides that open like one are cut between commas; digit separators are not commas": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a heading survives when the sentence after it is dropped for a cross-reference": {
+      "requirements": [
+        "REQ-020"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::~text~ is underlined, ~~text~~ is still struck through, and stray tildes stay literal": {
+      "requirements": [
+        "REQ-040"
+      ],
+      "use_cases": [
+        "UC-01"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::underline works inside fenced divs, headings and list items": {
+      "requirements": [
+        "REQ-040"
+      ],
+      "use_cases": [
+        "UC-01"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: the main clause of 'While A, B' is the bullet; lists and bold are left alone": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: the main clause is found even when the background clause holds italics": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a table taller than a slide continues on following slides with its header repeated": {
+      "requirements": [
+        "REQ-012",
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a table with no header row that does not fit is left off; so is any other float": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::a single sentence taller than a slide is still an overflow error": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::raw HTML is not part of the flavor: it shows as text; comments stay invisible": {
+      "requirements": [
+        "REQ-022"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::raw HTML shows as text on slides too": {
+      "requirements": [
+        "REQ-022"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: citations and cross-references survive even inside brackets, parentheses and asides": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/slides.test.ts::reducer: a citation in the background clause keeps the sentence whole": {
+      "requirements": [
+        "REQ-014"
+      ],
+      "use_cases": [
+        "UC-12"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::records cited keys in order of first appearance, once each": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::a citation becomes a linked author-year, and the entry is listed once": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::math in a title becomes inlineMath nodes in the reference list": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::keys are case-sensitive": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::an unknown key is red text inside the usual brackets, with none of its own": {
+      "requirements": [
+        "REQ-016",
+        "REQ-041"
+      ],
+      "use_cases": [
+        "UC-04",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::numbered citations follow the reference list order, lowest first": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::code and the tree are left alone when no bibliography is given": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/citations.test.ts::while entries are pending, citations are placeholders and there is no list": {
+      "requirements": [
+        "REQ-016"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::crossref: a child inherits what it lacks, from a parent that comes later": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::crossref: a child with its own year keeps its own date": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::crossref: periodical title becomes journal; inbook inherits the author": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::biblatex aliases fill only what is missing, and keep the original": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::a bad crossref is a warning and the entry is kept": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::a repeated cite key is an error, but keys that differ in case are distinct": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::crossref keys are case-sensitive": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::any entry type and field name is kept": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::an @ in a %-comment line is not an entry, and a commented-out entry is ignored": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibtex.test.ts::each entry keeps its text as written in rawSource": {
+      "requirements": [
+        "REQ-034"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::validateBibEntry accepts an entry and normalises case": {
+      "requirements": [
+        "REQ-036"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::validateBibEntry names the first problem": {
+      "requirements": [
+        "REQ-036"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::fetchBibEntry rejects a bad body or a different key, and maps 404 to null": {
+      "requirements": [
+        "REQ-036"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::resolveBibliography resolves each key once, and Foo and foo are different keys": {
+      "requirements": [
+        "REQ-036"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::createFetchResolver caches per key, case-sensitively": {
+      "requirements": [
+        "REQ-036"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::cleanLatex leaves $...$ math as written and cleans the text around it": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::splitMath separates math from text": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::a title with math reaches the formatted reference intact": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::biblatex and web types use the matching BibTeX layout": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::a biblatex thesis shows its institution as the school": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::online entries show the access date": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::a book inbook shows chapter and pages; a plain book does not show pages": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::books show their volume": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::software and datasets show their version and a type tag": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::patents show their number, country and holder": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::an eprint is shown, and linked for arXiv, only when there is no DOI": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::a chapter or paper in an edited book shows edition and volume": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::APA puts a comma before the ampersand, even for two authors": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::\"Last, Jr, First\" keeps the suffix": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::\"First von Last\" starts the family name at the first lowercase word": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::month is shown (and the day, when the date field has it)": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::a month without a year is ignored": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::removing any one field, or all of them, never throws or leaves debris": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::an entry with neither title nor names leads with its cite key": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography.test.ts::a name list that is only \"and others\" does not throw": {
+      "requirements": [
+        "REQ-035"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::newEntryId makes version 4 UUIDs": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::newEntryId works without crypto.randomUUID": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::validateBibEntry carries id, rawSource and the server's times, and checks them": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::bibEntryProblems accepts a good entry and explains the bad ones": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::prepareBibTeX gives each entry its own id and keeps what was pasted": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::prepareBibTeX reports entries it cannot read, and entries the server would refuse": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::a crossref is resolved, so what is sent is complete": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::createBibEntry posts the entry and returns it as stored": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::createBibEntry makes an id if the entry has none": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::createBibEntry refuses a bad entry without sending it": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::createBibEntry turns the server's refusals into BibServerError": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::createBibEntry reports an unreachable server, and a reply for the wrong entry": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/bibliography-client.test.ts::describeBibError says something a person can act on": {
+      "requirements": [
+        "REQ-037"
+      ],
+      "use_cases": [
+        "UC-04"
+      ],
+      "kind": "automated"
+    },
+    "test/music-audio.test.ts::midiToNotes reads the notes abcjs writes for a tune": {
+      "requirements": [
+        "REQ-038"
+      ],
+      "use_cases": [
+        "UC-06"
+      ],
+      "kind": "automated"
+    },
+    "test/music-audio.test.ts::midiToNotes follows repeats and ignores garbage": {
+      "requirements": [
+        "REQ-038"
+      ],
+      "use_cases": [
+        "UC-06"
+      ],
+      "kind": "automated"
+    },
+    "test/no-network.test.ts::vfm sources never reach the network": {
+      "requirements": [
+        "REQ-042"
+      ],
+      "use_cases": [
+        "UC-10"
+      ],
+      "kind": "automated"
+    },
+    "test/no-network.test.ts::Mermaid is configured so it cannot fetch": {
+      "requirements": [
+        "REQ-042"
+      ],
+      "use_cases": [
+        "UC-10"
+      ],
+      "kind": "automated"
+    }
+  }
+}
