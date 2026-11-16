@@ -8,13 +8,15 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { rehype } from "rehype";
+import { VFile } from "vfile";
 import remarkHighlight from "../plugins/highlight.ts";
 import remarkLabels from "../plugins/labels.ts";
 import { highlightHandler, paragraphHandler } from "../handlers.ts";
 
 const html = (md: string) => {
   const p = unified().use(remarkParse).use(remarkHighlight).use(remarkLabels).use(remarkRehype, { handlers: { highlight: highlightHandler, paragraph: paragraphHandler } });
-  const tree = p.runSync(p.parse(md), md as any);
+  const file = new VFile(md);
+  const tree = p.runSync(p.parse(file), file);
   return rehype().data("settings", { fragment: true }).stringify(tree as any).replace(/\n/g, "");
 };
 
