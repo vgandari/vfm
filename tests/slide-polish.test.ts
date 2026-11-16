@@ -269,6 +269,10 @@ test("image destinations with a video extension become <video controls>", () => 
     assert.match(h, /<video[^>]*controls/, url);
     assert.doesNotMatch(h, /<img/, url);
   }
+  // The HTML export inlines a local video as a data: URI (REQ-141, REQ-147).
+  assert.ok(isVideoUrl("data:video/mp4;base64,AAAA"));
+  assert.match(docHtml("![Clip](data:video/mp4;base64,AAAA)\n"), /<video[^>]*controls/);
+  assert.equal(isVideoUrl("data:image/png;base64,AAAA"), false);
   for (const url of ["a.png", "b.mov.png", "movie", "c.svg"]) assert.equal(isVideoUrl(url), false, url);
   assert.match(docHtml("![Pic](a.png)\n"), /<img/);
 });
