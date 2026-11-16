@@ -1242,6 +1242,42 @@
       ],
       "kind": "automated"
     },
+    "tests/direct.test.ts::highlight parser: a pair needs text, and a newline or a missing close leaves it as text": {
+      "requirements": [
+        "REQ-309"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/direct.test.ts::highlight parser: the text between the marks is inline Markdown": {
+      "requirements": [
+        "REQ-314"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/direct.test.ts::figure paragraph: text before and after the image stays, in order; blank text around it does not add paragraphs": {
+      "requirements": [
+        "REQ-315"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/direct.test.ts::alt text: a hard break (backslash or two spaces) becomes a newline, and the markup around it is dropped": {
+      "requirements": [
+        "REQ-315"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
     "test/slides.test.ts::directive syntax errors are fatal and located": {
       "requirements": [
         "REQ-044"
