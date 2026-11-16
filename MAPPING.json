@@ -95,6 +95,27 @@
       "REQ-172",
       "REQ-173",
       "REQ-174"
+    ],
+    "UC-22": [
+      "REQ-201",
+      "REQ-202",
+      "REQ-207",
+      "REQ-208"
+    ],
+    "UC-23": [
+      "REQ-203",
+      "REQ-204",
+      "REQ-205",
+      "REQ-206",
+      "REQ-207",
+      "REQ-208"
+    ],
+    "UC-24": [
+      "REQ-211",
+      "REQ-212",
+      "REQ-213",
+      "REQ-214",
+      "REQ-215"
     ]
   },
   "test_cases": {
@@ -388,6 +409,116 @@
       ],
       "use_cases": [
         "UC-20"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::separator-color sets the title rule on every slide, with no theme color and no tint": {
+      "requirements": [
+        "REQ-201"
+      ],
+      "use_cases": [
+        "UC-22"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::separator-color and theme-color are independent; without the first the rule follows the second": {
+      "requirements": [
+        "REQ-201",
+        "REQ-202"
+      ],
+      "use_cases": [
+        "UC-22",
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::section-color fills section slides only, as written, without a theme color": {
+      "requirements": [
+        "REQ-203",
+        "REQ-205"
+      ],
+      "use_cases": [
+        "UC-23"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::with a theme color, section-color replaces the section tint and the title slide keeps its own": {
+      "requirements": [
+        "REQ-203",
+        "REQ-204",
+        "REQ-205"
+      ],
+      "use_cases": [
+        "UC-23",
+        "UC-13"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::text is light on a dark section color and dark on a light one, switching at relative luminance 0.179": {
+      "requirements": [
+        "REQ-206"
+      ],
+      "use_cases": [
+        "UC-23"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::separator-color and section-color accept what theme-color accepts and nothing else": {
+      "requirements": [
+        "REQ-207"
+      ],
+      "use_cases": [
+        "UC-22",
+        "UC-23"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::an invalid separator-color or section-color is reported at its header line and the default is used": {
+      "requirements": [
+        "REQ-208"
+      ],
+      "use_cases": [
+        "UC-22",
+        "UC-23",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::title-image puts the image behind the title slide's text, under a scrim, in place of the tint": {
+      "requirements": [
+        "REQ-211",
+        "REQ-213"
+      ],
+      "use_cases": [
+        "UC-24"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::title-image goes through resolveUrl, is preloaded, and cannot break out of its attribute": {
+      "requirements": [
+        "REQ-212"
+      ],
+      "use_cases": [
+        "UC-24"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::title-image without a title is reported and ignored": {
+      "requirements": [
+        "REQ-214"
+      ],
+      "use_cases": [
+        "UC-24",
+        "UC-11"
+      ],
+      "kind": "automated"
+    },
+    "tests/slide-colors.test.ts::without title-image the title slide is as before": {
+      "requirements": [
+        "REQ-215"
+      ],
+      "use_cases": [
+        "UC-24"
       ],
       "kind": "automated"
     },
