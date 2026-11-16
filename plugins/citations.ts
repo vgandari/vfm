@@ -61,6 +61,13 @@ export interface CitationsOptions {
    * Otherwise it sits beside the document's top-level sections.
    */
   headingDepth?: number;
+  /**
+   * Slide view: cite keys of the whole deck in order of first appearance. Numbers
+   * and ordering follow it instead of this tree's own citations.
+   */
+  deckKeys?: string[];
+  /** Default true. False leaves out the appended References section. */
+  appendReferences?: boolean;
 }
 
 function anchorId(id: string | null | undefined, key: string): string {
@@ -95,7 +102,7 @@ function phrasing(value: string): PhrasingContent[] {
   );
 }
 
-function referenceItem(ref: FormattedReference, id: string | null | undefined): ListItem {
+export function referenceItem(ref: FormattedReference, id: string | null | undefined): ListItem {
   const children: PhrasingContent[] = ref.segments.flatMap((seg): PhrasingContent[] => {
     const inner = phrasing(seg.text);
     const nodes: PhrasingContent[] = seg.italic ? [{ type: "emphasis", children: inner }] : inner;
@@ -131,6 +138,10 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
         }
       });
     });
+    if (options.deckKeys) {
+      citeKeys.length = 0;
+      citeKeys.push(...options.deckKeys);
+    }
     file.data.citeKeys = citeKeys;
     if (!rewrite) return;
 
@@ -201,7 +212,7 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
       return [SKIP, index + replacement.length];
     });
 
-    if (!options.bibliography || ordered.length === 0) return;
+    if (!options.bibliography || ordered.length === 0 || options.appendReferences === false) return;
 
     // Sit beside the document's sections. A lone shallowest heading is a
     // document title, so the sections are one level below it.

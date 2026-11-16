@@ -61,6 +61,7 @@ function splitTextNode(
   registry: NormalizedRegistry,
   currentId: string | null | undefined,
   referencedLabels: Set<string>,
+  unresolved: "plain" | "red" = "red",
 ): PhrasingContent[] | null {
   const value = node.value;
   const result: PhrasingContent[] = [];
@@ -96,7 +97,7 @@ function splitTextNode(
           children: [{ type: "text", value: match[0] }],
         } as Link);
         lastIndex = match.index + match[0].length;
-      } else if (currentId === null) {
+      } else if (currentId === null && unresolved === "red") {
         // Static render: any unresolved ref (UUID-prefixed or plain) — show in red.
         found = true;
         if (match.index > lastIndex) {
@@ -160,6 +161,8 @@ function splitTextNode(
 interface CrossRefsOptions {
   registry?: NormalizedRegistry;
   id?: string | null;
+  /** Static render only: show unresolvable references in red (default) or leave them as text. */
+  unresolved?: "plain" | "red";
 }
 
 const remarkCrossRefs: Plugin<[CrossRefsOptions?], Root> = function (
@@ -186,7 +189,7 @@ const remarkCrossRefs: Plugin<[CrossRefsOptions?], Root> = function (
     visit(tree, "text", (node: Text, index, parent: Parent | null) => {
       if (!parent || index === undefined) return;
 
-      const replacement = splitTextNode(node, registry, currentId, referencedLabels);
+      const replacement = splitTextNode(node, registry, currentId, referencedLabels, options.unresolved);
       if (!replacement) return;
 
       parent.children.splice(index, 1, ...replacement);

@@ -1,0 +1,265 @@
+/*
+ * Slide stage. A slide is always laid out at 1280 × 720 and the host scales it
+ * to its window with a CSS transform, so the fit measurer and the audience see
+ * identical line breaks.
+ *
+ * Colors come from custom properties so a host can theme the stage:
+ *   --vfm-slide-bg, --vfm-slide-fg, --vfm-slide-muted, --vfm-slide-accent
+ */
+
+.vfm-slide {
+  --_bg: var(--vfm-slide-bg, #ffffff);
+  --_fg: var(--vfm-slide-fg, #1f2328);
+  --_muted: var(--vfm-slide-muted, #656d76);
+  --_accent: var(--vfm-slide-accent, #0969da);
+
+  box-sizing: border-box;
+  width: 1280px;
+  height: 720px;
+  padding: 64px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: hidden;
+  background: var(--_bg);
+  color: var(--_fg);
+  font-size: 30px;
+  line-height: 1.4;
+}
+
+:root[data-theme="dark"] .vfm-slide {
+  --_bg: var(--vfm-slide-bg, #0d1117);
+  --_fg: var(--vfm-slide-fg, #e6edf3);
+  --_muted: var(--vfm-slide-muted, #8d96a0);
+  --_accent: var(--vfm-slide-accent, #4493f8);
+}
+
+.vfm-slide-title {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 46px;
+  font-weight: 650;
+  line-height: 1.15;
+  min-height: 1.15em;
+  border-bottom: 3px solid var(--_accent);
+  padding-bottom: 12px;
+}
+.vfm-slide-title.vfm-empty {
+  border-bottom: none;
+  min-height: 0;
+  padding: 0;
+}
+.vfm-cont {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--_muted);
+}
+
+/* Inline renderings (title, lead-in) come out as one paragraph. */
+.vfm-inline p {
+  margin: 0;
+}
+
+.vfm-slide-content {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  gap: 48px;
+}
+.vfm-region {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.vfm-layout-single .vfm-body {
+  overflow: hidden;
+}
+
+/* Two balanced columns, cut only between blocks. */
+.vfm-layout-2col .vfm-body {
+  column-count: 2;
+  column-gap: 56px;
+  column-fill: balance;
+}
+.vfm-layout-2col .vfm-body > * {
+  break-inside: avoid;
+}
+
+/* Text beside images. */
+.vfm-layout-rtext .vfm-images,
+.vfm-layout-ltext .vfm-images {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+.vfm-images img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Slide content typography */
+.vfm-slide h2, .vfm-slide h3, .vfm-slide h4 {
+  margin: 0.4em 0 0.25em;
+  line-height: 1.2;
+}
+.vfm-slide h2 { font-size: 1.15em; }
+.vfm-slide h3 { font-size: 1.05em; color: var(--_muted); }
+.vfm-slide p { margin: 0 0 0.6em; }
+.vfm-slide ul, .vfm-slide ol { margin: 0 0 0.5em; padding-left: 1.3em; }
+.vfm-slide li { margin: 0.2em 0; }
+.vfm-slide img { max-width: 100%; height: auto; }
+.vfm-slide figure { margin: 0 0 0.6em; }
+.vfm-slide figcaption { font-size: 0.7em; color: var(--_muted); }
+.vfm-slide pre { font-size: 0.75em; }
+.vfm-slide table { font-size: 0.8em; }
+
+/* Repeated context on a continuation */
+.vfm-continued,
+.vfm-context {
+  color: var(--_muted);
+}
+.vfm-continued::after,
+.vfm-context > p:first-child::after {
+  content: " (cont.)";
+  font-size: 0.6em;
+  font-weight: 400;
+}
+
+/* Divider: one large heading, centered. */
+.vfm-divider .vfm-slide-title {
+  display: none;
+}
+.vfm-divider .vfm-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.vfm-divider-title {
+  font-size: 2em !important;
+  margin: 0 !important;
+}
+
+/* Lead-in and references */
+.vfm-slide-leadin {
+  flex: none;
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--_muted);
+  border-top: 1px solid var(--_muted);
+  padding-top: 10px;
+}
+.vfm-slide-refs {
+  flex: none;
+  font-size: 0.5em;
+  color: var(--_muted);
+  line-height: 1.3;
+}
+.vfm-slide-refs ol, .vfm-slide-refs ul { margin: 0; padding-left: 2em; }
+.vfm-slide-refs ul { list-style: none; padding-left: 0; }
+.vfm-slide-refs p { margin: 0; }
+
+/* Reveal steps. Hidden items keep their space so nothing shifts. */
+.vfm-slide [data-step] {
+  transition: opacity 0.15s;
+}
+.vfm-slide [data-step].vfm-hidden {
+  visibility: hidden;
+}
+
+/* Last block in a region carries no trailing margin, so it is not counted as overflow. */
+.vfm-region > :last-child {
+  margin-bottom: 0;
+}
+
+/* Footnotes ride at the end of the region that cites them, so the fit test reserves their room. */
+.vfm-slide section[data-footnotes] {
+  margin-top: 0.8em;
+  padding-top: 0.4em;
+  border-top: 1px solid var(--_muted);
+  font-size: 0.6em;
+  color: var(--_muted);
+}
+.vfm-slide section[data-footnotes] h2,
+.vfm-slide [data-footnote-backref] {
+  display: none;
+}
+.vfm-slide section[data-footnotes] ol { margin: 0; }
+.vfm-slide section[data-footnotes] p { margin: 0; }
+
+/* Slide number, lower right, inside the bottom margin and aligned with the content edge. */
+.vfm-slide-number {
+  position: absolute;
+  right: 64px;
+  bottom: 18px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--_muted);
+}
+
+/* Title slide */
+.vfm-cover {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+.vfm-cover > * { margin: 0; }
+.vfm-cover-title {
+  font-size: 68px;
+  line-height: 1.1;
+  font-weight: 700;
+  border: 0 !important;
+  padding: 0 !important;
+}
+.vfm-cover-subtitle {
+  margin-top: 20px !important;
+  font-size: 38px;
+  color: var(--_muted);
+}
+.vfm-cover-authors {
+  margin-top: 56px !important;
+  font-size: 32px;
+}
+.vfm-slide ol.vfm-cover-affiliations {
+  margin-top: 14px !important;
+  padding: 0;
+  list-style: none;
+  font-size: 22px;
+  color: var(--_muted);
+}
+.vfm-cover-date {
+  margin-top: 40px !important;
+  font-size: 26px;
+  color: var(--_muted);
+}
+
+/* Pseudocode and scores are dense; set them smaller than body text so a typical one fits a slide. */
+.vfm-slide .ps-root {
+  font-size: 0.6em;
+}
+
+/* Statistic made from a paragraph by the reducer: a big value with a short caption. */
+.vfm-callout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  margin: 0.5em 0;
+  text-align: center;
+}
+.vfm-callout .vfm-callout-value {
+  font-size: 3.2em;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--vfm-slide-accent, currentColor);
+}
+.vfm-callout .vfm-callout-caption {
+  font-style: normal;
+  opacity: 0.85;
+}

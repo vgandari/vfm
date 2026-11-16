@@ -5,7 +5,7 @@
  *
  * Phase 1 – preprocessMusicBlocks(source):
  *   Runs on the raw source string before remark-parse.
- *   Extracts content between &&& delimiters, replaces each block with a
+ *   Extracts ```mus fenced blocks (ABC notation), replaces each with a
  *   placeholder code node `__music-block-N__`, and stores the original
  *   content in a Map.
  *
@@ -30,6 +30,7 @@ import type { Plugin } from "unified";
 import type { Root, RootContent, Code } from "mdast";
 import type { Handler } from "mdast-util-to-hast";
 import type { Element, Properties } from "hast";
+import { extractLangFences } from "./lang-fences";
 
 // ─── AST node type ────────────────────────────────────────────────────────────
 
@@ -61,27 +62,19 @@ const LABEL_RE = new RegExp(
     "i"
 );
 
-// ─── Opening / closing line parsers ───────────────────────────────────────────
+// ─── Info-string parser ───────────────────────────────────────────────────────
 
 interface ParsedOpening {
-    caption: string | null;
-    label: string | null;
+  caption: string | null;
+  label: string | null;
 }
 
-function parseOpeningLine(line: string): ParsedOpening | null {
-    const match = line.match(/^&&&(.*)$/);
-    if (!match) return null;
-
-    const rest = (match[1] ?? "").trim();
-    const labelMatch = rest.match(LABEL_RE);
-    const label = labelMatch ? labelMatch[1].trim() : null;
-    const caption = labelMatch ? rest.slice(0, labelMatch.index).trim() : rest;
-
-    return { caption: caption || null, label };
-}
-
-function isClosingLine(line: string): boolean {
-    return /^\s*&&&\s*$/.test(line);
+/** `Caption text {#label}` after the language word of the opening fence. */
+function parseInfo(info: string): ParsedOpening {
+  const labelMatch = info.match(LABEL_RE);
+  const label = labelMatch ? labelMatch[1].trim() : null;
+  const caption = labelMatch ? info.slice(0, labelMatch.index).trim() : info.trim();
+  return { caption: caption || null, label };
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
@@ -117,77 +110,17 @@ export interface PreprocessResult {
 }
 
 export function preprocessMusicBlocks(rawSource: string): PreprocessResult {
-    const store: MusicBlockStore = new Map();
-    const lines = rawSource.split("\n");
-    const outputLines: string[] = [];
-    let id = 0;
-    let i = 0;
-
-    let inCodeFence = false;
-    let codeFenceChar = "";
-    let codeFenceLen = 0;
-
-    while (i < lines.length) {
-        const line = lines[i];
-
-        const fenceMatch = line.match(/^( {0,3})(`{3,}|~{3,})/);
-        if (fenceMatch) {
-            const fenceChar = fenceMatch[2][0];
-            const fenceLen = fenceMatch[2].length;
-            if (!inCodeFence) {
-                inCodeFence = true;
-                codeFenceChar = fenceChar;
-                codeFenceLen = fenceLen;
-                outputLines.push(line);
-                i++;
-                continue;
-            } else if (fenceChar === codeFenceChar && fenceLen >= codeFenceLen) {
-                inCodeFence = false;
-                codeFenceChar = "";
-                codeFenceLen = 0;
-                outputLines.push(line);
-                i++;
-                continue;
-            }
-        }
-
-        if (inCodeFence) {
-            outputLines.push(line);
-            i++;
-            continue;
-        }
-
-        const opening = parseOpeningLine(line);
-        if (!opening) {
-            outputLines.push(line);
-            i++;
-            continue;
-        }
-
-        const bodyLines: string[] = [];
-        i++;
-        while (i < lines.length && !isClosingLine(lines[i])) {
-            bodyLines.push(lines[i]);
-            i++;
-        }
-        if (i < lines.length) i++; // skip closing &&&
-
-        const placeholderLang = makePlaceholderLang(id);
-        store.set(placeholderLang, {
-            caption: opening.caption,
-            label: opening.label,
-            body: bodyLines.join("\n"),
-        });
-
-        outputLines.push("");
-        outputLines.push("```" + placeholderLang);
-        outputLines.push("```");
-        outputLines.push("");
-
-        id++;
+  const store: MusicBlockStore = new Map();
+  const source = extractLangFences(
+    rawSource,
+    "mus",
+    makePlaceholderLang,
+    (id, { info, body }) => {
+      const opening = parseInfo(info);
+      store.set(makePlaceholderLang(id), { caption: opening.caption, label: opening.label, body });
     }
-
-    return { source: outputLines.join("\n"), store };
+  );
+  return { source, store };
 }
 
 // ─── Phase 2: AST transform ───────────────────────────────────────────────────
@@ -216,6 +149,7 @@ export const remarkMusicBlocks: Plugin<[MusicBlocksOptions], Root> =
                                     notation: data.body,   // ← "notation", not "value"
                                     label: data.label,
                                     caption: data.caption,
+                                    position: node.position,
                                 } as MusicBlockNode);
                                 continue;
                             }

@@ -8,6 +8,7 @@ import type { FencedDivNode, EnvType } from "./plugins/fenced-divs";
 import type { EquationLabelData } from "./plugins/equation-labels";
 import type { AlgorithmBlockNode } from "./plugins/algorithm-blocks";
 import type { MusicBlockNode } from "./plugins/music-blocks";  // ← ADDED
+import type { MermaidBlockNode } from "./plugins/mermaid-blocks";
 
 export interface RegistryEntry {
   displayText: string;
@@ -45,6 +46,18 @@ export interface RegistryOptions {
    */
   numberingDepth: number;
   suppressUnreferencedLabels?: boolean;
+  /**
+   * Slide view: only the labels in this set (lowercase) are numbered. Everything
+   * else keeps just its caption, however captioned it is. Numbers are given in
+   * order, so referenced items count 1, 2, 3 with no gaps.
+   */
+  visibleLabels?: Set<string>;
+}
+
+function clearNumber(target: any): void {
+  if (!target) return;
+  delete target.displayNumber;
+  delete target.displayText;
 }
 
 const XREF_SCAN_RE = /\[@([^\]:]+:[^\]]+)\]/g;
@@ -55,7 +68,7 @@ function headingText(node: any): string {
   return "";
 }
 
-function collectXrefLabels(source: string): Set<string> {
+export function collectXrefLabels(source: string): Set<string> {
   const labels = new Set<string>();
   let m: RegExpExecArray | null;
   XREF_SCAN_RE.lastIndex = 0;
@@ -163,6 +176,7 @@ export function buildRegistry(
     : new Set();
 
   function isVisible(label: string | null | undefined, caption: string | null | undefined): boolean {
+    if (options.visibleLabels) return !!label && options.visibleLabels.has(label.toLowerCase());
     if (!suppressUnreferencedLabels) return true;
     if (caption && caption.trim().length > 0) return true;
     if (label && xrefLabels.has(label.toLowerCase())) return true;
@@ -208,6 +222,8 @@ export function buildRegistry(
         processAlgorithmBlock(node as unknown as AlgorithmBlockNode);
       } else if (node.type === "musicBlock") {                              // ← ADDED
         processMusicBlock(node as unknown as MusicBlockNode);               // ← ADDED
+      } else if (node.type === "mermaidBlock") {
+        processMermaidBlock(node as unknown as MermaidBlockNode);
       } else if (node.type === "fencedDiv") {
         processFencedDiv(node as unknown as FencedDivNode);
       } else if ("children" in node && Array.isArray((node as any).children)) {
@@ -242,7 +258,7 @@ export function buildRegistry(
   function processImage(node: Image): void {
     const data = node.data as any;
     if (!data || data.labelType !== "fig") return;
-    if (!isVisible(data.label, data.caption)) return;
+    if (!isVisible(data.label, data.caption)) return clearNumber(data);
     itemCounters.fig += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const displayText = `Figure ${prefix}${itemCounters.fig}`;
@@ -254,7 +270,7 @@ export function buildRegistry(
   function processTable(node: Table): void {
     const data = node.data as any;
     if (!data || data.labelType !== "tab") return;
-    if (!isVisible(data.label, data.caption)) return;
+    if (!isVisible(data.label, data.caption)) return clearNumber(data);
     itemCounters.tab += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const displayText = `Table ${prefix}${itemCounters.tab}`;
@@ -267,11 +283,12 @@ export function buildRegistry(
     if (node.lang && (
       node.lang.startsWith("__fenced-div-") ||
       node.lang.startsWith("__algorithm-block-") ||
-      node.lang.startsWith("__music-block-")   // ← ADDED
+      node.lang.startsWith("__music-block-") ||
+      node.lang.startsWith("__mermaid-block-")
     )) return;
     const data = node.data as any;
     if (!data || data.labelType !== "lst") return;
-    if (!isVisible(data.label, data.caption)) return;
+    if (!isVisible(data.label, data.caption)) return clearNumber(data);
     itemCounters.lst += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const displayText = `Listing ${prefix}${itemCounters.lst}`;
@@ -290,6 +307,15 @@ export function buildRegistry(
     const hasBlockLabel = !!data.blockLabel;
     const hasLineLabels = data.lineLabels && data.lineLabels.length > 0;
     if (!hasBlockLabel && !hasLineLabels) return;
+    if (options.visibleLabels) {
+      const shown = (l: string) => options.visibleLabels!.has(l.toLowerCase());
+      const referenced = (data.blockLabel && shown(data.blockLabel)) || (data.lineLabels ?? []).some((l) => shown(l.label));
+      if (!referenced) {
+        clearNumber(data);
+        delete (data as any).lineDisplayNumbers;
+        return;
+      }
+    }
     itemCounters.eq += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const baseNumber = `${prefix}${itemCounters.eq}`;
@@ -313,7 +339,7 @@ export function buildRegistry(
   }
 
   function processAlgorithmBlock(node: AlgorithmBlockNode): void {
-    if (!isVisible(node.label, node.caption)) return;
+    if (!isVisible(node.label, node.caption)) return clearNumber(node);
     itemCounters.alg += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const displayText = `Algorithm ${prefix}${itemCounters.alg}`;
@@ -324,7 +350,7 @@ export function buildRegistry(
 
   // ← ADDED
   function processMusicBlock(node: MusicBlockNode): void {
-    if (!isVisible(node.label, node.caption)) return;
+    if (!isVisible(node.label, node.caption)) return clearNumber(node);
     itemCounters.mus += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const displayText = `Score ${prefix}${itemCounters.mus}`;
@@ -333,10 +359,21 @@ export function buildRegistry(
     node.displayText = displayText;
   }
 
+  // A diagram is a figure and shares the figure counter.
+  function processMermaidBlock(node: MermaidBlockNode): void {
+    if (!isVisible(node.label, node.caption)) return clearNumber(node);
+    itemCounters.fig += 1;
+    const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
+    const displayText = `Figure ${prefix}${itemCounters.fig}`;
+    if (node.label) registry.set(node.label, { displayText, printedName: "Figure", id: node.label });
+    node.displayNumber = `${prefix}${itemCounters.fig}`;
+    node.displayText = displayText;
+  }
+
   function processFencedDiv(node: FencedDivNode): void {
     const envType = node.envType as keyof ItemCounters;
     if (!(envType in itemCounters)) return;
-    if (!isVisible(node.label, node.name)) return;
+    if (!isVisible(node.label, node.name)) return clearNumber(node);
     itemCounters[envType] += 1;
     const prefix = buildSectionPrefix(sectionCounters, effectiveDepth);
     const printedName =

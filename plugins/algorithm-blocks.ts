@@ -1,7 +1,7 @@
 /**
  * plugins/algorithm-blocks.ts
  *
- * Remark plugin that parses "@@@" delimited pseudocode blocks for rendering
+ * Remark plugin that parses ```alg blocks (pseudocode) for rendering
  * with pseudocode.js (https://github.com/SaswatPadhi/pseudocode.js).
  *
  * Architecture mirrors fenced-divs.ts: a raw-source preprocessor extracts
@@ -10,8 +10,8 @@
  * remarkParse untouched. A second pass converts the placeholder `code` node
  * into an `algorithmBlock` AST node.
  *
- * Syntax:
- *   @@@ Optional caption text {#alg:label}
+ * Syntax (an ordinary fenced block whose language is `alg`):
+ *   ```alg Optional caption text {#alg:label}
  *   \begin{algorithm}
  *   \caption{Find Max}
  *   \begin{algorithmic}
@@ -21,13 +21,13 @@
  *   \EndProcedure
  *   \end{algorithmic}
  *   \end{algorithm}
- *   @@@
+ *   ```
  *
  * Rules:
- *   - Opening line: "@@@" optionally followed by caption text and an
+ *   - Opening line: the fence, `algorithm`, then optional caption text and an
  *     optional trailing {#label} (always last).
- *   - Closing line: a line containing exactly "@@@" (optionally surrounded
- *     by whitespace), nothing else.
+ *   - The block closes at a fence of the same character and at least the same
+ *     length (see lang-fences.ts).
  *   - The body is passed through to pseudocode.js verbatim — it is NOT
  *     parsed as Markdown.
  *   - Must run AFTER injectUuid (so {#alg:label} on the opening line becomes
@@ -63,6 +63,7 @@ import type { Plugin } from "unified";
 import type { Root, RootContent, Code } from "mdast";
 import type { Handler } from "mdast-util-to-hast";
 import type { Element, Properties } from "hast";
+import { extractLangFences } from "./lang-fences";
 
 // ─── AST node type ────────────────────────────────────────────────────────────
 
@@ -98,27 +99,19 @@ const LABEL_RE = new RegExp(
   "i"
 );
 
-// ─── Opening / closing line parsers ───────────────────────────────────────────
+// ─── Info-string parser ───────────────────────────────────────────────────────
 
 interface ParsedOpening {
   caption: string | null;
   label: string | null;
 }
 
-function parseOpeningLine(line: string): ParsedOpening | null {
-  const match = line.match(/^@@@(.*)$/);
-  if (!match) return null;
-
-  const rest = (match[1] ?? "").trim();
-  const labelMatch = rest.match(LABEL_RE);
+/** `Caption text {#label}` after the language word of the opening fence. */
+function parseInfo(info: string): ParsedOpening {
+  const labelMatch = info.match(LABEL_RE);
   const label = labelMatch ? labelMatch[1].trim() : null;
-  const caption = labelMatch ? rest.slice(0, labelMatch.index).trim() : rest;
-
+  const caption = labelMatch ? info.slice(0, labelMatch.index).trim() : info.trim();
   return { caption: caption || null, label };
-}
-
-function isClosingLine(line: string): boolean {
-  return /^\s*@@@\s*$/.test(line);
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
@@ -162,82 +155,16 @@ export interface PreprocessResult {
 
 export function preprocessAlgorithmBlocks(rawSource: string): PreprocessResult {
   const store: AlgorithmBlockStore = new Map();
-  const lines = rawSource.split("\n");
-  const outputLines: string[] = [];
-  let id = 0;
-  let i = 0;
-
-  // Track fenced code blocks so "@@@" lines inside ``` / ~~~ are ignored,
-  // mirroring the same guard in fenced-divs.ts.
-  let inCodeFence = false;
-  let codeFenceChar = "";
-  let codeFenceLen = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-
-    const fenceMatch = line.match(/^( {0,3})(`{3,}|~{3,})/);
-    if (fenceMatch) {
-      const fenceChar = fenceMatch[2][0];
-      const fenceLen = fenceMatch[2].length;
-
-      if (!inCodeFence) {
-        inCodeFence = true;
-        codeFenceChar = fenceChar;
-        codeFenceLen = fenceLen;
-        outputLines.push(line);
-        i++;
-        continue;
-      } else if (fenceChar === codeFenceChar && fenceLen >= codeFenceLen) {
-        inCodeFence = false;
-        codeFenceChar = "";
-        codeFenceLen = 0;
-        outputLines.push(line);
-        i++;
-        continue;
-      }
+  const source = extractLangFences(
+    rawSource,
+    "alg",
+    makePlaceholderLang,
+    (id, { info, body }) => {
+      const opening = parseInfo(info);
+      store.set(makePlaceholderLang(id), { caption: opening.caption, label: opening.label, body });
     }
-
-    if (inCodeFence) {
-      outputLines.push(line);
-      i++;
-      continue;
-    }
-
-    const opening = parseOpeningLine(line);
-    if (!opening) {
-      outputLines.push(line);
-      i++;
-      continue;
-    }
-
-    // Consume body lines verbatim until a closing "@@@" or end of source.
-    const bodyLines: string[] = [];
-    i++;
-    while (i < lines.length && !isClosingLine(lines[i])) {
-      bodyLines.push(lines[i]);
-      i++;
-    }
-    if (i < lines.length) i++; // skip the closing "@@@" line
-
-    const placeholderLang = makePlaceholderLang(id);
-    store.set(placeholderLang, {
-      caption: opening.caption,
-      label: opening.label,
-      body: bodyLines.join("\n"),
-    });
-
-    // Emit a placeholder code fence (no body) so remarkParse preserves it as
-    // a `code` node we can pattern-match in phase 2.
-    outputLines.push("");
-    outputLines.push("```" + placeholderLang);
-    outputLines.push("```");
-    outputLines.push("");
-
-    id++;
-  }
-
-  return { source: outputLines.join("\n"), store };
+  );
+  return { source, store };
 }
 
 // ─── Phase 2: AST transform ───────────────────────────────────────────────────
@@ -266,6 +193,7 @@ export const remarkAlgorithmBlocks: Plugin<[AlgorithmBlocksOptions], Root> =
                   value: data.body,
                   label: data.label,
                   caption: data.caption,
+                  position: node.position,
                 } as AlgorithmBlockNode);
                 continue;
               }

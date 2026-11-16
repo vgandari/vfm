@@ -28,6 +28,7 @@ import type { Root, RootContent, Image, Table, Code } from "mdast";
 import type { FencedDivNode } from "./fenced-divs";
 import type { AlgorithmBlockNode } from "./algorithm-blocks";
 import type { MusicBlockNode } from "./music-blocks";
+import type { MermaidBlockNode } from "./mermaid-blocks";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -88,6 +89,14 @@ function walk(nodes: RootContent[], referencedLabels: Set<string>): void {
 
       case "musicBlock": {                                    // ← ADDED
         const block = node as unknown as MusicBlockNode;
+        if (shouldSuppress(block, referencedLabels)) {
+          block.suppressLabel = true;
+        }
+        break;
+      }
+
+      case "mermaidBlock": {
+        const block = node as unknown as MermaidBlockNode;
         if (shouldSuppress(block, referencedLabels)) {
           block.suppressLabel = true;
         }

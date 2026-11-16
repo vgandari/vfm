@@ -58,7 +58,9 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { visit } from "unist-util-visit";
 import remarkHighlight from "./highlight";
+import remarkUnderline from "./underline";
 import type { Plugin } from "unified";
 import type { Root, RootContent, Code } from "mdast";
 import type { Handler } from "mdast-util-to-hast";
@@ -170,6 +172,8 @@ export interface FencedDivData {
   name: string;
   label: string | null;
   innerContent: string;
+  /** 1-based line of the file where innerContent begins. */
+  startLine?: number;
 }
 
 export type FencedDivStore = Map<string, FencedDivData>;
@@ -268,6 +272,7 @@ export function preprocessFencedDivs(rawSource: string): PreprocessResult {
 
     // Consume inner lines until a closing delimiter or end of source
     const innerLines: string[] = [];
+    const openedAt = i;
     i++;
     while (i < lines.length && !isClosingLine(lines[i])) {
       // KLUDGE: strip blockquote prefix from inner content so it parses as
@@ -276,7 +281,8 @@ export function preprocessFencedDivs(rawSource: string): PreprocessResult {
       i++;
     }
     // Skip the closing ::: line if present
-    if (i < lines.length) i++;
+    const closed = i < lines.length;
+    if (closed) i++;
 
     const placeholderLang = makePlaceholderLang(id);
     store.set(placeholderLang, {
@@ -284,15 +290,15 @@ export function preprocessFencedDivs(rawSource: string): PreprocessResult {
       name: opening.name,
       label: opening.label,
       innerContent: innerLines.join("\n"),
+      startLine: openedAt + 2,
     });
 
-    // Emit a fenced code block placeholder. The blank lines around it ensure
-    // remark treats it as a standalone block regardless of surrounding content.
-    if (!prefix) outputLines.push("");
+    // Emit a placeholder fence over the same number of lines, so line numbers in the parsed
+    // tree still match the author's file.
     outputLines.push(prefix + "```" + placeholderLang);
-    outputLines.push(prefix + "```");
-    if (!prefix) outputLines.push("");
-    outputLines.push("");
+    const used = i - openedAt;
+    for (let k = 1; k < used - (closed ? 1 : 0); k++) outputLines.push(prefix.trimEnd());
+    if (closed) outputLines.push(prefix + "```");
 
     id++;
   }
@@ -305,16 +311,25 @@ export function preprocessFencedDivs(rawSource: string): PreprocessResult {
 // This is the recursion guard — the inner processor includes all plugins
 // except remarkFencedDivs itself.
 
-function parseInnerContent(content: string): RootContent[] {
+function parseInnerContent(content: string, startLine: number): RootContent[] {
   const processor = unified()
     .use(remarkParse)
-    .use(remarkGfm)
+    .use(remarkGfm, { singleTilde: false })
+    .use(remarkUnderline)
     .use(remarkHighlight)
     .use(remarkMath);
   // remarkFencedDivs intentionally NOT included — recursion guard
 
-  const tree = processor.parse(content);
-  return (tree as Root).children;
+  const tree = processor.parse(content) as Root;
+  // Positions are relative to the inner text; make them refer to the whole file.
+  visit(tree, (n: any) => {
+    const pos = n.position;
+    if (pos) {
+      pos.start.line += startLine - 1;
+      pos.end.line += startLine - 1;
+    }
+  });
+  return tree.children;
 }
 
 // ─── Phase 2: AST transform ───────────────────────────────────────────────────
@@ -359,7 +374,7 @@ export const remarkFencedDivs: Plugin<[FencedDivsOptions], Root> = function (
           continue;
         }
 
-        const children = parseInnerContent(data.innerContent);
+        const children = parseInnerContent(data.innerContent, data.startLine ?? 1);
 
         result.push({
           type: "fencedDiv",
@@ -367,6 +382,7 @@ export const remarkFencedDivs: Plugin<[FencedDivsOptions], Root> = function (
           name: data.name,
           label: data.label,
           children,
+          position: code.position,
         } as FencedDivNode);
       }
       return result;
