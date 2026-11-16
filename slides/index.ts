@@ -5,6 +5,8 @@ export { renderSlide, renderNotes } from "./render";
 export type { SlideRenderContext } from "./render";
 export { estimateFits } from "./measure";
 export type { Measurer } from "./measure";
+export { createDomMeasurer } from "./domMeasurer";
+export { slideFits, fitRegion } from "./fit";
 export { expandIncludes } from "./includes";
 export type { ExpandedSource, IncludeOptions } from "./includes";
 export { SlideDirectiveError } from "./types";

@@ -1,16 +1,14 @@
 # Use cases
 
 The use cases `vfm` serves. The *author* writes Markdown and the *audience* reads the document or sees the slides.
-Several use cases are shared with `vfm-preview` (`../vfm-preview/docs/USE_CASES.md`), which adds the ones that need an
-editor, a window or an export file. A shared use case has the same ID and text in both, and each repository
-maps it only to its own requirements.
+`vfm-preview` (`../vfm-preview/docs/USE_CASES.md`) adds the ones that need an editor, a window or an export file.
+UC-01 and UC-02 (preview in an editor, slide navigation) belong to `vfm-preview` only. A use case with the same ID in
+both repositories is not expected to be the same one, and each repository maps its own to its own requirements.
 
 ## Existing behavior (inferred)
 
 | ID | Use case | Source |
 | --- | --- | --- |
-| UC-01 | The author previews a Markdown file as a document, beside the editor, and the preview follows edits. | README "VFM Preview" |
-| UC-02 | The author previews the same file as slides, moves between slides and reveal steps with the keyboard, and toggles between the two views. | README "Slide mode" |
 | UC-03 | The author turns existing content into slides by wrapping it in `@slide … @end`, choosing a layout (`rtext`, `ltext`, `2col`), and splicing files with `@include`. | spec "Syntax" |
 | UC-04 | The author cites sources with `@cite(key)` and gets in-text citations and a reference list from BibTeX files named in the YAML header. | README "Citations" |
 | UC-05 | The author numbers figures, tables, listings and equations and refers to them by label. | vfm README "Syntax extensions" |
@@ -20,6 +18,8 @@ maps it only to its own requirements.
 | UC-10 | The author works offline and the preview never contacts the network. | vfm README "No network access" |
 | UC-11 | The author learns about directive and citation problems in the Problems panel. | README "Slide mode", "Citations" |
 | UC-12 | The author writes whole paragraphs and the slide builder reduces them to slide text without rewriting. | vfm README "Paragraphs, sentences and separators" |
+| UC-28 | The author gets a deck with a title slide from the YAML header, a number on every slide, and list items or lead-ins revealed one step at a time. | split from UC-02 |
+| UC-29 | The author underlines text with `~text~` and strikes it through with `~~text~~`. | split from UC-01 |
 
 ## New in `slide-polish`
 
@@ -48,4 +48,4 @@ maps it only to its own requirements.
 | --- | --- | --- |
 | UC-25 | The author puts a table on a slide, with or without a lead-in under it, and sees the whole table with its text as large as the slide allows. | bug report, request |
 | UC-26 | The author puts two tables side by side on one `2col` slide. | request |
-| UC-27 | The author, or a developer hosting vfm slides, sets the typography of slide headings, paragraphs, lists and code independently of the document's. | deferred; request |
+| UC-27 | The author sets the typography of slide headings, paragraphs, lists and code independently of the document's. | deferred; request |

@@ -1,8 +1,11 @@
 # Requirements
 
 `vfm` is the core library: it parses Markdown, builds documents and slides, and renders them. The editor extension
-`vfm-preview` (`../vfm-preview`) is a client of it and keeps its own requirements. The ID space is shared, so an ID
-means the same thing in both repositories, and a requirement lives in exactly one of them.
+`vfm-preview` (`../vfm-preview`) is a client of it and keeps its own requirements. A requirement lives in exactly one
+of the two repositories. The same ID in both repositories is not expected to denote the same item, and nothing checks
+the two sets against each other. YAML front matter is the host's to read: vfm receives what it needs as arguments of
+its components (for example `bibliography`, `citations`, `sourceMap`, `resolveUrl`, `measure`), except for the slide
+keys it reads from the content itself (`title`, `theme-color`, `title-image`, …).
 
 Style: NASA Systems Engineering Handbook. Each requirement is one verifiable "shall" statement. Verification
 methods: **T**est, **I**nspection, **D**emonstration. Use cases are in `USE_CASES.md`; the mapping between use
@@ -17,13 +20,13 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-004 | vfm shall render the content of every `@slide … @end` block as part of the document, and shall omit blocks marked `nodoc`. | UC-03 | spec "Overview" |
 | REQ-005 | vfm shall build, from the `@slide` blocks only, one or more 1280×720 slides per block, in source order. | UC-03 | spec "Overview" |
 | REQ-006 | vfm shall support the layouts `rtext`, `ltext` and `2col` and shall treat the absence of a layout as a single column. | UC-03 | spec "Syntax" |
-| REQ-007 | vfm shall replace an `@include(path)` line with the contents of the named file before parsing and shall report a cycle as a diagnostic. | UC-03 | vfm README `includes.ts` |
+| REQ-007 | vfm shall replace an `@include(path)` line with the text that the `read` function of `IncludeOptions` returns for that path before parsing, and shall report a cycle or an unreadable path as a diagnostic. | UC-03 | vfm README `includes.ts` |
 | REQ-008 | vfm shall end the current slide at a document separator (`---`, `***`) inside a `@slide` block and shall not display the separator. | UC-03 | vfm README |
-| REQ-009 | vfm shall make slide 1 from the YAML header's `title`, `subtitle`, authors, affiliations and `date` when a `title` exists. | UC-02 | vfm README "Title slide" |
-| REQ-010 | vfm shall number slides from 1, counting the title slide, and shall show the number in the lower right corner of every slide except the title slide. | UC-02 | vfm README, `update.md` |
+| REQ-009 | vfm shall make slide 1 from the YAML header's `title`, `subtitle`, authors, affiliations and `date` when a `title` exists. | UC-28 | vfm README "Title slide" |
+| REQ-010 | vfm shall number slides from 1, counting the title slide, and shall show the number in the lower right corner of every slide except the title slide. | UC-28 | vfm README, `update.md` |
 | REQ-011 | vfm shall place content in whole units and shall not change type size to make room, except that it shall scale a lone float down to at most half size. | UC-03 | vfm README "What does not fit" |
 | REQ-012 | vfm shall split a table that has a header row and is too tall across slides by rows, repeating the header. | UC-03 | vfm README |
-| REQ-013 | vfm shall reveal list items one per step under `steplists` and the lead-in on the last step under `stepleadin`. | UC-02 | spec "Reveal steps" |
+| REQ-013 | vfm shall reveal list items one per step under `steplists` and the lead-in on the last step under `stepleadin`. | UC-28 | spec "Reveal steps" |
 | REQ-014 | vfm shall reduce a paragraph inside a `@slide` block to slide text by selecting and deleting sentences only, never by rewriting, unless the mode is `paragraphs: full`. | UC-12 | vfm README |
 | REQ-015 | vfm shall treat sentence-ending punctuation followed by a line break as the only sentence boundary. | UC-12 | `update.md` |
 
@@ -31,7 +34,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | UC | Source |
 | --- | --- | --- | --- |
-| REQ-016 | vfm shall resolve `@cite(key)` and `@cite(a, b)` against the BibTeX files named in the YAML header `bibliography` key. | UC-04 | README "Citations" |
+| REQ-016 | vfm shall resolve `@cite(key)` and `@cite(a, b)` against the entries of the `bibliography` argument (a map from key to entry) of its components, formatted as the `citations` argument says. | UC-04 | README "Citations" |
 | REQ-019 | vfm shall number labelled headings, figures, tables, listings, equations, algorithms and scores and shall replace `[@label]` with a link showing the number. | UC-05 | vfm README |
 | REQ-020 | In slide mode vfm shall number only items that a surviving cross-reference points to, consecutively across the deck. | UC-05 | vfm README "Numbering" |
 | REQ-021 | vfm shall render fenced blocks with the language `alg`, `mus` or `mermaid` as an algorithm, a score with a Play button, or a diagram numbered as a figure. | UC-06 | vfm README |
@@ -47,7 +50,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-037 | vfm shall validate an entry before sending it to the user's own server, send nothing for an invalid one, and describe a refusal or an unreachable server in words the author can act on. | UC-04 | `bibliography-client.ts` |
 | REQ-038 | vfm shall play a score by reading the notes abcjs writes for the tune, following repeats, without loading anything from the network. | UC-06 | `music-audio.ts` |
 | REQ-039 | In slide mode vfm shall show a footnote only on a slide whose text cites it, only when it is defined inside that slide's `@slide` block, numbered from 1 on that slide. | UC-03 | vfm README "Footnotes" |
-| REQ-040 | vfm shall render `~text~` as underline and `~~text~~` as strikethrough, and shall leave a lone tilde as text. | UC-01 | vfm README |
+| REQ-040 | vfm shall render `~text~` as underline and `~~text~~` as strikethrough, and shall leave a lone tilde as text. | UC-29 | vfm README |
 
 ## B. New in `slide-polish`
 
@@ -66,8 +69,8 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | Method |
 | --- | --- | --- |
-| REQ-111 | The title slide shall list, for each author, the affiliation named in the YAML header, as department, institution and place. | T |
-| REQ-112 | The title slide shall number the affiliations in order of first appearance and mark each author with the numbers of that author's affiliations. | T |
+| REQ-111 | vfm shall generate the title slide so that it lists, for each author, the affiliation named in the YAML header, as department, institution and place. | T |
+| REQ-112 | vfm shall generate the title slide so that it numbers the affiliations in order of first appearance and marks each author with the numbers of that author's affiliations. | T |
 | REQ-113 | vfm shall take the name of an affiliation from `name`, `institution`, `organization` or `department`, in that order. | T |
 | REQ-114 | When the header defines top-level `affiliations` and no author refers to any, the title slide shall list all of them once, without numbers. | T |
 
@@ -115,7 +118,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | Method |
 | --- | --- | --- |
-| REQ-171 | The slide shall scale every image or video down to fit the height and width of its region, preserving its aspect ratio and not enlarging it past its own size. | D |
+| REQ-171 | vfm shall generate each slide so that it scales every image or video down to fit the height and width of its region, preserving its aspect ratio and not enlarging it past its own size. | D |
 | REQ-172 | On a `2col` slide that has images and no text, vfm shall give each image its own column, up to two. | T |
 | REQ-173 | On a `2col` slide that has text, or only one image, vfm shall lay the slide out in one column in source order, as before. | T |
 | REQ-174 | When a `2col` block has more images than fit, vfm shall continue on a new slide. | T |
@@ -185,6 +188,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-241 | On a `2col` slide vfm shall lay tables out as ordinary blocks in the two columns, balanced at block boundaries and together with any headings and text in the block, so that two tables, each under its own heading, sit side by side; a table alone on a `2col` slide shall take the whole slide. | T |
 | REQ-242 | On a slide in any other layout vfm shall keep one table or other float per slide as before. | T |
 | REQ-243 | When the tables and text of a `2col` block do not fit side by side, vfm shall reduce the table text as REQ-232 says and, if they still do not fit, shall continue on the next slide, not drop a table. | T |
+| REQ-244 | In its browser measurer (`createDomMeasurer`), vfm shall treat a `2col` slide as not fitting when a table in it is wider than its column, so that vfm shrinks the table text or moves the second table to the next slide instead of clipping it. | T |
 
 ### Slide typography (UC-27) — deferred
 

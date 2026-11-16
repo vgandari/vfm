@@ -177,7 +177,7 @@ test("layouts: rtext sends images to the image region, 2col with an image goes s
   assert.equal(twocol.slides[0].layout, "single");
 });
 
-// Verifies REQ-013 (UC-02)
+// Verifies REQ-013 (UC-28)
 test("steplists numbers list items in order; stepleadin follows the last item", () => {
   const deck = api.buildSlideDeck("@slide(steplists, stepleadin)\n- one\n  - nested\n- two\n@end(Done.)\n");
   const s = deck.slides[0];
@@ -189,7 +189,7 @@ test("steplists numbers list items in order; stepleadin follows the last item", 
   assert.equal(items[1].data.hProperties["data-step"], 3);
 });
 
-// Verifies REQ-013 (UC-02)
+// Verifies REQ-013 (UC-28)
 test("step options with nothing to step are a no-op with a note", () => {
   const deck = api.buildSlideDeck("@slide(steplists, stepleadin)\n```\ncode\n```\n@end\n");
   assert.equal(codes(deck.diagnostics).filter((c: string) => c === "step-noop").length, 2);
@@ -344,7 +344,7 @@ test("rtext / ltext revert to one column when no text shares the slide", () => {
   assert.equal(imgOnly.slides[0].layout, "single");
 });
 
-// Verifies REQ-009, REQ-111 (UC-02, UC-14)
+// Verifies REQ-009, REQ-111 (UC-28, UC-14)
 test("the YAML header makes a title slide", () => {
   const src = "---\ntitle: My Talk\nsubtitle: A subtitle\nauthors:\n  - name: Ada\n    affiliation: Lab\n  - name: Alan\n    affiliation: Lab\ndate: 2026-10-19\n---\n\n@slide\nBody.\n@end\n";
   const deck = api.buildSlideDeck(src);
@@ -361,7 +361,7 @@ test("the YAML header makes a title slide", () => {
   assert.equal(api.buildSlideDeck("@slide\nNo header.\n@end\n").slides.length, 1);
 });
 
-// Verifies REQ-010 (UC-02)
+// Verifies REQ-010 (UC-28)
 test("a slide number is rendered when given", () => {
   const deck = api.buildSlideDeck("@slide\nHi.\n@end\n");
   const markup = createRequire(import.meta.url)("react-dom/server").renderToStaticMarkup(api.renderSlide(deck.slides[0], deck.render, { number: 7 }));
@@ -716,7 +716,7 @@ test("a heading survives when the sentence after it is dropped for a cross-refer
 
 // ─── Underline: single tilde ──────────────────────────────────────────────────
 
-// Verifies REQ-040 (UC-01)
+// Verifies REQ-040 (UC-29)
 test("~text~ is underlined, ~~text~~ is still struck through, and stray tildes stay literal", () => {
   const html = renderHtml("An ~underlined phrase~ and ~~struck~~ text, with ~**bold** inside~ too.");
   assert.match(html, /<u>underlined phrase<\/u>/);
@@ -729,7 +729,7 @@ test("~text~ is underlined, ~~text~~ is still struck through, and stray tildes s
   assert.match(renderHtml("`~code~` here"), /<code>~code~<\/code>/);
 });
 
-// Verifies REQ-040 (UC-01)
+// Verifies REQ-040 (UC-29)
 test("underline works inside fenced divs, headings and list items", () => {
   const html = renderHtml("# A ~title~\n\n- an ~item~\n\n:::thm T\nInside ~the div~.\n:::\n");
   assert.equal((html.match(/<u>/g) ?? []).length, 3);

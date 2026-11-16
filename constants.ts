@@ -17,3 +17,7 @@ export const TABLE_SCALE_DEFAULT = 0.9;
 export const TABLE_SCALE_MIN = 0.6;
 /** The reduction step. */
 export const TABLE_SCALE_STEP = 0.05;
+
+/** A slide is laid out on a stage of this size, in CSS pixels (16:9). */
+export const STAGE_WIDTH = 1280;
+export const STAGE_HEIGHT = 720;

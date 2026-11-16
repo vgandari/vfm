@@ -141,7 +141,7 @@ anything else is parsed. The full rules are in the spec; this section covers how
 | `split.ts` | The greedy splitter with the co-location rule. |
 | `deck.ts` | Orchestration: titles, dividers/agendas, early drops, splitting, numbering, citations, steps, `checkSlides`. |
 | `render.ts` | `renderSlide(slide, deck.render)`: fixed DOM structure styled by `slides.css`. |
-| `measure.ts` | `Measurer` type and `estimateFits`, a DOM-free heuristic. |
+| `measure.ts`, `domMeasurer.ts`, `fit.ts` | `Measurer` type and `estimateFits`, a DOM-free heuristic; `createDomMeasurer(stageClass)`, the browser measurer (renders a candidate into an off-screen 1280×720 stage and tests it with `slideFits`). |
 | `slides.css` | 1280×720 stage, layouts, step visibility. |
 
 ### Using it
@@ -151,7 +151,7 @@ import { buildSlideDeck, renderSlide, SlideDirectiveError } from "vfm/slides";
 import "vfm/slides/slides.css";
 
 const deck = buildSlideDeck(markdown, {
-  measure,      // (slide, render) => boolean; renders offscreen and tests overflow. Default: estimateFits
+  measure,      // (slide, render) => boolean; a browser host passes `createDomMeasurer(stageClass)`. Default: estimateFits
   resolveUrl,   // rewrite image URLs (preload images before measuring)
   sourceMap,    // from expandIncludes, so diagnostics name the original file
   bibliography, citations,

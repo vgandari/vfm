@@ -1,13 +1,5 @@
 {
   "use_cases": {
-    "UC-01": [
-      "REQ-040"
-    ],
-    "UC-02": [
-      "REQ-009",
-      "REQ-010",
-      "REQ-013"
-    ],
     "UC-03": [
       "REQ-004",
       "REQ-005",
@@ -37,6 +29,14 @@
     ],
     "UC-07": [
       "REQ-043"
+    ],
+    "UC-28": [
+      "REQ-009",
+      "REQ-010",
+      "REQ-013"
+    ],
+    "UC-29": [
+      "REQ-040"
     ],
     "UC-09": [
       "REQ-045"
@@ -114,7 +114,8 @@
     "UC-26": [
       "REQ-241",
       "REQ-242",
-      "REQ-243"
+      "REQ-243",
+      "REQ-244"
     ],
     "UC-27": [
       "REQ-245"
@@ -670,6 +671,15 @@
       ],
       "kind": "automated"
     },
+    "tests/fit.test.ts::on a 2col slide a table wider than its column does not fit; elsewhere it is left alone": {
+      "requirements": [
+        "REQ-244"
+      ],
+      "use_cases": [
+        "UC-26"
+      ],
+      "kind": "automated"
+    },
     "test/slides.test.ts::directive syntax errors are fatal and located": {
       "requirements": [
         "REQ-044"
@@ -796,7 +806,7 @@
         "REQ-013"
       ],
       "use_cases": [
-        "UC-02"
+        "UC-28"
       ],
       "kind": "automated"
     },
@@ -805,7 +815,7 @@
         "REQ-013"
       ],
       "use_cases": [
-        "UC-02"
+        "UC-28"
       ],
       "kind": "automated"
     },
@@ -937,7 +947,7 @@
         "REQ-111"
       ],
       "use_cases": [
-        "UC-02",
+        "UC-28",
         "UC-14"
       ],
       "kind": "automated"
@@ -947,7 +957,7 @@
         "REQ-010"
       ],
       "use_cases": [
-        "UC-02"
+        "UC-28"
       ],
       "kind": "automated"
     },
@@ -1236,7 +1246,7 @@
         "REQ-040"
       ],
       "use_cases": [
-        "UC-01"
+        "UC-29"
       ],
       "kind": "automated"
     },
@@ -1245,7 +1255,7 @@
         "REQ-040"
       ],
       "use_cases": [
-        "UC-01"
+        "UC-29"
       ],
       "kind": "automated"
     },
@@ -1872,6 +1882,136 @@
         "UC-10"
       ],
       "kind": "automated"
+    },
+    "al/MT-04": {
+      "requirements": [],
+      "use_cases": [
+        "UC-04",
+        "UC-11"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-05": {
+      "requirements": [],
+      "use_cases": [
+        "UC-07"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-06": {
+      "requirements": [],
+      "use_cases": [
+        "UC-07",
+        "UC-19"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-07": {
+      "requirements": [],
+      "use_cases": [
+        "UC-07"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-08": {
+      "requirements": [],
+      "use_cases": [
+        "UC-13",
+        "UC-17"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-12": {
+      "requirements": [],
+      "use_cases": [
+        "UC-10",
+        "UC-17"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-13": {
+      "requirements": [],
+      "use_cases": [
+        "UC-11"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-14": {
+      "requirements": [
+        "REQ-143"
+      ],
+      "use_cases": [
+        "UC-17"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-15": {
+      "requirements": [
+        "REQ-171",
+        "REQ-146"
+      ],
+      "use_cases": [
+        "UC-20",
+        "UC-17"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-16": {
+      "requirements": [
+        "REQ-101",
+        "REQ-102",
+        "REQ-107"
+      ],
+      "use_cases": [
+        "UC-13"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-20": {
+      "requirements": [
+        "REQ-244",
+        "REQ-241",
+        "REQ-243"
+      ],
+      "use_cases": [
+        "UC-26"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-17": {
+      "requirements": [
+        "REQ-151",
+        "REQ-152",
+        "REQ-232"
+      ],
+      "use_cases": [
+        "UC-18",
+        "UC-25"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-18": {
+      "requirements": [
+        "REQ-211",
+        "REQ-213"
+      ],
+      "use_cases": [
+        "UC-24"
+      ],
+      "kind": "manual",
+      "status": "not run"
     }
   }
 }

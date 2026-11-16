@@ -5,9 +5,8 @@
  *
  * - `estimateFits` is a character-count heuristic with no DOM, used by tests,
  *   by `check` in a host without a browser, and as the default.
- * - A browser host passes its own Measurer that renders the candidate into a
- *   stage of the real slide size and tests for overflow (see the VS Code
- *   webview for one).
+ * - A browser host passes `createDomMeasurer(stageClass)` (domMeasurer.ts), which renders
+ *   the candidate into a stage of the real slide size and tests for overflow.
  */
 
 import type { ReactElement } from "react";
