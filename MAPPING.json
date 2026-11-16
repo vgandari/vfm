@@ -587,6 +587,16 @@
       ],
       "kind": "automated"
     },
+    "tests/table-fit.test.ts::the slide's table size rules beat the document's: on a slide the content sits inside .markdownBody": {
+      "requirements": [
+        "REQ-232",
+        "REQ-234"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
     "test/slides.test.ts::directive syntax errors are fatal and located": {
       "requirements": [
         "REQ-044"

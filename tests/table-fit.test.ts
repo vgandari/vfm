@@ -101,3 +101,20 @@ test("a table too big at 0.6 is split by rows, each slide holding as many rows a
   assert.ok(counts[counts.length - 1] <= counts[0]);
   assert.deepEqual(rowsOn(deck), Array.from({ length: 80 }, (_, i) => i));
 });
+
+// Verifies REQ-232, REQ-234 (UC-25)
+test("the slide's table size rules beat the document's: on a slide the content sits inside .markdownBody", () => {
+  // Specificity as (classes, elements): the rule on a slide must be stronger, not merely later, because the
+  // bundle puts the document stylesheet after the slide stylesheet (a tie went to the document: no resizing).
+  const spec = (selector: string): [number, number] => [(selector.match(/\.[\w-]+/g) ?? []).length, (selector.match(/(^|[\s>+~])[a-z][\w-]*/gi) ?? []).length];
+  const wins = (a: [number, number], b: [number, number]) => a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]);
+  const slideSheet = css("slides/slides.css");
+  const docSheet = css("CustomMarkdown.module.css");
+  for (const element of ["table", "table caption"]) {
+    const slideSel = new RegExp(`^([^{}/]*\\b${element.replace(" ", "\\s+")})\\s*\\{[^}]*font-size`, "m").exec(slideSheet)?.[1]?.trim();
+    const docSel = new RegExp(`^(\\.markdownBody ${element})\\s*\\{[^}]*font-size`, "m").exec(docSheet)?.[1];
+    assert.ok(slideSel && docSel, `${element}: both rules exist`);
+    // The document's rule applies to the element as `.markdownBody <element>`.
+    assert.ok(wins(spec(slideSel!), spec(docSel!)), `${element}: "${slideSel}" must out-rank "${docSel}"`);
+  }
+});
