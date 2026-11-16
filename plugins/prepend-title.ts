@@ -38,9 +38,8 @@ const remarkPrependTitle: Plugin<[PrependTitleOptions], Root> = function (
       type: "heading",
       depth: titleLevel as 1 | 2 | 3 | 4 | 5 | 6,
       children: [{ type: "text", value: title }],
-      data: {
-        isTitle: true, // signal to remarkHeadingShift to skip this node
-      },
+      // signal to remarkHeadingShift to skip this node
+      data: { isTitle: true } as Heading["data"],
     };
 
     tree.children.unshift(headingNode);
