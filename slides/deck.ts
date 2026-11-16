@@ -34,6 +34,7 @@ import { buildDocStats, PARAGRAPH_MODES, reduceParagraph, type ParagraphsMode } 
 import { buildUnits, isDefinition, isNote, rootOf, snippet, type Unit } from "./units";
 import { SlideDirectiveError } from "./types";
 import { parseThemeColor } from "./themeColor";
+import { isVideoUrl } from "../plugins/video-url";
 import type {
   Block,
   Diagnostic,
@@ -124,7 +125,8 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     for (const child of b.children) {
       visit(child as any, "image", (img: any) => {
         if (options.resolveUrl) img.url = options.resolveUrl(img.url);
-        imageUrls.add(img.url);
+        // A video is not preloaded as an image: that would download the whole file.
+        if (!isVideoUrl(img.url)) imageUrls.add(img.url);
       });
     }
   }
