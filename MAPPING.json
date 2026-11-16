@@ -648,6 +648,16 @@
       ],
       "kind": "automated"
     },
+    "tests/table-fit.test.ts::a table split off by a lead-in leaves a lone last row with the header copied above it": {
+      "requirements": [
+        "REQ-233",
+        "REQ-012"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
     "test/slides.test.ts::directive syntax errors are fatal and located": {
       "requirements": [
         "REQ-044"

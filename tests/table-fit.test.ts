@@ -188,3 +188,15 @@ test("tables that do not fit side by side go to separate slides rather than bein
   assert.deepEqual(deck.slides.map((s: any) => tablesOf(s).length), [1, 1]);
   assert.ok(!deck.diagnostics.some((d: any) => d.code === "drop-float" || d.severity === "error"));
 });
+
+// Verifies REQ-233, REQ-012 (UC-25)
+test("a table split off by a lead-in leaves a lone last row with the header copied above it", () => {
+  let sawLoneRow = false;
+  for (let n = 1; n <= 60; n++) {
+    const deck = tableDeck(n, "(Lead-in)");
+    const pieces = tableSlides(deck).map((s: any) => s.body.find((b: any) => b.type === "table"));
+    for (const piece of pieces) assert.match(JSON.stringify(piece.children[0]), /name/, `${n} rows: every piece starts with the header`);
+    if (pieces.length > 1 && pieces[pieces.length - 1].children.length === 2) sawLoneRow = true;
+  }
+  assert.ok(sawLoneRow, "the sweep reaches a table whose last slide holds one row");
+});
