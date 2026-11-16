@@ -197,3 +197,40 @@ styles slide content (see `README.md`, "Hosting slides"). Decide this before it 
 | ID | Requirement | Method | Status |
 | --- | --- | --- | --- |
 | REQ-245 | When slides are rendered inside the document stylesheet's `.markdownBody`, vfm shall style the headings, paragraphs, lists and code of a slide from `slides/slides.css`, with selectors that out-rank the document's rules for the same elements. | T | Deferred |
+
+## E. New in `conformance`
+
+Tests for these are in `tests/conformance.test.ts`, `tests/features.test.ts` and `tests/tutorial.test.ts`. The cases come from the
+published suites of CommonMark, GFM, cmark-gfm and markdown-it (`tests/fixtures/README.md`). 
+
+### Standard Markdown (UC-44)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-301 | vfm shall render the CommonMark 0.31.2 block constructs (tabs, thematic breaks, ATX and setext headings, indented and fenced code blocks, link reference definitions, paragraphs, block quotes, lists and list items) as that specification gives, apart from the differences in `tests/fixtures/known-divergences.json`. | T |
+| REQ-302 | vfm shall render the CommonMark 0.31.2 inline constructs (backslash escapes, character references, code spans, emphasis, links, images, autolinks, hard and soft line breaks) as that specification gives, apart from the differences in `tests/fixtures/known-divergences.json`. | T |
+| REQ-303 | vfm shall render GFM tables with a header row, column alignment from the delimiter row, escaped pipes, and rows with fewer or more cells than the header. | T |
+| REQ-304 | vfm shall render GFM task list items, `- [ ]` and `- [x]`, as list items that start with a checkbox that is unchecked or checked. | T |
+| REQ-305 | vfm shall render `www.` addresses, bare `http://` and `https://` addresses and e-mail addresses as links, and shall leave trailing punctuation outside the link. | T |
+| REQ-306 | vfm shall render `[^id]` as a superscript link numbered in order of first use, and its definition `[^id]: text` as a list item in a footnotes section, with a link back to the reference. | T |
+| REQ-307 | vfm shall list, in `tests/fixtures/known-divergences.json` with a kind and a reason, every case of the published suites that needs no raw HTML and that it renders differently, and shall render at least 94 % of those cases as the suites expect. | T |
+
+### Features of the flavor (UC-45, UC-46)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-308 | vfm shall render a block quote whose first line is `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]`, in any letter case, as a box of the class `alert-<type>` that starts with a title naming the type, and shall render a block quote with another marker, or with text after the marker, as a block quote. | T |
+| REQ-309 | vfm shall render `==text==` as highlighted text, and shall leave `====` and a lone `==` as text. | T |
+| REQ-314 | vfm shall read the text between `==` marks as inline Markdown. | T |
+| REQ-310 | vfm shall render `$…$` as inline math and `$$…$$` as display math with KaTeX, and shall leave a `$` that never closes, and math inside a code span, as text. | T |
+| REQ-311 | vfm shall render `:::kind Name {#label}` as a titled environment numbered separately for each of the kinds theorem, lemma, corollary, proposition, conjecture, definition, example, exercise and hypothesis and their short forms, and shall make `[@label]` a link that shows that number. | T |
+| REQ-312 | vfm shall number headings to the depth `numberingDepth` gives (none at 0) and shall move every heading down by `headingShift` levels. | T |
+| REQ-313 | vfm shall give a fenced code block the class `language-<info>` of the first word of its info string and shall highlight its code; a fence without a language has no language class. | T |
+| REQ-315 | vfm shall keep the text of a paragraph that holds text and an image, as a paragraph above or below the figure in source order, and the line break in the image's alt text. | T |
+| REQ-316 | vfm shall render a paragraph that directly touches a table as that table's caption, taking its label from the end of the paragraph, and shall render a paragraph separated from the table by a blank line as a paragraph. | T |
+
+### Learning (UC-43)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-317 | vfm shall ship `docs/tutorial/TUTORIAL.md`, a tutorial in its own flavor that renders as a document and as a deck without error, resolves every cross-reference in it, shows every syntax feature of the README's "Syntax extensions" list, and holds only examples that render on their own. | T |

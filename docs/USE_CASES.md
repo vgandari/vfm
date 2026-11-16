@@ -49,3 +49,12 @@ the two repositories, and each repository maps its own to its own requirements.
 | UC-25 | The author puts a table on a slide, with or without a lead-in under it, and sees the whole table with its text as large as the slide allows. | bug report, request |
 | UC-26 | The author puts two tables side by side on one `2col` slide. | request |
 | UC-27 | The author sets the typography of slide headings, paragraphs, lists and code independently of the document's. | deferred; request |
+
+## New in `conformance`
+
+| ID | Use case | Origin |
+| --- | --- | --- |
+| UC-43 | A person who is learning Markdown follows one tutorial that is itself written in the flavor, sees what each example gives, and learns the flavor's own features. | request |
+| UC-44 | The author writes standard Markdown (CommonMark and GitHub's extensions) and gets what other tools give, so a file moves between tools without surprises. | request |
+| UC-45 | The author writes alerts, highlights, math, code with a language, theorems and footnotes, and gets the box, the mark, the equation, the colored code, the numbered environment and the note. | request |
+| UC-46 | The author numbers headings to a chosen depth and shifts them to fit a larger document. | request |

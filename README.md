@@ -289,10 +289,29 @@ from a URL. Hosts should still set a Content-Security-Policy without `connect-sr
 preview and its exports do. `bibliography-client.ts` is the one exception: it POSTs entries the user
 chose to add to their own server and is not part of rendering.
 
+## Learning VFM
+
+[`docs/tutorial/TUTORIAL.md`](docs/tutorial/TUTORIAL.md) is one long tutorial for people learning Markdown and this flavor in particular. It is
+written in VFM and meant to be opened in a preview: every example is shown as the text you type and as what it gives. It covers
+CommonMark and GFM first, then everything in "Syntax extensions", then slides, and it ends with questions and exercises. Its last
+four slides make a small deck, so it also shows slide mode. `tests/tutorial.test.ts` keeps it honest: it must render, every
+cross-reference in it must resolve, every example must render on its own, and each feature must appear.
+
 ## Tests
 
-`npm test` runs `test/*.test.ts` with Node's built-in runner (type stripping, no build step).
-`test/slides.test.ts` bundles the pipeline with esbuild first, because it imports `.tsx` components.
+`npm test` runs `test/*.test.ts` and `tests/*.test.ts` with Node's built-in runner (type stripping, no build step).
+Tests that bundle the pipeline with esbuild first (because it imports `.tsx` components) need `esbuild` installed next to vfm.
+
+- `tests/conformance.test.ts` renders the published test cases of **CommonMark 0.31.2**, the **GFM spec** and cmark-gfm's extension tests,
+  and **markdown-it**'s fixtures (830 cases, `tests/fixtures/`) and compares normalized HTML. Raw HTML is shown as text by design, so the
+  105 cases that need it parsed are not run. Of the 725 that are run, 690 (95.2 %) agree. Every other case is in
+  `tests/fixtures/known-divergences.json` with a kind and a reason: `by-design` (the flavor differs on purpose: underline `~x~`, a paragraph
+  touching a table is its caption, front matter, GFM autolink literals), `upstream` (remark/micromark), `other-suite` (markdown-it's typographer and
+  looser tables) or `defect` (vfm is wrong; a `todo` test states the right output; none open). A difference that is not in the ledger fails the run, and so does a listed one that has been fixed.
+- `tests/features.test.ts` covers what makes the flavor its own: alerts, highlight, math, fenced divs, numbering, labels and cross-references, captions, code, footnotes.
+- `tests/tutorial.test.ts` checks the tutorial.
+- Tests marked `todo` fail by design: they state behavior that is required and not yet built.
+- `python3 tools/build_spec_fixtures.py <dir>` rebuilds the fixtures from the downloaded suites (sources and licenses: `tests/fixtures/README.md`).
 
 ## Use cases and requirements
 
