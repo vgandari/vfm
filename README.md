@@ -206,9 +206,10 @@ These fill gaps the spec leaves open; the spec itself is unchanged.
 - **Floats.** Theorem environments, admonitions, quotes, code listings, tables, algorithms and
   scores are placed like images: the slide holds at most one, `rtext` / `ltext` put it in the image
   region, `2col` falls back to one column for that slide, and an extra one spills onto its own slide.
-  The exception is a `2col` slide that holds images or tables and no text: with two of them, each has its own column (a third
-  starts a new slide). Two tables side by side shrink their text (down to 0.6) until both fit their columns; if they still do not fit,
-  the second goes to the next slide. Pictures and videos always shrink to fit their region, keeping their aspect ratio.
+  The exception is a `2col` slide that holds images and no text: with two images, each has its own column (a third
+  starts a new slide). On a `2col` slide a table is not a float: it is a block in the two columns with the headings and text, so two
+  tables under their own headings sit side by side. Their text shrinks (down to 0.6) until they fit their columns; if they still
+  do not fit, the rest goes to the next slide. A table alone on a `2col` slide takes the whole slide. Pictures and videos always shrink to fit their region, keeping their aspect ratio.
   When no text shares the slide, `rtext` / `ltext` revert to a single column. Floats are never
   dropped by the cross-reference filter. A reference inside one that cannot resolve renders as plain
   text, with a `check` warning.

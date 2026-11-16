@@ -138,49 +138,53 @@ test("on a slide the cell padding and line height scale with the table text, and
 
 const tbl = (name: string) => `| ${name} | v |\n| - | - |\n| r0 | 1 |\n| r1 | 2 |`;
 const tablesOf = (s: any) => [...s.body, ...s.images].filter((b: any) => b.type === "table");
+const build = (md: string, opts: any = {}) => t.state.api.buildSlideDeck(md, opts);
 
 // Verifies REQ-241 (UC-26)
-test("two tables on a 2col slide with no text go side by side, one per column; a third starts a new slide", () => {
-  const two = t.state.api.buildSlideDeck(`@slide[T](2col)\n${tbl("a")}\n\n${tbl("b")}\n@end\n`);
-  assert.equal(two.slides.length, 1);
-  assert.equal(two.slides[0].layout, "2col");
-  assert.equal(tablesOf(two.slides[0]).length, 2);
-  const h = t.state.ssr.renderToStaticMarkup(t.state.api.renderSlide(two.slides[0], two.render));
-  assert.equal((h.match(/class="vfm-region vfm-images vfm-fit"/g) ?? []).length, 2, "one region per column");
-  assert.equal((h.match(/<table/g) ?? []).length, 2);
-  const three = t.state.api.buildSlideDeck(`@slide[T](2col)\n${tbl("a")}\n\n${tbl("b")}\n\n${tbl("c")}\n@end\n`);
-  assert.deepEqual(three.slides.map((s: any) => tablesOf(s).length), [2, 1]);
+test("two tables on a 2col slide sit side by side in the columns, with or without headings, text and a lead-in", () => {
+  const shapes: Record<string, string> = {
+    plain: `${tbl("a")}\n\n${tbl("b")}\n@end`,
+    "lead-in": `${tbl("a")}\n\n${tbl("b")}\n@end(Lead-in)`,
+    "heading inside": `## Sub\n${tbl("a")}\n\n${tbl("b")}\n@end`,
+    "heading per table": `### A\n${tbl("a")}\n\n### B\n${tbl("b")}\n@end`,
+    "paragraph between": `${tbl("a")}\n\nText.\n\n${tbl("b")}\n@end`,
+  };
+  for (const [name, body] of Object.entries(shapes)) {
+    const deck = build(`@slide[T](2col)\n${body}\n`);
+    assert.equal(deck.slides.length, 1, name);
+    assert.equal(deck.slides[0].layout, "2col", name);
+    assert.equal(tablesOf(deck.slides[0]).length, 2, name);
+    assert.equal(deck.slides[0].images.length, 0, `${name}: tables flow in the body, they are not in an image region`);
+    const h = t.state.ssr.renderToStaticMarkup(t.state.api.renderSlide(deck.slides[0], deck.render));
+    assert.match(h, /vfm-layout-2col/, name);
+    assert.equal((h.match(/<table/g) ?? []).length, 2, name);
+  }
+});
+
+// Verifies REQ-241 (UC-26)
+test("a table alone on a 2col slide takes the whole slide; the tables are never dropped", () => {
+  const lone = build(`@slide[T](2col)\n${tbl("a")}\n@end\n`);
+  assert.equal(lone.slides[0].layout, "single");
+  const three = build(`@slide[T](2col)\n${tbl("a")}\n\n${tbl("b")}\n\n${tbl("c")}\n@end\n`);
+  assert.equal(three.slides.flatMap(tablesOf).length, 3);
   assert.ok(!three.diagnostics.some((d: any) => d.code === "drop-float" || d.severity === "error"));
 });
 
-// Verifies REQ-241 (UC-26)
-test("a table and a picture, or the lone table, on a 2col slide behave as for pictures", () => {
-  const mixed = t.state.api.buildSlideDeck(`@slide[T](2col)\n${tbl("a")}\n\n![Pic](a.png)\n@end\n`);
-  assert.equal(mixed.slides.length, 1);
-  assert.equal(mixed.slides[0].layout, "2col");
-  const lone = t.state.api.buildSlideDeck(`@slide[T](2col)\n${tbl("a")}\n@end\n`);
-  assert.equal(lone.slides[0].layout, "single", "one table takes the whole slide");
-});
-
 // Verifies REQ-242 (UC-26)
-test("with text, or in another layout, a second table still goes to the next slide", () => {
-  const withText = t.state.api.buildSlideDeck(`@slide[T](2col)\nIntro.\n\n${tbl("a")}\n\n${tbl("b")}\n@end\n`);
-  assert.equal(withText.slides.length, 2);
-  assert.ok(withText.slides.every((s: any) => tablesOf(s).length <= 1));
+test("in the other layouts a second table still goes to the next slide", () => {
   for (const layout of ["", "(rtext)", "(ltext)"]) {
-    const deck = t.state.api.buildSlideDeck(`@slide[T]${layout}\n${tbl("a")}\n\n${tbl("b")}\n@end\n`);
+    const deck = build(`@slide[T]${layout}\n${tbl("a")}\n\n${tbl("b")}\n@end\n`);
     assert.equal(deck.slides.length, 2, layout || "single");
   }
 });
 
 // Verifies REQ-243 (UC-26)
-test("two tables that do not fit side by side go to separate slides rather than being dropped", () => {
-  // A measurer that accepts a 2col slide only when no table has more than 1 body row (the stand-in for 'too wide').
-  const deck = t.state.api.buildSlideDeck(`@slide[T](2col)\n${tbl("a")}\n\n${tbl("b")}\n@end\n`, {
-    measure: (slide: any) => slide.layout !== "2col" || tablesOf(slide).every((b: any) => b.children.length <= 2),
+test("tables that do not fit side by side go to separate slides rather than being dropped", () => {
+  // A measurer that accepts a 2col slide only with at most one table on it (the stand-in for 'too wide for two columns').
+  const deck = build(`@slide[T](2col)\n### A\n${tbl("a")}\n\n### B\n${tbl("b")}\n@end\n`, {
+    measure: (slide: any) => slide.layout !== "2col" || tablesOf(slide).length <= 1,
   });
   assert.equal(deck.slides.length, 2);
   assert.deepEqual(deck.slides.map((s: any) => tablesOf(s).length), [1, 1]);
   assert.ok(!deck.diagnostics.some((d: any) => d.code === "drop-float" || d.severity === "error"));
-  assert.ok(deck.slides.every((s: any) => s.layout === "single"));
 });

@@ -182,6 +182,6 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | Method |
 | --- | --- | --- |
-| REQ-241 | On a `2col` slide that has tables or images and no text, vfm shall give each table or image its own column, up to two, as REQ-172 says for images. | T |
-| REQ-242 | On a slide in any other layout, or on a `2col` slide that has text, vfm shall keep one table or other float per slide as before. | T |
-| REQ-243 | When two tables on a `2col` slide do not fit side by side, vfm shall reduce the table text as REQ-232 says, and if they still do not fit, shall put the second on the next slide. | T |
+| REQ-241 | On a `2col` slide vfm shall lay tables out as ordinary blocks in the two columns, balanced at block boundaries and together with any headings and text in the block, so that two tables, each under its own heading, sit side by side; a table alone on a `2col` slide shall take the whole slide. | T |
+| REQ-242 | On a slide in any other layout vfm shall keep one table or other float per slide as before. | T |
+| REQ-243 | When the tables and text of a `2col` block do not fit side by side, vfm shall reduce the table text as REQ-232 says and, if they still do not fit, shall continue on the next slide, not drop a table. | T |

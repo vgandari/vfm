@@ -90,7 +90,8 @@ export function toSlide(draft: Draft, env: Pick<SplitEnv, "refsFor" | "shown">, 
   if (opt === "2col") {
     // Pictures and no text, two or more: one picture per column (REQ-172). Text with a picture, or a lone
     // picture, takes one column for the slide, with everything in source order.
-    if (mat.images.length === 0) layout = "2col";
+    // A lone table has nothing to sit beside, so it takes the whole slide.
+    if (mat.images.length === 0) layout = mat.body.length === 1 && mat.body[0].type === "table" ? "single" : "2col";
     else if (!hasText && mat.images.length > 1) layout = "2col";
     else mat = place(false);
   } else if (opt && mat.images.length > 0) layout = opt;
@@ -137,13 +138,13 @@ function isFloatUnit(u: Unit): boolean {
   return u.parts.some((p) => p.kind === "float");
 }
 
-/** A float that is a table; two of these may share a `2col` slide that has no text (REQ-241). */
-function isTableUnit(u: Unit): boolean {
-  return u.parts.some((p) => p.kind === "float" && p.node.type === "table");
-}
 
 export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
   const { block } = prepared;
+  // On a `2col` slide a table is an ordinary block in the columns, next to the headings and text, not a float (REQ-241).
+  if (block.options.layout === "2col") {
+    for (const u of prepared.units) u.parts = u.parts.map((p) => (p.kind === "float" && p.node.type === "table" ? { kind: "block", node: p.node } : p));
+  }
   const drafts: Draft[] = [];
   const pending: Array<{ unit: Unit; target: string }> = [];
   const owner = new Map<Unit, Draft>();
@@ -196,12 +197,7 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
   };
 
   const tryPlace = (d: Draft, units: Unit[], withLeadin: boolean): boolean => {
-    if (units.some(isFloatUnit) && d.units.some(isFloatUnit)) {
-      // The one exception: on a `2col` slide with no text, tables sit side by side, one per column (REQ-241).
-      const tablesOnly = [...d.units, ...units].filter(isFloatUnit).every(isTableUnit);
-      const noText = [...d.units, ...units].every(isImageUnit);
-      if (!(block.options.layout === "2col" && tablesOnly && noText)) return false;
-    }
+    if (units.some(isFloatUnit) && d.units.some(isFloatUnit)) return false;
     if (units.some(isImageUnit)) {
       const hasText = d.units.some((u) => !isImageUnit(u));
       // Image-only slides hold one image; on 2col, two (one per column).
@@ -358,7 +354,8 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
    * Returns false when `u` is not a splittable table.
    */
   function splitTable(u: Unit, withLeadin: boolean): boolean {
-    const table = u.parts.length === 1 && u.parts[0].kind === "float" && (u.parts[0].node.type === "table" ? (u.parts[0].node as Table) : undefined);
+    const only = u.parts.length === 1 ? u.parts[0] : undefined;
+    const table = only && (only.kind === "float" || only.kind === "block") && (only.node.type === "table" ? (only.node as Table) : undefined);
     if (!table || table.children.length < 3) return false;
     const [header, ...body] = table.children;
     if (!header.children.some((c) => inlineText(c.children as any[]).trim() !== "")) return false;
@@ -374,7 +371,7 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
       return {
         ...u,
         id: chunkId--,
-        parts: [{ kind: "float", node: { ...table, data, children: [header, ...rows] } as Table }],
+        parts: [{ kind: only!.kind as "float" | "block", node: { ...table, data, children: [header, ...rows] } as Table }],
         xrefs: first ? u.xrefs : [],
         defines: first ? u.defines : [],
         notes: [],
