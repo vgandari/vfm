@@ -127,6 +127,31 @@
       "REQ-234",
       "REQ-235"
     ],
+    "UC-43": [
+      "REQ-317"
+    ],
+    "UC-44": [
+      "REQ-301",
+      "REQ-302",
+      "REQ-303",
+      "REQ-304",
+      "REQ-305",
+      "REQ-306",
+      "REQ-307"
+    ],
+    "UC-45": [
+      "REQ-308",
+      "REQ-309",
+      "REQ-310",
+      "REQ-311",
+      "REQ-313",
+      "REQ-314",
+      "REQ-315",
+      "REQ-316"
+    ],
+    "UC-46": [
+      "REQ-312"
+    ],
     "UC-40": [
       "REQ-211",
       "REQ-212",
@@ -704,6 +729,516 @@
       ],
       "use_cases": [
         "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: tabs": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: thematic breaks": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: ATX headings": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: setext headings": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: indented code blocks": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: fenced code blocks": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: link reference definitions": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: paragraphs, blank lines, precedence": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: block quotes": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: list items": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: lists": {
+      "requirements": [
+        "REQ-301"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: backslash escapes": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: entity and numeric character references": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: code spans": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: emphasis and strong emphasis": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: links": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: images": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: autolinks": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::CommonMark: hard and soft line breaks": {
+      "requirements": [
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::GFM: tables (spec, cmark-gfm, markdown-it)": {
+      "requirements": [
+        "REQ-303"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::GFM: task list items": {
+      "requirements": [
+        "REQ-304"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::GFM: strikethrough (spec, cmark-gfm, markdown-it)": {
+      "requirements": [
+        "REQ-040",
+        "REQ-305"
+      ],
+      "use_cases": [
+        "UC-44",
+        "UC-29"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::GFM: autolink literals": {
+      "requirements": [
+        "REQ-305"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::GFM: footnotes": {
+      "requirements": [
+        "REQ-306"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::markdown-it: CommonMark extras": {
+      "requirements": [
+        "REQ-301",
+        "REQ-302"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::cmark-gfm: remaining extension cases": {
+      "requirements": [
+        "REQ-301",
+        "REQ-302",
+        "REQ-303"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::every case is in a group above, and the ledger names only cases that exist and need no raw HTML": {
+      "requirements": [
+        "REQ-307"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::at least 94% of the cases that need no raw HTML agree with the suites": {
+      "requirements": [
+        "REQ-307"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::a line of only === is text, not an empty highlight": {
+      "requirements": [
+        "REQ-309"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::text next to an image in a paragraph is kept, in order, around the figure": {
+      "requirements": [
+        "REQ-315"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/conformance.test.ts::a hard line break inside alt text is kept as a space or newline": {
+      "requirements": [
+        "REQ-315"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::alerts: NOTE, TIP, IMPORTANT, WARNING and CAUTION become a titled box of their own class": {
+      "requirements": [
+        "REQ-308"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::alerts: the marker is case-insensitive and keeps inline Markdown and further paragraphs": {
+      "requirements": [
+        "REQ-308"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::alerts: an unknown type, or a marker followed by text on its line, stays a block quote": {
+      "requirements": [
+        "REQ-308"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::highlight: ==text== is a mark, and the mark can sit inside other inline Markdown": {
+      "requirements": [
+        "REQ-309"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::highlight: emphasis written inside the marks is rendered": {
+      "requirements": [
+        "REQ-314"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::highlight: code and a lone == are left alone": {
+      "requirements": [
+        "REQ-309"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::math: $…$ is inline KaTeX and $$…$$ is a display block": {
+      "requirements": [
+        "REQ-310"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::math: a dollar sign that never closes is text, and math in a code span is not rendered": {
+      "requirements": [
+        "REQ-310"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::fenced divs: :::theorem is numbered and titled, and [@thm:x] links to it": {
+      "requirements": [
+        "REQ-311"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::fenced divs: every alias gives its own kind and each kind counts separately": {
+      "requirements": [
+        "REQ-311"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::headings: numberingDepth 0 writes no section numbers, a positive depth numbers headings": {
+      "requirements": [
+        "REQ-312"
+      ],
+      "use_cases": [
+        "UC-46"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::headings: headingShift moves every heading down that many levels": {
+      "requirements": [
+        "REQ-312"
+      ],
+      "use_cases": [
+        "UC-46"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::labels: a figure, a listing and a labelled heading are numbered and cross-referenced": {
+      "requirements": [
+        "REQ-019"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::labels: a paragraph that touches a table is its caption; with a blank line between it is a paragraph": {
+      "requirements": [
+        "REQ-019",
+        "REQ-316"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::labels: display math is numbered per labelled line, and a block label is an anchor only": {
+      "requirements": [
+        "REQ-019"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::labels: a reference to a label that does not exist is shown in red, not dropped": {
+      "requirements": [
+        "REQ-019"
+      ],
+      "use_cases": [
+        "UC-05"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::code fences: the info string's language becomes a class and the code is highlighted": {
+      "requirements": [
+        "REQ-313"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::footnotes: references are numbered in order of use and each definition links back": {
+      "requirements": [
+        "REQ-306"
+      ],
+      "use_cases": [
+        "UC-44"
+      ],
+      "kind": "automated"
+    },
+    "tests/features.test.ts::raw HTML is shown as text and HTML comments are invisible": {
+      "requirements": [
+        "REQ-022"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "tests/tutorial.test.ts::the tutorial renders as a document and every cross-reference in it resolves": {
+      "requirements": [
+        "REQ-317"
+      ],
+      "use_cases": [
+        "UC-43"
+      ],
+      "kind": "automated"
+    },
+    "tests/tutorial.test.ts::the tutorial shows each Markdown, GFM and VFM feature, rendered": {
+      "requirements": [
+        "REQ-317"
+      ],
+      "use_cases": [
+        "UC-43"
+      ],
+      "kind": "automated"
+    },
+    "tests/tutorial.test.ts::every example the tutorial tells the reader to type renders on its own, with no unresolved reference": {
+      "requirements": [
+        "REQ-317"
+      ],
+      "use_cases": [
+        "UC-43"
+      ],
+      "kind": "automated"
+    },
+    "tests/tutorial.test.ts::the syntax of the README's 'Syntax extensions' list is taught in the tutorial": {
+      "requirements": [
+        "REQ-317"
+      ],
+      "use_cases": [
+        "UC-43"
+      ],
+      "kind": "automated"
+    },
+    "tests/tutorial.test.ts::the tutorial doubles as a deck: a title slide and its @slide blocks build without an error": {
+      "requirements": [
+        "REQ-317"
+      ],
+      "use_cases": [
+        "UC-43"
+      ],
+      "kind": "automated"
+    },
+    "tests/tutorial.test.ts::the files the tutorial uses are next to it": {
+      "requirements": [
+        "REQ-317"
+      ],
+      "use_cases": [
+        "UC-43"
       ],
       "kind": "automated"
     },

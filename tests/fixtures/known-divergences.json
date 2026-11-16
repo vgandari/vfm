@@ -1,0 +1,143 @@
+{
+  "_doc": "Cases where vfm's normalized HTML differs from the suite's, and why. kind: by-design = the flavor differs on purpose; upstream = remark/micromark (which vfm builds on) behaves this way; other-suite = the expectation belongs to a feature or option the suite assumes (markdown-it's typographer, its looser tables, nested strikethrough) that vfm does not claim; defect = vfm is wrong and a todo test in tests/conformance.test.ts states the right output (none open now). A case in this file that starts to pass fails the run until it is removed.",
+  "cm-96": {
+    "kind": "by-design",
+    "reason": "A document whose first line is `---` opens a YAML header (frontmatter.ts); a header that is not a mapping is an error."
+  },
+  "cm-98": {
+    "kind": "by-design",
+    "reason": "`---` on the first line followed by `---` is an empty YAML header, so no rule is drawn."
+  },
+  "cm-608": {
+    "kind": "by-design",
+    "reason": "GFM autolink literals: a bare https:// URL is a link even when CommonMark's autolink is malformed."
+  },
+  "cm-611": {
+    "kind": "by-design",
+    "reason": "GFM autolink literals: a bare https:// URL is a link (CommonMark core says text)."
+  },
+  "cm-612": {
+    "kind": "by-design",
+    "reason": "GFM autolink literals: a bare e-mail address is a link (CommonMark core says text)."
+  },
+  "cmarkgfm-19": {
+    "kind": "upstream",
+    "reason": "GFM autolink literal corner cases (xmpp:, trailing punctuation, host rules) that mdast-util-gfm-autolink-literal does not follow exactly."
+  },
+  "cmarkgfm-20": {
+    "kind": "upstream",
+    "reason": "The suite only checks that the parser does not crash; it prints a placeholder that vfm's HTML cannot equal."
+  },
+  "gfm-628": {
+    "kind": "upstream",
+    "reason": "mdast-util-gfm-autolink-literal links http, https and www but not ftp://."
+  },
+  "cmarkgfm-17": {
+    "kind": "by-design",
+    "reason": "A single tilde is underline in vfm (UC-29), so ~x~ is <u>, not <del>."
+  },
+  "cmarkgfm-18": {
+    "kind": "by-design",
+    "reason": "A single tilde is underline in vfm (UC-29), so ~x~ is <u>, not <del>; the double-tilde cases in the same example agree."
+  },
+  "mdit-strike-14": {
+    "kind": "by-design",
+    "reason": "A single tilde is underline in vfm (UC-29): ~a~ is <u>a</u>."
+  },
+  "cmarkgfm-16": {
+    "kind": "by-design",
+    "reason": "A paragraph that touches a table (no blank line between) becomes the table's caption (caption-nodes.ts, labels.ts)."
+  },
+  "mdit-tables-13": {
+    "kind": "by-design",
+    "reason": "A paragraph that touches a table (no blank line between) becomes the table's caption."
+  },
+  "cmarkgfm-23": {
+    "kind": "by-design",
+    "reason": "Footnote markup follows GitHub's current output (`user-content-` ids, a section with a hidden heading), not cmark-gfm's older one."
+  },
+  "cmarkgfm-24": {
+    "kind": "by-design",
+    "reason": "Footnote markup follows GitHub's current output (`user-content-` ids, one backref per use)."
+  },
+  "mdit-extras-7": {
+    "kind": "other-suite",
+    "reason": "Expects markdown-it's typographer (curly quotes)."
+  },
+  "mdit-extras-13": {
+    "kind": "other-suite",
+    "reason": "markdown-it drops an info string made of entities; vfm keeps it as the language class."
+  },
+  "mdit-extras-21": {
+    "kind": "other-suite",
+    "reason": "markdown-it omits an empty language class; vfm writes class=\"language-\" for an info string of one space entity."
+  },
+  "mdit-tables-6": {
+    "kind": "other-suite",
+    "reason": "markdown-it lets a table's header row start on a list marker; GFM and vfm read a list."
+  },
+  "mdit-tables-15": {
+    "kind": "other-suite",
+    "reason": "markdown-it lets a table header start with `#`; CommonMark makes it a heading and GFM agrees."
+  },
+  "mdit-tables-16": {
+    "kind": "other-suite",
+    "reason": "markdown-it lets a table header start with `#`; CommonMark makes it a heading and GFM agrees."
+  },
+  "mdit-tables-27": {
+    "kind": "upstream",
+    "reason": "micromark-extension-gfm-table splits a cell at a pipe that follows a double backslash inside a code span."
+  },
+  "mdit-tables-35": {
+    "kind": "other-suite",
+    "reason": "Expects markdown-it's typographer (an em dash for ---)."
+  },
+  "mdit-extras-28": {
+    "kind": "upstream",
+    "reason": "micromark accepts a link title that holds an unbalanced `(` when the title is opened with `(`."
+  },
+  "mdit-extras-47": {
+    "kind": "upstream",
+    "reason": "micromark keeps the lazy line after a blockquoted link reference definition inside the quote."
+  },
+  "mdit-extras-61": {
+    "kind": "upstream",
+    "reason": "micromark does not treat non-BMP punctuation and symbols (𝜵, 𐬼) as punctuation when it flanks emphasis."
+  },
+  "mdit-strike-2": {
+    "kind": "other-suite",
+    "reason": "markdown-it nests ~~ runs of four; GFM (and vfm) leave them as text."
+  },
+  "mdit-strike-3": {
+    "kind": "other-suite",
+    "reason": "markdown-it nests ~~ runs; GFM (and vfm) leave them as text."
+  },
+  "mdit-strike-4": {
+    "kind": "other-suite",
+    "reason": "markdown-it nests ~~ runs; GFM (and vfm) leave them as text."
+  },
+  "mdit-strike-5": {
+    "kind": "other-suite",
+    "reason": "markdown-it nests ~~ runs; GFM (and vfm) leave them as text."
+  },
+  "mdit-strike-13": {
+    "kind": "other-suite",
+    "reason": "Expects markdown-it's typographer (curly quotes)."
+  },
+  "mdit-strike-15": {
+    "kind": "other-suite",
+    "reason": "markdown-it nests ~~ runs; GFM (and vfm) leave them as text."
+  },
+  "cm-579": {
+    "kind": "by-design",
+    "reason": "A paragraph that holds an image becomes a numbered figure, and the text around the image is a paragraph above or below the figure instead of sharing the image's paragraph."
+  },
+  "mdit-extras-55": {
+    "kind": "by-design",
+    "reason": "A paragraph that holds an image becomes a numbered figure, and the text around the image is a paragraph above or below the figure instead of sharing the image's paragraph."
+  },
+  "mdit-extras-56": {
+    "kind": "by-design",
+    "reason": "A paragraph that holds an image becomes a numbered figure, and the text around the image is a paragraph above or below the figure instead of sharing the image's paragraph."
+  }
+}
