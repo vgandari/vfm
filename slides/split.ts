@@ -371,10 +371,12 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
         filterable: false,
       };
     };
-    // Does header + these rows fit an empty slide? (Same measurement as everything else.)
-    const alone = (rows: Table["children"]) => {
+    // Does header + these rows fit an empty slide? (Same measurement as everything else.) The last piece
+    // carries the block's lead-in, so it is measured with it: a piece that fits only without the lead-in
+    // would be refused when placed, and the table would be lost (REQ-231).
+    const alone = (rows: Table["children"], last: boolean) => {
       const draft: Draft = { id: -1, block: prepared, units: [chunk(rows, true)], ctxLevels: 0, notes: [], closed: false };
-      return env.fits(toSlide(draft, env, false));
+      return env.fits(toSlide(draft, env, withLeadin && last));
     };
     let from = 0;
     const pieces: Unit[] = [];
@@ -383,7 +385,7 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
       let hi = body.length - from;
       while (lo < hi) {
         const mid = Math.ceil((lo + hi) / 2);
-        if (alone(body.slice(from, from + mid))) lo = mid;
+        if (alone(body.slice(from, from + mid), from + mid === body.length)) lo = mid;
         else hi = mid - 1;
       }
       if (lo === 0) return false; // not even one row fits: leave the table off

@@ -141,8 +141,8 @@
 .vfm-slide figure { margin: 0 0 0.6em; }
 .vfm-slide figcaption { font-size: 0.7em; color: var(--_muted); }
 .vfm-slide pre { font-size: 0.75em; }
-.vfm-slide table { font-size: 0.8em; } /* slightly smaller than the text around it (REQ-151) */
-.vfm-slide table caption { font-size: 1.25em; }
+.vfm-slide table { font-size: calc(var(--vfm-table-scale, 0.9) * 1em); } /* 0.9 by default, down to 0.7 to fit (REQ-232) */
+.vfm-slide table caption { font-size: calc(1em / var(--vfm-table-scale, 0.9)); } /* the caption keeps the size around the table (REQ-234) */
 
 /* Repeated context on a continuation */
 .vfm-continued,
@@ -227,16 +227,8 @@
   color: var(--_muted);
 }
 
-/* Theme color (`theme-color` in the YAML header): the accent is set inline on the slide. The title and section
-   slides use a much lighter tint of it, with dark text whatever the editor theme (REQ-102). */
-:root .vfm-slide.vfm-tinted,
-:root[data-theme="dark"] .vfm-slide.vfm-tinted {
-  --_bg: color-mix(in srgb, var(--vfm-slide-accent) 14%, #ffffff);
-  --_fg: #1f2328;
-  --_muted: #4a525a;
-}
-
-.vfm-slide.vfm-section-colored,
+/* Colors are used exactly as written, never tinted: `theme-color` and `section-color` fill section slides, `theme-color`
+   fills the title slide (REQ-102, REQ-107, REQ-203). */
 .vfm-slide.vfm-section-colored,
 :root[data-theme="dark"] .vfm-slide.vfm-section-colored { --_bg: var(--vfm-slide-section-bg); }
 .vfm-slide.vfm-cover-colored,

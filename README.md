@@ -88,13 +88,15 @@ registry.
   numbering, and on slides they are placed and scaled like images. The browser plays the file itself, with no `type` attribute
   (Chromium may reject `video/quicktime` for a `.mov` it can play), so the codec must be playable there (H.264/AAC is).
 - **Theme color**: `theme-color: "#1a6ea8"` in the YAML header (`#rgb`, `#rrggbb`, `rgb()`, `hsl()` or a CSS color name; see
-  `slides/themeColor.ts`). Slides draw the rule under each title in it, the title slide uses it as its background as it is (light text if the color is dark,
-  see below), and section slides use a 14 % tint of it as background with dark text. An invalid value is reported (`theme-color`) and ignored.
+  `slides/themeColor.ts`). Slides draw the rule under each title in it, the title slide and the section slides use it as their background as it is, with light text when it is dark
+  (relative luminance below 0.179) and dark text otherwise. An invalid value is reported (`theme-color`) and ignored.
 - **Independent colors**: `separator-color` sets the rule under slide titles (default: `theme-color`); `section-color` sets the
-  background of section slides exactly as written (default: the tint of `theme-color`), with light text when the color is dark (relative luminance below 0.179, where white has more contrast than the dark text) and dark text otherwise;
+  background of section slides exactly as written (default: `theme-color`), with light text when the color is dark (relative luminance below 0.179, where white has more contrast than the dark text) and dark text otherwise;
   `title-image: cover.jpg` replaces the title slide's background with that image under a dark scrim and white text. Invalid
   colors are reported (`separator-color`, `section-color`) and ignored; `title-image` without a `title` is reported and ignored.
-- **Table text** is 0.8 times the surrounding size, in documents and on slides.
+- **Table text** is 0.9 times the surrounding size in documents. On slides it is 0.9 too, and shrinks in steps of 0.05 to 0.7
+  until the table fits; only then is a tall table split across slides, its header repeated. Captions keep the surrounding size.
+  A table is never dropped because the block has an `@end(lead-in)`.
 - **Front matter**: YAML with title, authors, affiliations, abstract, etc.
 
 ## Options

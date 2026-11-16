@@ -56,11 +56,11 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | ID | Requirement | Method |
 | --- | --- | --- |
 | REQ-101 | When the YAML header holds `theme-color` with a valid CSS color, vfm shall draw the rule below every slide title in that color. | T |
-| REQ-102 | When `theme-color` is valid, vfm shall fill the background of every section slide (divider, unless `section-color` is set) with the theme color mixed 14 % into white, and shall draw text on those slides in the default dark text color. | T |
+| REQ-102 | When `theme-color` is valid, vfm shall fill the background of every section slide (divider, unless `section-color` is set) with exactly the theme color, with no tint, and shall draw its text as REQ-206 says. | T |
 | REQ-103 | vfm shall accept `#rgb`, `#rrggbb`, `rgb()`, `hsl()` and CSS color names as `theme-color`, and shall pass no other text to the stylesheet. | T |
 | REQ-104 | When `theme-color` is present and not valid, vfm shall use the default colors and shall report a diagnostic with code `theme-color` and the line of the header. | T |
 | REQ-105 | When `theme-color` is absent, vfm shall render slides with the default colors, identical to the previous release. | T |
-| REQ-107 | When `theme-color` is valid and `title-image` is absent, vfm shall fill the background of the title slide with exactly the theme color, with no tint, and shall draw its text in light color when the theme color's relative luminance is below 0.179 (REQ-206) and in the default dark text color otherwise. | T |
+| REQ-107 | When `theme-color` is valid and `title-image` is absent, vfm shall fill the background of the title slide with exactly the theme color, with no tint, and shall draw its text as REQ-206 says. | T |
 
 ### Affiliations on the title slide (UC-14)
 
@@ -101,7 +101,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | Method |
 | --- | --- | --- |
-| REQ-151 | vfm shall set the text of a table to 0.8 times the size of the text around it, in document mode and in slide mode, and shall keep the table's caption at the size of the text around it. | T |
+| REQ-151 | In document mode vfm shall set the text of a table to 0.9 times the size of the text around it and shall keep the table's caption at the size of the text around it. | T |
 | REQ-152 | Text that is not in a table shall keep its size. | T |
 
 ### Jump to source from titles and lead-ins (UC-19)
@@ -145,9 +145,9 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | ID | Requirement | Method |
 | --- | --- | --- |
 | REQ-203 | When the YAML header holds `section-color` with a valid color, vfm shall fill the background of every section slide (divider or agenda) with exactly that color, whether or not `theme-color` is set. | T |
-| REQ-204 | When `section-color` is absent, vfm shall fill the background of section slides as REQ-102 says. | T |
+| REQ-204 | When `section-color` is absent and `theme-color` is valid, vfm shall fill the background of section slides with the theme color as REQ-102 says. | T |
 | REQ-205 | `section-color` shall not change the background of the title slide or of content slides. | T |
-| REQ-206 | On a section slide with `section-color`, vfm shall draw the text in white-ish when the background's relative luminance (WCAG 2.x) is below 0.179, the point where white text has more contrast than dark text, and in the default dark text color otherwise. | T |
+| REQ-206 | On a slide whose background is `section-color` or `theme-color`, vfm shall draw the text in a light color when the background's relative luminance (WCAG 2.x) is below 0.179, the point where white text has more contrast than dark text, and in the default dark text color otherwise. | T |
 
 ### Both colors
 
@@ -165,3 +165,14 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-213 | On a title slide with `title-image`, vfm shall draw a translucent dark layer between the image and the text and shall draw the text in white, so the text stays legible on any image. | T |
 | REQ-214 | When `title-image` is present and the deck has no title slide (no `title` in the header), vfm shall report a diagnostic with code `title-image` and ignore the key. | T |
 | REQ-215 | When `title-image` is absent, vfm shall render the title slide as REQ-107 and the default colors say. | T |
+
+## D. New in `table-fit`
+
+### Tables on slides (UC-25)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-231 | When a `@slide` block holds a table and a lead-in, vfm shall place every row of the table on the slides and the lead-in on the last one, and shall not drop a table that fits a slide without the lead-in. | T |
+| REQ-232 | On a slide vfm shall set the text of a table to 0.9 times the size of the text around it, and when the slide does not fit shall reduce that factor in steps of 0.05 to no less than 0.7 until it fits. | T |
+| REQ-233 | When a table does not fit a slide at 0.7, vfm shall continue it on further slides by rows as REQ-012 says, putting on each slide the most rows that fit at 0.7, and shall set each slide's text at the largest factor from REQ-232 at which it fits. | T |
+| REQ-234 | vfm shall keep the table caption at the size of the text around it, whatever the factor. | T |

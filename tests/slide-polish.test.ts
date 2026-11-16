@@ -54,7 +54,7 @@ const header = (extra = "") => `---\ntitle: T\n${extra}---\n\n`;
 // ─── Theme color ──────────────────────────────────────────────────────────────
 
 // Verifies REQ-101, REQ-102, REQ-105, REQ-107 (UC-13)
-test("theme-color sets the accent on every slide, tints the section slides and colors the title slide as it is", () => {
+test("theme-color sets the accent on every slide and colors the title and section slides as it is, untinted", () => {
   const deck = api.buildSlideDeck(`${header('theme-color: "#1a6ea8"\n')}@slide[Section]\n@end\n\n@slide[Body]\nText.\n@end\n`);
   assert.equal(deck.slides.length, 3);
   const [cover, section, body] = [0, 1, 2].map((i) => slideHtml(deck, i));
@@ -63,8 +63,10 @@ test("theme-color sets the accent on every slide, tints the section slides and c
   assert.match(cover, /class="vfm-slide vfm-cover vfm-cover-colored vfm-on-dark"/);
   assert.match(cover, /--vfm-slide-cover-bg:#1a6ea8/);
   assert.doesNotMatch(cover, /vfm-tinted/);
-  assert.match(section, /vfm-divider vfm-tinted/);
-  assert.doesNotMatch(body, /vfm-tinted|vfm-cover-colored/);
+  assert.match(section, /vfm-divider vfm-section-colored vfm-on-dark/);
+  assert.match(section, /--vfm-slide-section-bg:#1a6ea8/);
+  assert.doesNotMatch(section, /vfm-tinted/);
+  assert.doesNotMatch(body, /vfm-tinted|vfm-cover-colored|vfm-section-colored/);
 });
 
 // Verifies REQ-105 (UC-13)
@@ -79,12 +81,11 @@ test("without theme-color the slides carry no color style and no tint", () => {
 });
 
 // Verifies REQ-101, REQ-102 (UC-13), by inspection of the stylesheet
-test("the stylesheet draws the title rule from the accent and mixes it 14% into white for tinted slides", () => {
+test("the stylesheet draws the title rule from the accent and never tints a color", () => {
   const sheet = css("slides/slides.css");
   assert.match(sheet, /\.vfm-slide-title \{[^}]*border-bottom: 3px solid var\(--vfm-slide-rule, var\(--_accent\)\)/s);
   assert.match(sheet, /--_accent: var\(--vfm-slide-accent,/);
-  assert.match(sheet, /\.vfm-slide\.vfm-tinted[^{]*\{[^}]*--_bg: color-mix\(in srgb, var\(--vfm-slide-accent\) 14%, #ffffff\)/s);
-  assert.match(sheet, /\.vfm-slide\.vfm-tinted[^{]*\{[^}]*--_fg: #1f2328/s);
+  assert.doesNotMatch(sheet, /color-mix|vfm-tinted/);
 });
 
 // Verifies REQ-103 (UC-13)
@@ -311,17 +312,14 @@ test("on a slide a video is placed like an image, and is not preloaded as one", 
 // ─── Table text ──────────────────────────────────────────────────────────────
 
 // Verifies REQ-151, REQ-152 (UC-18), by inspection
-test("table text is 0.8 times the text around it, in documents and slides; captions and other text keep their size", () => {
+test("table text is 0.9 times the text around it in documents; captions and other text keep their size", () => {
   const doc = css("CustomMarkdown.module.css");
-  assert.match(doc, /\.markdownBody table \{[^}]*font-size: 0\.8em/s);
-  assert.match(doc, /\.markdownBody table caption \{[^}]*font-size: 1\.25em/s);
-  const slides = css("slides/slides.css");
-  assert.match(slides, /\.vfm-slide table \{ font-size: 0\.8em; \}/);
-  assert.match(slides, /\.vfm-slide table caption \{ font-size: 1\.25em; \}/);
-  // 0.8 * 1.25 = 1: a caption inside a table is not shrunk.
-  assert.equal(0.8 * 1.25, 1);
+  assert.match(doc, /\.markdownBody table \{[^}]*font-size: 0\.9em/s);
+  assert.match(doc, /\.markdownBody table caption \{[^}]*font-size: 1\.1111em/s);
+  // 0.9 * 1.1111 = 1: a caption inside a table is not shrunk.
+  assert.ok(Math.abs(0.9 * 1.1111 - 1) < 1e-3);
   // No other element rule in the slide sheet touches the base size of body text.
-  assert.doesNotMatch(slides, /\.vfm-slide (p|li|ul|ol) \{[^}]*font-size/);
+  assert.doesNotMatch(css("slides/slides.css"), /\.vfm-slide (p|li|ul|ol) \{[^}]*font-size/);
 });
 
 // ─── Jump to source ──────────────────────────────────────────────────────────

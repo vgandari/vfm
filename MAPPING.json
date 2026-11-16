@@ -111,6 +111,12 @@
       "REQ-207",
       "REQ-208"
     ],
+    "UC-25": [
+      "REQ-231",
+      "REQ-232",
+      "REQ-233",
+      "REQ-234"
+    ],
     "UC-24": [
       "REQ-211",
       "REQ-212",
@@ -120,7 +126,7 @@
     ]
   },
   "test_cases": {
-    "tests/slide-polish.test.ts::theme-color sets the accent on every slide, tints the section slides and colors the title slide as it is": {
+    "tests/slide-polish.test.ts::theme-color sets the accent on every slide and colors the title and section slides as it is, untinted": {
       "requirements": [
         "REQ-101",
         "REQ-102",
@@ -141,7 +147,7 @@
       ],
       "kind": "automated"
     },
-    "tests/slide-polish.test.ts::the stylesheet draws the title rule from the accent and mixes it 14% into white for tinted slides": {
+    "tests/slide-polish.test.ts::the stylesheet draws the title rule from the accent and never tints a color": {
       "requirements": [
         "REQ-101",
         "REQ-102"
@@ -322,7 +328,7 @@
       ],
       "kind": "automated"
     },
-    "tests/slide-polish.test.ts::table text is 0.8 times the text around it, in documents and slides; captions and other text keep their size": {
+    "tests/slide-polish.test.ts::table text is 0.9 times the text around it in documents; captions and other text keep their size": {
       "requirements": [
         "REQ-151",
         "REQ-152"
@@ -444,7 +450,7 @@
       ],
       "kind": "automated"
     },
-    "tests/slide-colors.test.ts::with a theme color, section-color replaces the section tint and the title slide keeps its own": {
+    "tests/slide-colors.test.ts::with a theme color, section-color replaces the theme color on section slides and the title slide keeps it": {
       "requirements": [
         "REQ-203",
         "REQ-204",
@@ -523,6 +529,61 @@
       "use_cases": [
         "UC-13",
         "UC-24"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::a table that fits a slide only without the @end() lead-in is not dropped": {
+      "requirements": [
+        "REQ-231"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::the same holds for a table after text, and for a table with a caption": {
+      "requirements": [
+        "REQ-231"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::a table starts at 0.9 and shrinks in steps of 0.05 to no less than 0.7 to fit": {
+      "requirements": [
+        "REQ-232"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::the slide carries the factor to the stylesheet, and the stylesheet applies it to the table": {
+      "requirements": [
+        "REQ-232"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::the caption is divided by the same factor, so it keeps the size of the text around it": {
+      "requirements": [
+        "REQ-234"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::a table too big at 0.7 is split by rows, each slide holding as many rows as fit at 0.7": {
+      "requirements": [
+        "REQ-233",
+        "REQ-012"
+      ],
+      "use_cases": [
+        "UC-25"
       ],
       "kind": "automated"
     },

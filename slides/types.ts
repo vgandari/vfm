@@ -154,6 +154,8 @@ export interface Slide {
     /** `title-image` (URL as rewritten by `resolveUrl`): replaces the slide's background. */
     image?: string;
   };
+  /** Factor applied to the text of the tables on this slide (0.7 to 0.9); absent when there is no table. */
+  tableScale?: number;
   /** Presenter notes: the `@note(...)` blocks after this slide's content and before the next slide's. */
   notes: Inline[][];
   /** True for a divider or merged agenda: body holds a list (or one heading). */

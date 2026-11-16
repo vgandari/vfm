@@ -25,7 +25,7 @@ maps it only to its own requirements.
 
 | ID | Use case | Origin |
 | --- | --- | --- |
-| UC-13 | The author gives a deck a theme color. The rule under every slide title uses it, the title slide sits on that color as it is, and section slides sit on a lighter tint of it. | request |
+| UC-13 | The author gives a deck a theme color. The rule under every slide title uses it, the title slide and the section slides sit on that color as it is. | request |
 | UC-14 | The audience sees each author's affiliation on the title slide. | request |
 | UC-15 | The author writes math in the caption of a figure, table, listing, algorithm, score or diagram. | request |
 | UC-16 | The author writes subscripts and superscripts in ordinary text (chemical formulas, units, ordinals, footnote-like marks) without switching to math. | request |
@@ -41,3 +41,9 @@ maps it only to its own requirements.
 | UC-22 | The author sets the color of the rule under slide titles on its own, without it being tied to the theme color. | request |
 | UC-23 | The author sets the background color of section slides on its own, without it being tied to the theme color. | request |
 | UC-24 | The author replaces the background of the title slide with an image. | request |
+
+## New in `table-fit`
+
+| ID | Use case | Origin |
+| --- | --- | --- |
+| UC-25 | The author puts a table on a slide, with or without a lead-in under it, and sees the whole table with its text as large as the slide allows. | bug report, request |

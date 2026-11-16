@@ -34,6 +34,7 @@ import { buildDocStats, PARAGRAPH_MODES, reduceParagraph, type ParagraphsMode } 
 import { buildUnits, isDefinition, isNote, rootOf, snippet, type Unit } from "./units";
 import { SlideDirectiveError } from "./types";
 import { parseThemeColor } from "./themeColor";
+import { fitTableScale } from "./tableScale";
 import { isVideoUrl } from "../plugins/video-url";
 import type {
   Block,
@@ -195,7 +196,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
 
   // ── Stages 2, 3, 5: titles, pruning, filtering and splitting ───────────────
   const env: SplitEnv = {
-    fits: (slide) => (options.measure ?? estimateFits)(slide, () => renderSlide(slide, provisionalCtx)),
+    fits: (slide) => fitTableScale(slide, (s) => (options.measure ?? estimateFits)(s, () => renderSlide(s, provisionalCtx))),
     diagnostics,
     placedOn: new Map(),
     shown: new Set(),
@@ -486,6 +487,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     const drafts = splitBlock(prepared, env);
     const made = drafts.map((d, i) => {
       const s = toSlide(d, env, i === drafts.length - 1);
+      env.fits(s); // sets the table factor the slide will be shown with
       s.continuation = { index: i + 1, of: drafts.length };
       return s;
     });

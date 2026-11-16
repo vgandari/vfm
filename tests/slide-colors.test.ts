@@ -90,15 +90,16 @@ test("section-color fills section slides only, as written, without a theme color
 });
 
 // Verifies REQ-203, REQ-204, REQ-205 (UC-23, UC-13)
-test("with a theme color, section-color replaces the section tint and the title slide keeps its own", () => {
+test("with a theme color, section-color replaces the theme color on section slides and the title slide keeps it", () => {
   const withBoth = sectionDeck('theme-color: "#1a6ea8"\nsection-color: "#fff3b0"\n');
   assert.doesNotMatch(slideHtml(withBoth, 1), /vfm-tinted/);
   assert.match(slideHtml(withBoth, 1), /--vfm-slide-section-bg:#fff3b0/);
   assert.match(slideHtml(withBoth, 0), /vfm-cover vfm-cover-colored/);
   assert.match(slideHtml(withBoth, 0), /--vfm-slide-cover-bg:#1a6ea8/);
   const without = sectionDeck('theme-color: "#1a6ea8"\n');
-  assert.match(slideHtml(without, 1), /vfm-divider vfm-tinted/);
-  assert.doesNotMatch(slideHtml(without, 1), /vfm-section-colored/);
+  assert.match(slideHtml(without, 1), /vfm-divider vfm-section-colored/);
+  assert.match(slideHtml(without, 1), /--vfm-slide-section-bg:#1a6ea8/);
+  assert.doesNotMatch(slideHtml(without, 1), /vfm-tinted/);
 });
 
 // Verifies REQ-206 (UC-23)

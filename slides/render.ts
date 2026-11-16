@@ -151,10 +151,9 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
 
   const cls = ["vfm-slide", `vfm-layout-${slide.layout}`];
   if (slide.divider) cls.push("vfm-divider");
-  // A section color is used as written and picks light or dark text; otherwise the theme color gives a tint.
-  const sectionBg = slide.divider && ctx.sectionColor ? ctx.sectionColor : undefined;
+  // Section slides use `section-color`, else the theme color, exactly as written (never tinted), with light or dark text.
+  const sectionBg = slide.divider ? ctx.sectionColor ?? ctx.themeColor : undefined;
   if (sectionBg) cls.push("vfm-section-colored", isDarkColor(sectionBg) ? "vfm-on-dark" : "vfm-on-light");
-  else if (slide.divider && ctx.themeColor) cls.push("vfm-tinted");
   if (slide.continuation.of > 1) cls.push("vfm-continuation");
 
   const title =
@@ -205,5 +204,8 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
 
   const number =
     extra.number !== undefined ? h("div", { className: "vfm-slide-number" }, String(extra.number)) : null;
-  return h("section", { className: cls.join(" "), "data-layout": slide.layout, ...themeStyle(ctx, sectionBg ? { "--vfm-slide-section-bg": sectionBg } : {}) }, title, content, refs, leadin, number);
+  return h("section", { className: cls.join(" "), "data-layout": slide.layout, ...themeStyle(ctx, {
+        ...(sectionBg ? { "--vfm-slide-section-bg": sectionBg } : {}),
+        ...(slide.tableScale !== undefined ? { "--vfm-table-scale": String(slide.tableScale) } : {}),
+      }) }, title, content, refs, leadin, number);
 }
