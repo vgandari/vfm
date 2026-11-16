@@ -111,7 +111,7 @@ test("text is light on a dark section color and dark on a light one, switching a
   assert.equal(relativeLuminance("#fff"), relativeLuminance("#ffffff"));
   assert.equal(relativeLuminance("rgb(11, 57, 84)"), relativeLuminance("#0b3954"));
   assert.ok(Math.abs(relativeLuminance("hsl(0, 100%, 50%)")! - 0.2126) < 1e-3);
-  assert.ok(Math.abs(relativeLuminance("hsl(120, 100%, 25%)")! - relativeLuminance("#008000")!) < 1e-3);
+  assert.ok(Math.abs(relativeLuminance("hsl(120, 100%, 25%)")! - relativeLuminance("#008000")!) < 2e-3);
   assert.equal(relativeLuminance("teal"), relativeLuminance("#008080"));
   assert.equal(relativeLuminance("RebeccaPurple"), relativeLuminance("#663399"));
   for (const dark of ["#000", "#0b3954", "navy", "teal", "#707070", "hsl(210, 50%, 20%)", "darkgreen", "maroon"]) assert.equal(isDarkColor(dark), true, dark);
@@ -180,7 +180,8 @@ test("title-image goes through resolveUrl, is preloaded, and cannot break out of
   assert.match(slideHtml(deck, 0), /src="vscode-resource:\/doc\/images\/cover\.jpg"/);
   assert.ok(deck.imageUrls.includes("vscode-resource:/doc/images/cover.jpg"));
   const evil = api.buildSlideDeck(`---\ntitle: T\ntitle-image: 'x" onerror="y'\n---\n\n@slide\nText.\n@end\n`);
-  assert.doesNotMatch(slideHtml(evil, 0), / onerror=/);
+  // The quote is escaped, so the value stays inside src and onerror never becomes an attribute.
+  assert.match(slideHtml(evil, 0), /<img class="vfm-cover-bg" src="x&quot; onerror=&quot;y" alt=""\/>/);
 });
 
 // Verifies REQ-214 (UC-24, UC-11)

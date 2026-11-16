@@ -78,7 +78,7 @@ test("without theme-color the slides carry no color style and no tint", () => {
 // Verifies REQ-101, REQ-102 (UC-13), by inspection of the stylesheet
 test("the stylesheet draws the title rule from the accent and mixes it 14% into white for tinted slides", () => {
   const sheet = css("slides/slides.css");
-  assert.match(sheet, /\.vfm-slide-title \{[^}]*border-bottom: 3px solid var\(--_accent\)/s);
+  assert.match(sheet, /\.vfm-slide-title \{[^}]*border-bottom: 3px solid var\(--vfm-slide-rule, var\(--_accent\)\)/s);
   assert.match(sheet, /--_accent: var\(--vfm-slide-accent,/);
   assert.match(sheet, /\.vfm-slide\.vfm-tinted[^{]*\{[^}]*--_bg: color-mix\(in srgb, var\(--vfm-slide-accent\) 14%, #ffffff\)/s);
   assert.match(sheet, /\.vfm-slide\.vfm-tinted[^{]*\{[^}]*--_fg: #1f2328/s);
@@ -364,7 +364,8 @@ test("the stylesheet lets a picture or video shrink to its region without croppi
   const sheet = css("slides/slides.css");
   assert.match(sheet, /\.vfm-slide \.vfm-region > figure,[^{]*\{[^}]*max-height: 100%[^}]*min-height: 0/s);
   assert.match(sheet, /\.vfm-slide \.vfm-region img,\s*\.vfm-slide \.vfm-region video \{[^}]*object-fit: contain/s);
-  assert.doesNotMatch(sheet, /object-fit: cover/);
+  // Only the title slide's background image (REQ-211) is cropped to cover; slide content never is.
+  assert.doesNotMatch(sheet.replace(/\.vfm-cover-bg \{[^}]*\}/s, ""), /object-fit: cover/);
 });
 
 // Verifies REQ-172 (UC-20)

@@ -44,7 +44,7 @@
   font-weight: 650;
   line-height: 1.15;
   min-height: 1.15em;
-  border-bottom: 3px solid var(--_accent);
+  border-bottom: 3px solid var(--vfm-slide-rule, var(--_accent));
   padding-bottom: 12px;
 }
 .vfm-slide-title.vfm-empty {
@@ -236,6 +236,20 @@
   --_muted: #4a525a;
 }
 
+.vfm-slide.vfm-section-colored,
+:root[data-theme="dark"] .vfm-slide.vfm-section-colored { --_bg: var(--vfm-slide-section-bg); }
+/* `section-color`: light text on a dark background, dark text on a light one (REQ-206). */
+.vfm-slide.vfm-on-dark,
+:root[data-theme="dark"] .vfm-slide.vfm-on-dark {
+  --_fg: #f0f6fc;
+  --_muted: #c9d1d9;
+}
+.vfm-slide.vfm-on-light,
+:root[data-theme="dark"] .vfm-slide.vfm-on-light {
+  --_fg: #1f2328;
+  --_muted: #4a525a;
+}
+
 /* Title slide */
 .vfm-cover {
   justify-content: center;
@@ -244,6 +258,25 @@
   gap: 0;
 }
 .vfm-cover > * { margin: 0; }
+/* `title-image`: the picture covers the slide, a dark layer keeps the white text legible (REQ-211, REQ-213). */
+.vfm-slide.vfm-cover-image,
+:root[data-theme="dark"] .vfm-slide.vfm-cover-image {
+  --_fg: #ffffff;
+  --_muted: #e6edf3;
+}
+.vfm-cover-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.vfm-cover-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.vfm-cover-image > :not(.vfm-cover-bg):not(.vfm-cover-scrim) { position: relative; }
 .vfm-cover-title {
   font-size: 68px;
   line-height: 1.1;

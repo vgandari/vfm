@@ -16,6 +16,7 @@
  * carry `data-step="k"`; the host shows those with k ≤ the current step.
  */
 
+import { isDarkColor } from "./themeColor";
 import { createElement as h } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { FootnoteDefinition, List } from "mdast";
@@ -79,13 +80,26 @@ export function renderNotes(slide: Slide, ctx: SlideRenderContext): ReactElement
 }
 
 /** Inline style that carries the theme color; the stylesheet derives the title rule and the tint from it. */
-const themeStyle = (ctx: SlideRenderContext) => (ctx.themeColor ? { style: { "--vfm-slide-accent": ctx.themeColor } as CSSProperties } : {});
+const themeStyle = (ctx: SlideRenderContext, extra: Record<string, string> = {}) => {
+  const style: Record<string, string> = {
+    ...(ctx.themeColor ? { "--vfm-slide-accent": ctx.themeColor } : {}),
+    ...(ctx.separatorColor ? { "--vfm-slide-rule": ctx.separatorColor } : {}),
+    ...extra,
+  };
+  return Object.keys(style).length ? { style: style as CSSProperties } : {};
+};
 
 function renderCover(slide: Slide, ctx: SlideRenderContext): ReactElement {
   const c = slide.cover!;
   return h(
     "section",
-    { className: `vfm-slide vfm-cover${ctx.themeColor ? " vfm-tinted" : ""}`, "data-layout": "single", ...themeStyle(ctx) },
+    {
+      className: `vfm-slide vfm-cover${c.image ? " vfm-cover-image" : ctx.themeColor ? " vfm-tinted" : ""}`,
+      "data-layout": "single",
+      ...themeStyle(ctx),
+    },
+    c.image ? h("img", { className: "vfm-cover-bg", src: c.image, alt: "" }) : null,
+    c.image ? h("div", { className: "vfm-cover-scrim" }) : null,
     h("h1", { className: "vfm-cover-title" }, c.title),
     c.subtitle ? h("p", { className: "vfm-cover-subtitle" }, c.subtitle) : null,
     c.authors.length > 0
@@ -135,7 +149,10 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
 
   const cls = ["vfm-slide", `vfm-layout-${slide.layout}`];
   if (slide.divider) cls.push("vfm-divider");
-  if (slide.divider && ctx.themeColor) cls.push("vfm-tinted");
+  // A section color is used as written and picks light or dark text; otherwise the theme color gives a tint.
+  const sectionBg = slide.divider && ctx.sectionColor ? ctx.sectionColor : undefined;
+  if (sectionBg) cls.push("vfm-section-colored", isDarkColor(sectionBg) ? "vfm-on-dark" : "vfm-on-light");
+  else if (slide.divider && ctx.themeColor) cls.push("vfm-tinted");
   if (slide.continuation.of > 1) cls.push("vfm-continuation");
 
   const title =
@@ -186,5 +203,5 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
 
   const number =
     extra.number !== undefined ? h("div", { className: "vfm-slide-number" }, String(extra.number)) : null;
-  return h("section", { className: cls.join(" "), "data-layout": slide.layout, ...themeStyle(ctx) }, title, content, refs, leadin, number);
+  return h("section", { className: cls.join(" "), "data-layout": slide.layout, ...themeStyle(ctx, sectionBg ? { "--vfm-slide-section-bg": sectionBg } : {}) }, title, content, refs, leadin, number);
 }

@@ -232,6 +232,45 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
   } catch {
     /* a broken header is reported by whoever renders it */
   }
+  // `separator-color`, `section-color` and `title-image` (REQ-201 to REQ-215).
+  let separatorColor: string | undefined;
+  let sectionColor: string | undefined;
+  try {
+    const meta = parseFrontmatter(content).meta;
+    const headerLine = (key: string) => {
+      const line = Math.max(1, content.split("\n").findIndex((l) => new RegExp(`^${key}\\s*:`, "i").test(l)) + 1);
+      return options.sourceMap?.[line - 1] ?? { line };
+    };
+    const colorKey = (key: "separator-color" | "section-color", raw: string | undefined) => {
+      if (raw === undefined) return undefined;
+      const ok = parseThemeColor(raw);
+      if (!ok)
+        diagnostics.push({
+          code: key,
+          severity: "warning",
+          message: `${key} "${raw}" is not a color (use #rrggbb, rgb(), hsl() or a color name); the default is used`,
+          loc: headerLine(key),
+        });
+      return ok;
+    };
+    separatorColor = colorKey("separator-color", meta.separatorColor);
+    sectionColor = colorKey("section-color", meta.sectionColor);
+    if (meta.titleImage !== undefined) {
+      const cover = slides[0]?.cover;
+      if (cover) {
+        cover.image = options.resolveUrl ? options.resolveUrl(meta.titleImage) : meta.titleImage;
+        imageUrls.add(cover.image);
+      } else
+        diagnostics.push({
+          code: "title-image",
+          severity: "warning",
+          message: "title-image is ignored: the header has no title, so there is no title slide",
+          loc: headerLine("title-image"),
+        });
+    }
+  } catch {
+    /* a broken header is reported by whoever renders it */
+  }
   let paragraphMode: ParagraphsMode = options.paragraphs ?? "auto";
   if (!options.paragraphs && header.paragraphs !== undefined) {
     const wanted = String(header.paragraphs);
@@ -577,7 +616,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     slides,
     diagnostics,
     registry,
-    render: { registry, bibliography: options.bibliography, citations: options.citations, citeKeys, numberOf, definitions, themeColor },
+    render: { registry, bibliography: options.bibliography, citations: options.citations, citeKeys, numberOf, definitions, themeColor, separatorColor, sectionColor },
     imageUrls: [...imageUrls],
   };
 }
