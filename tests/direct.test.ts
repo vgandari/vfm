@@ -17,7 +17,7 @@ const html = (md: string) => {
   const p = unified().use(remarkParse).use(remarkHighlight).use(remarkLabels).use(remarkRehype, { handlers: { highlight: highlightHandler, paragraph: paragraphHandler } });
   const file = new VFile(md);
   const tree = p.runSync(p.parse(file), file);
-  return rehype().data("settings", { fragment: true }).stringify(tree as any).replace(/\n/g, "");
+  return rehype().data("settings", { fragment: true }).stringify(tree as any).replace(/>\n</g, "><");
 };
 
 // Verifies REQ-309 (UC-45)
@@ -26,7 +26,7 @@ test("highlight parser: a pair needs text, and a newline or a missing close leav
   assert.equal(html("===="), "<p>====</p>");
   assert.equal(html("a ==== b"), "<p>a ==== b</p>");
   assert.equal(html("==open"), "<p>==open</p>");
-  assert.equal(html("==a\nb=="), "<p>==a\nb==</p>".replace(/\n/g, ""));
+  assert.equal(html("==a\nb=="), "<p>==a\nb==</p>");
 });
 
 // Verifies REQ-314 (UC-45)
