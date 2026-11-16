@@ -31,6 +31,9 @@
  *   theme-color   accent color: #rgb, #rrggbb, rgb(r, g, b), hsl(h, s%, l%) or a color name. Slide title
  *                 separators use it; title and section slides use a lighter tint of it as background.
  *                 An invalid value is ignored (slides report a `theme-color` diagnostic).
+ *   separator-color  same forms; the rule under slide titles. Default: theme-color.
+ *   section-color    same forms; background of section slides, used as written. Default: a tint of theme-color.
+ *   title-image      path or URL of an image that replaces the title slide's background.
  *   author(s)     string | list of strings | list of objects:
  *                   name: string | {given, family}
  *                   affiliation(s): string | object | list of either; a string
@@ -73,6 +76,12 @@ export interface FrontmatterMeta {
   authors: Author[];
   /** `theme-color`: a CSS color (#rgb, #rrggbb, rgb(), hsl() or a color name) used as the slide accent. */
   themeColor?: string;
+  /** `separator-color`: color of the rule under slide titles. Overrides `theme-color` for the rule only. */
+  separatorColor?: string;
+  /** `section-color`: background of section slides, as written (not tinted). Overrides the tint of `theme-color`. */
+  sectionColor?: string;
+  /** `title-image`: image (path or URL) that replaces the background of the title slide. */
+  titleImage?: string;
   /** The top-level `affiliations` list, whether or not an author refers to it. */
   affiliations: Affiliation[];
 }
@@ -225,6 +234,9 @@ function normalizeMeta(data: Obj): FrontmatterMeta {
     bibliography: normalizeStringList(data.bibliography),
     authors,
     themeColor: str(data["theme-color"] ?? data.themeColor),
+    separatorColor: str(data["separator-color"] ?? data.separatorColor),
+    sectionColor: str(data["section-color"] ?? data.sectionColor),
+    titleImage: str(data["title-image"] ?? data.titleImage),
     affiliations: [...new Set(byKey.values())],
   };
 }

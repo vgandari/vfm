@@ -44,7 +44,10 @@ export type DiagnosticCode =
   | "leadin-dropped"
   | "layout-no-image"
   | "step-noop"
-  | "theme-color";
+  | "theme-color"
+  | "separator-color"
+  | "section-color"
+  | "title-image";
 
 export interface Diagnostic {
   code: DiagnosticCode;
@@ -148,6 +151,8 @@ export interface Slide {
     /** False when the affiliations are listed without numbers (one shared affiliation, or none tied to an author). */
     numbered: boolean;
     date?: string;
+    /** `title-image` (URL as rewritten by `resolveUrl`): replaces the slide's background. */
+    image?: string;
   };
   /** Presenter notes: the `@note(...)` blocks after this slide's content and before the next slide's. */
   notes: Inline[][];

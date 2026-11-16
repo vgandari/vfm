@@ -40,6 +40,10 @@ export interface SlideRenderContext {
   definitions: Block[];
   /** Validated accent color from the YAML header (`theme-color`). */
   themeColor?: string;
+  /** Validated `separator-color`: the rule under slide titles (default: `themeColor`). */
+  separatorColor?: string;
+  /** Validated `section-color`: background of section slides (default: a tint of `themeColor`). */
+  sectionColor?: string;
 }
 
 /** `data-line` for a region whose text was written on one line of the source (REQ-161, REQ-162). */
