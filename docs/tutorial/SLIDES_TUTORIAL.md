@@ -199,7 +199,7 @@ A sentence or list item whose reference would dangle is dropped, and VFM says so
 
 ````markdown
 @slide[A figure with its reference](rtext)
-Figure [@fig:disc] shows the disc.
+[@fig:disc] shows the disc.
 
 ![The disc.](circle.svg) {#fig:disc}
 @end
@@ -283,7 +283,7 @@ Open `slides/10-includes.md`, which includes `parts/agenda.md` and `parts/closin
 
 ## The opener and the closer
 
-````markdown
+````text
 @slide[Title override](layout, showrefs, nodoc, noxrefs, steplists, stepleadin)
   …blocks, headings allowed…
 @end(Lead-in shown on the last slide of the block)

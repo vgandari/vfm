@@ -5,7 +5,7 @@ title: Figures, Tables and Cross-references
 # Numbered things on slides
 
 @slide[A figure with its reference](rtext)
-Figure [@fig:disc] shows the disc.
+[@fig:disc] shows the disc.
 
 ![The disc.](../circle.svg) {#fig:disc}
 @end
@@ -25,16 +25,16 @@ Sizes of the example decks. {#tab:sizes}
 @end
 
 @slide[noxrefs drops every reference](noxrefs)
-Table [@tab:sizes] is on the slide before this one.
+[@tab:sizes] is on the slide before this one.
 This sentence has no reference, so it stays.
 @end
 
 @slide[An equation, numbered when cited]
-$$
-E = mc^2 {#eq:energy}
+$${#eq:energy}
+E = mc^2
 $$
 
-Equation [@eq:energy] is the most famous one.
+[@eq:energy] is the most famous one.
 @end
 
 @slide[Only in the talk](nodoc)

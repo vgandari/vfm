@@ -458,7 +458,7 @@ a^2 + b^2 = c^2 {#eq:pythagoras}
 c = \sqrt{a^2 + b^2} {#eq:hypotenuse}
 $$
 
-Equation [@eq:pythagoras] gives equation [@eq:hypotenuse].
+[@eq:pythagoras] gives [@eq:hypotenuse].
 ````
 
 $$
@@ -466,7 +466,9 @@ a^2 + b^2 = c^2 {#eq:pythagoras}
 c = \sqrt{a^2 + b^2} {#eq:hypotenuse}
 $$
 
-Equation [@eq:pythagoras] gives equation [@eq:hypotenuse].
+[@eq:pythagoras] gives [@eq:hypotenuse].
+
+The reference already says what it points at (for example "Equation 1a"), so write `[@eq:pythagoras]` and not `Equation [@eq:pythagoras]`.
 
 ### Captions can hold Markdown
 
