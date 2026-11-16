@@ -73,6 +73,8 @@ export interface FrontmatterMeta {
   authors: Author[];
   /** `theme-color`: a CSS color (#rgb, #rrggbb, rgb(), hsl() or a color name) used as the slide accent. */
   themeColor?: string;
+  /** The top-level `affiliations` list, whether or not an author refers to it. */
+  affiliations: Affiliation[];
 }
 
 export interface ParsedFrontmatter {
@@ -155,7 +157,7 @@ function normalizeAffiliation(
   const ref = str(v.ref);
   if (ref && byKey.has(ref)) return byKey.get(ref);
 
-  const name = str(v.name) ?? str(v.department);
+  const name = str(v.name) ?? str(v.institution) ?? str(v.organization) ?? str(v.department);
   if (!name) return undefined;
   const aff: Affiliation = { name };
   for (const key of ["id", "department", "city", "region", "country", "url"] as const) {
@@ -222,12 +224,14 @@ function normalizeMeta(data: Obj): FrontmatterMeta {
     tags: normalizeTags(data.tags),
     bibliography: normalizeStringList(data.bibliography),
     authors,
+    themeColor: str(data["theme-color"] ?? data.themeColor),
+    affiliations: [...new Set(byKey.values())],
   };
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-const EMPTY_META: FrontmatterMeta = { tags: [], bibliography: [], authors: [] };
+const EMPTY_META: FrontmatterMeta = { tags: [], bibliography: [], authors: [], affiliations: [] };
 
 export function parseFrontmatter(source: string): ParsedFrontmatter {
   const match = FRONTMATTER_RE.exec(source);

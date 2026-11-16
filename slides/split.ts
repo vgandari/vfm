@@ -23,6 +23,7 @@ export interface PreparedBlock {
   block: SlideBlock;
   title: Inline[];
   titleSource: Slide["titleSource"];
+  titleLine?: number;
   units: Unit[];
   minDepth: number;
   /** Notes written before any content in the block. */
@@ -69,24 +70,31 @@ export function citeKeysIn(nodes: readonly any[]): string[] {
 }
 
 export function splitsImages(block: SlideBlock): boolean {
-  return block.options.layout === "rtext" || block.options.layout === "ltext";
+  return block.options.layout === "rtext" || block.options.layout === "ltext" || block.options.layout === "2col";
 }
 
 /** Builds the slide a draft currently describes. */
 export function toSlide(draft: Draft, env: Pick<SplitEnv, "refsFor" | "shown">, withLeadin: boolean): Slide {
-  const { block, title, titleSource } = draft.block;
-  const mat = materialize(draft.units, {
-    ctxLevels: draft.ctxLevels,
-    ctxHeading: draft.ctxHeading,
-    minDepth: draft.block.minDepth,
-    splitImages: splitsImages(block),
-  });
+  const { block, title, titleSource, titleLine } = draft.block;
+  const place = (splitImages: boolean) =>
+    materialize(draft.units, {
+      ctxLevels: draft.ctxLevels,
+      ctxHeading: draft.ctxHeading,
+      minDepth: draft.block.minDepth,
+      splitImages,
+    });
+  let mat = place(splitsImages(block));
   let layout: Slide["layout"] = "single";
   const opt = block.options.layout;
-  if (opt === "2col") layout = mat.hasImage ? "single" : "2col";
-  else if (opt && mat.images.length > 0) layout = opt;
-  // Images and floats with no text beside them take the whole slide.
   const hasText = mat.body.some((b) => !(b.type === "heading" && (b.data as any)?.hProperties?.className?.includes("vfm-continued")));
+  if (opt === "2col") {
+    // Pictures and no text, two or more: one picture per column (REQ-172). Text with a picture, or a lone
+    // picture, takes one column for the slide, with everything in source order.
+    if (mat.images.length === 0) layout = "2col";
+    else if (!hasText && mat.images.length > 1) layout = "2col";
+    else mat = place(false);
+  } else if (opt && mat.images.length > 0) layout = opt;
+  // Images and floats with no text beside them take the whole slide.
   if (layout === "rtext" || layout === "ltext") {
     if (!hasText) {
       layout = "single";
@@ -103,6 +111,7 @@ export function toSlide(draft: Draft, env: Pick<SplitEnv, "refsFor" | "shown">, 
     kind: "slide",
     title,
     titleSource,
+    titleLine,
     continuation: { index: 1, of: 1 },
     layout,
     context: mat.context,
@@ -110,6 +119,7 @@ export function toSlide(draft: Draft, env: Pick<SplitEnv, "refsFor" | "shown">, 
     images: mat.images,
     references,
     leadin: withLeadin ? block.leadin : undefined,
+    leadinLine: withLeadin && block.leadin ? block.closeLine : undefined,
     steps: [[]],
     sourceBlock: block,
     labels: mat.labels,
@@ -183,9 +193,9 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
   const tryPlace = (d: Draft, units: Unit[], withLeadin: boolean): boolean => {
     if (units.some(isFloatUnit) && d.units.some(isFloatUnit)) return false;
     if (units.some(isImageUnit)) {
-      const has = d.units.some(isImageUnit);
       const hasText = d.units.some((u) => !isImageUnit(u));
-      if (has && !hasText) return false; // image-only slides hold one image
+      // Image-only slides hold one image; on 2col, two (one per column).
+      if (!hasText && d.units.filter(isImageUnit).length >= (block.options.layout === "2col" ? 2 : 1)) return false;
     }
     d.units.push(...units);
     if (env.fits(toSlide(d, env, withLeadin))) return true;

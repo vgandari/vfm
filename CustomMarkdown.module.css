@@ -371,9 +371,13 @@
   border-spacing: 0;
   border-collapse: collapse;
   margin: 0 auto 16px;
+  /* Table text is slightly smaller than the text around it (REQ-151). */
+  font-size: 0.9em;
 }
 
 .markdownBody table caption {
+  /* The caption is not table text: undo the table's reduction (1 / 0.9). */
+  font-size: 1.1111em;
   display: block;
   text-align: center;
   font-weight: 700;

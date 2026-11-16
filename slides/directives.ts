@@ -370,6 +370,7 @@ function headingRefOf(node: Heading, locate: Locator): HeadingRef {
     inline: node.children as Inline[],
     label: (node.data as any)?.label ?? null,
     loc: locate(node.position?.start.line ?? 1),
+    line: node.position?.start.line ?? 1,
   };
 }
 
@@ -397,6 +398,8 @@ const remarkSlideBlocks: Plugin<[SlideBlocksOptions], Root> = function (options)
           children: [],
           loc: store.locate(opener.line),
           endLoc: store.locate(opener.line),
+          openLine: opener.line,
+          closeLine: opener.line,
         };
         blocks.push(block);
         current = block;
@@ -420,6 +423,7 @@ const remarkSlideBlocks: Plugin<[SlideBlocksOptions], Root> = function (options)
           const closer = store.closers[marker.id];
           if (closer) {
             current.endLoc = store.locate(closer.line);
+            current.closeLine = closer.line;
             if (closer.leadinSource !== undefined) current.leadin = parseInline(closer.leadinSource);
           }
           current = null;

@@ -89,9 +89,10 @@
   break-inside: avoid;
 }
 
-/* Text beside images. */
+/* Text beside images; on 2col with no text each image has its own column. */
 .vfm-layout-rtext .vfm-images,
-.vfm-layout-ltext .vfm-images {
+.vfm-layout-ltext .vfm-images,
+.vfm-layout-2col .vfm-images {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -101,6 +102,29 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+/* Pictures and videos are shown whole: whatever their size, they shrink to the region (REQ-171). The figure is
+   a flex column capped at the region's height, and the picture is allowed to shrink inside it, so the caption
+   keeps its room. object-fit keeps the aspect ratio. */
+.vfm-slide .vfm-region > figure,
+.vfm-slide .vfm-region > p:has(> img),
+.vfm-slide .vfm-region > p:has(> video) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 100%;
+  min-height: 0;
+}
+.vfm-slide .vfm-region img,
+.vfm-slide .vfm-region video {
+  min-height: 0;
+  max-width: 100%;
+  object-fit: contain;
+}
+.vfm-slide .vfm-region figcaption {
+  flex: none;
+  text-align: center;
 }
 
 /* Slide content typography */
@@ -117,7 +141,8 @@
 .vfm-slide figure { margin: 0 0 0.6em; }
 .vfm-slide figcaption { font-size: 0.7em; color: var(--_muted); }
 .vfm-slide pre { font-size: 0.75em; }
-.vfm-slide table { font-size: 0.8em; }
+.vfm-slide table { font-size: 0.9em; } /* slightly smaller than the text around it (REQ-151) */
+.vfm-slide table caption { font-size: 1.1111em; }
 
 /* Repeated context on a continuation */
 .vfm-continued,
@@ -200,6 +225,15 @@
   font-size: 22px;
   line-height: 1;
   color: var(--_muted);
+}
+
+/* Theme color (`theme-color` in the YAML header): the accent is set inline on the slide. The title and section
+   slides use a much lighter tint of it, with dark text whatever the editor theme (REQ-102). */
+:root .vfm-slide.vfm-tinted,
+:root[data-theme="dark"] .vfm-slide.vfm-tinted {
+  --_bg: color-mix(in srgb, var(--vfm-slide-accent) 14%, #ffffff);
+  --_fg: #1f2328;
+  --_muted: #4a525a;
 }
 
 /* Title slide */

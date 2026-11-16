@@ -33,6 +33,7 @@ import { citeKeysIn, splitBlock, toSlide, type Draft, type PreparedBlock, type S
 import { buildDocStats, PARAGRAPH_MODES, reduceParagraph, type ParagraphsMode } from "./reducer";
 import { buildUnits, isDefinition, isNote, rootOf, snippet, type Unit } from "./units";
 import { SlideDirectiveError } from "./types";
+import { parseThemeColor } from "./themeColor";
 import type {
   Block,
   Diagnostic,
@@ -87,9 +88,12 @@ const contentOf = (b: SlideBlock) => b.children.filter((n) => !isDefinition(n) &
 const notesOf = (b: SlideBlock): Inline[][] => b.children.filter(isNote).map((n) => (n as any).note as Inline[]);
 const isDividerBlock = (b: SlideBlock) => contentOf(b).every(isHeading);
 
-function resolveTitle(b: SlideBlock): Pick<PreparedBlock, "title" | "titleSource"> {
-  if (b.title !== undefined) return { title: b.title, titleSource: "override" };
-  if (b.headingInEffect) return { title: plainInline(b.headingInEffect.inline), titleSource: "heading" };
+/** A position that points at one line; for generated nodes that stand for a directive line. */
+const atLine = (line?: number) => (line ? { start: { line, column: 1 }, end: { line, column: 1 } } : undefined);
+
+function resolveTitle(b: SlideBlock): Pick<PreparedBlock, "title" | "titleSource" | "titleLine"> {
+  if (b.title !== undefined) return { title: b.title, titleSource: "override", titleLine: b.openLine };
+  if (b.headingInEffect) return { title: plainInline(b.headingInEffect.inline), titleSource: "heading", titleLine: b.headingInEffect.line };
   return { title: [], titleSource: "none" };
 }
 
@@ -207,6 +211,25 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
   } catch {
     /* a broken header is reported by whoever renders it */
   }
+  // `theme-color`: only a valid color reaches the stylesheet (REQ-103); otherwise warn and keep the defaults (REQ-104).
+  let themeColor: string | undefined;
+  try {
+    const raw = parseFrontmatter(content).meta.themeColor;
+    if (raw !== undefined) {
+      themeColor = parseThemeColor(raw);
+      if (!themeColor) {
+        const line = Math.max(1, content.split("\n").findIndex((l) => /^theme-?color\s*:/i.test(l)) + 1);
+        diagnostics.push({
+          code: "theme-color",
+          severity: "warning",
+          message: `theme-color "${raw}" is not a color (use #rrggbb, rgb(), hsl() or a color name); the default colors are used`,
+          loc: options.sourceMap?.[line - 1] ?? { line },
+        });
+      }
+    }
+  } catch {
+    /* a broken header is reported by whoever renders it */
+  }
   let paragraphMode: ParagraphsMode = options.paragraphs ?? "auto";
   if (!options.paragraphs && header.paragraphs !== undefined) {
     const wanted = String(header.paragraphs);
@@ -222,7 +245,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
   const docStats = buildDocStats(tree, typeof header.lang === "string" ? header.lang : undefined);
 
   const prepare = (block: SlideBlock): PreparedBlock => {
-    const { title, titleSource } = resolveTitle(block);
+    const { title, titleSource, titleLine } = resolveTitle(block);
     const headingText = inlineText(title.length > 0 ? title : (block.headingInEffect?.inline ?? []));
     const { units, strandedHeadings, startNotes } = buildUnits(block.children, locate, (para) =>
       reduceParagraph(para, { stats: docStats, mode: paragraphMode, headingText })
@@ -299,12 +322,12 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
       if (!u.dropped) survivors.push(u);
       else (survivors.length > 0 ? survivors[survivors.length - 1].notes : startNotes).push(...u.notes);
     }
-    return { block, title, titleSource, units: survivors, minDepth, startNotes };
+    return { block, title, titleSource, titleLine, units: survivors, minDepth, startNotes };
   };
 
   const dividerSlide = (blocks: SlideBlock[]): Slide => {
     const first = blocks[0];
-    const entriesOut: Array<{ depth: number | undefined; inline: Inline[]; node?: Heading }> = [];
+    const entriesOut: Array<{ depth: number | undefined; inline: Inline[]; node?: Heading; line?: number }> = [];
     for (const b of blocks) {
       if (b.options.layout || b.options.showrefs || b.options.noxrefs) {
         diagnostics.push({
@@ -318,7 +341,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
         // A title-only block is always alone in its run: one large title.
         const t = resolveTitle(b);
         if (t.title.length === 0) continue;
-        entriesOut.push({ depth: undefined, inline: t.title });
+        entriesOut.push({ depth: undefined, inline: t.title, line: b.openLine });
       } else {
         for (const c of contentOf(b) as Heading[]) {
           entriesOut.push({ depth: c.depth, inline: c.children as Inline[], node: c });
@@ -341,14 +364,16 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     for (const e of entriesOut) e.depth ??= min;
     let title: Inline[] = [];
     let titleSource: Slide["titleSource"] = "none";
+    let titleLine: number | undefined;
     let body: Block[];
     const isAgenda = blocks.length === 1 && first.title !== undefined && contentOf(first).length > 0;
     if (isAgenda) {
       title = first.title!;
       titleSource = "override";
+      titleLine = first.openLine;
     }
     if (entriesOut.length === 1 && !isAgenda) {
-      body = [{ type: "heading", depth: 1, children: entriesOut[0].inline as any, data: { hProperties: { className: ["vfm-divider-title"] } } } as Heading];
+      body = [{ type: "heading", depth: 1, children: entriesOut[0].inline as any, position: entriesOut[0].node?.position ?? atLine(entriesOut[0].line), data: { hProperties: { className: ["vfm-divider-title"] } } } as Heading];
     } else {
       if (!isAgenda) {
         for (let d = min - 1; d >= 1; d--) {
@@ -356,6 +381,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
           if (anc) {
             title = plainInline(anc.inline);
             titleSource = "heading";
+            titleLine = anc.line;
             break;
           }
         }
@@ -379,6 +405,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
         stack[stack.length - 1].children.push({
           type: "listItem",
           spread: false,
+          position: e.node?.position,
           children: [{ type: "paragraph", children: e.inline as any }],
         });
       }
@@ -388,6 +415,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
       kind: "slide",
       title,
       titleSource,
+      titleLine,
       continuation: { index: 1, of: 1 },
       layout: "single",
       context: [],
@@ -395,6 +423,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
       images: [],
       references: [],
       leadin,
+      leadinLine: leadin ? blocks[blocks.length - 1].closeLine : undefined,
       steps: [[]],
       sourceBlock: first,
       divider: true,
@@ -431,6 +460,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
         if (lead?.type === "heading" && !siblingRun && !(lead.data as any)?.label) {
           s.title = plainInline(lead.children as Inline[]);
           s.titleSource = "heading";
+          s.titleLine = lead.position?.start.line ?? s.titleLine;
           s.body = s.body.slice(1);
           s.context = s.context.filter((c) => !(c.kind === "heading" && c.continued));
         }
@@ -545,7 +575,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     slides,
     diagnostics,
     registry,
-    render: { registry, bibliography: options.bibliography, citations: options.citations, citeKeys, numberOf, definitions },
+    render: { registry, bibliography: options.bibliography, citations: options.citations, citeKeys, numberOf, definitions, themeColor },
     imageUrls: [...imageUrls],
   };
 }
@@ -572,6 +602,9 @@ function coverSlide(content: string): Slide | undefined {
     return i + 1;
   };
   const authors = meta.authors.map((a) => ({ name: a.name, affiliations: a.affiliations.map(numberOf) }));
+  // A top-level list that no author refers to is shown as it is, without numbers (REQ-114).
+  const numbered = affiliations.length > 0;
+  if (!numbered) affiliations.push(...meta.affiliations);
   const block: SlideBlock = {
     kind: "slideBlock",
     id: -1,
@@ -580,6 +613,8 @@ function coverSlide(content: string): Slide | undefined {
     children: [],
     loc: { line: 1 },
     endLoc: { line: 1 },
+    openLine: 1,
+    closeLine: 1,
   };
   return {
     kind: "slide",
@@ -600,6 +635,7 @@ function coverSlide(content: string): Slide | undefined {
       subtitle: meta.subtitle,
       authors,
       affiliations: affiliations.map(affiliationText),
+      numbered,
       date: meta.date,
     },
   };

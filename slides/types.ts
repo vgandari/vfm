@@ -145,6 +145,8 @@ export interface Slide {
     subtitle?: string;
     authors: Array<{ name: string; affiliations: number[] }>;
     affiliations: string[];
+    /** False when the affiliations are listed without numbers (one shared affiliation, or none tied to an author). */
+    numbered: boolean;
     date?: string;
   };
   /** Presenter notes: the `@note(...)` blocks after this slide's content and before the next slide's. */

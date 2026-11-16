@@ -17,7 +17,7 @@
  */
 
 import { createElement as h } from "react";
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import type { FootnoteDefinition, List } from "mdast";
 import { visit } from "unist-util-visit";
 import { renderTree } from "../pipeline";
@@ -41,6 +41,9 @@ export interface SlideRenderContext {
   /** Validated accent color from the YAML header (`theme-color`). */
   themeColor?: string;
 }
+
+/** `data-line` for a region whose text was written on one line of the source (REQ-161, REQ-162). */
+const lineAttr = (line: number | undefined) => (line ? { "data-line": line } : {});
 
 function sliceRegistry(registry: NormalizedRegistry, labels: Set<string>): NormalizedRegistry {
   const out = new NormalizedRegistry();
@@ -71,11 +74,14 @@ export function renderNotes(slide: Slide, ctx: SlideRenderContext): ReactElement
   return h("div", { className: "vfm-notes" }, ...paragraphs);
 }
 
-function renderCover(slide: Slide): ReactElement {
+/** Inline style that carries the theme color; the stylesheet derives the title rule and the tint from it. */
+const themeStyle = (ctx: SlideRenderContext) => (ctx.themeColor ? { style: { "--vfm-slide-accent": ctx.themeColor } as CSSProperties } : {});
+
+function renderCover(slide: Slide, ctx: SlideRenderContext): ReactElement {
   const c = slide.cover!;
   return h(
     "section",
-    { className: "vfm-slide vfm-cover", "data-layout": "single" },
+    { className: `vfm-slide vfm-cover${ctx.themeColor ? " vfm-tinted" : ""}`, "data-layout": "single", ...themeStyle(ctx) },
     h("h1", { className: "vfm-cover-title" }, c.title),
     c.subtitle ? h("p", { className: "vfm-cover-subtitle" }, c.subtitle) : null,
     c.authors.length > 0
@@ -89,14 +95,18 @@ function renderCover(slide: Slide): ReactElement {
         )
       : null,
     c.affiliations.length > 0
-      ? h("ol", { className: "vfm-cover-affiliations" }, ...c.affiliations.map((a, i) => h("li", { key: i }, h("sup", null, i + 1), " ", a)))
+      ? h(
+          "ol",
+          { className: "vfm-cover-affiliations" },
+          ...c.affiliations.map((a, i) => h("li", { key: i }, c.numbered ? [h("sup", { key: "n" }, i + 1), " "] : null, a))
+        )
       : null,
     c.date ? h("p", { className: "vfm-cover-date" }, c.date) : null
   );
 }
 
 export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { number?: number } = {}): ReactElement {
-  if (slide.cover) return renderCover(slide);
+  if (slide.cover) return renderCover(slide, ctx);
   // Only this slide's own labels resolve; a reference to another slide is plain text.
   const registry = sliceRegistry(ctx.registry, slide.labels);
   // A slide carries the definitions its text uses. Footnotes are numbered per slide.
@@ -121,11 +131,12 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
 
   const cls = ["vfm-slide", `vfm-layout-${slide.layout}`];
   if (slide.divider) cls.push("vfm-divider");
+  if (slide.divider && ctx.themeColor) cls.push("vfm-tinted");
   if (slide.continuation.of > 1) cls.push("vfm-continuation");
 
   const title =
     slide.title.length > 0
-      ? h("header", { className: "vfm-slide-title" }, h("div", { className: "vfm-inline" }, inline(slide.title)),
+      ? h("header", { className: "vfm-slide-title", ...lineAttr(slide.titleLine) }, h("div", { className: "vfm-inline" }, inline(slide.title)),
           slide.continuation.of > 1
             ? h("span", { className: "vfm-cont" }, `(${slide.continuation.index}/${slide.continuation.of})`)
             : null)
@@ -139,6 +150,13 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
       "div",
       { className: "vfm-slide-content" },
       ...(slide.layout === "rtext" ? [imagesEl, bodyEl] : [bodyEl, imagesEl])
+    );
+  } else if (slide.layout === "2col" && slide.images.length > 0) {
+    // Images with no text beside them: one image per column (REQ-172).
+    content = h(
+      "div",
+      { className: "vfm-slide-content" },
+      ...slide.images.map((img, i) => h("div", { key: i, className: "vfm-region vfm-images vfm-fit" }, tree([img])))
     );
   } else {
     content = h("div", { className: "vfm-slide-content" }, bodyEl);
@@ -158,11 +176,11 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
   }
 
   const leadin = slide.leadin
-    ? h("footer", { className: "vfm-slide-leadin", ...(slide.leadinStep ? { "data-step": slide.leadinStep } : {}) },
+    ? h("footer", { className: "vfm-slide-leadin", ...lineAttr(slide.leadinLine), ...(slide.leadinStep ? { "data-step": slide.leadinStep } : {}) },
         h("div", { className: "vfm-inline" }, inline(slide.leadin)))
     : null;
 
   const number =
     extra.number !== undefined ? h("div", { className: "vfm-slide-number" }, String(extra.number)) : null;
-  return h("section", { className: cls.join(" "), "data-layout": slide.layout }, title, content, refs, leadin, number);
+  return h("section", { className: cls.join(" "), "data-layout": slide.layout, ...themeStyle(ctx) }, title, content, refs, leadin, number);
 }
