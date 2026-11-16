@@ -49,14 +49,14 @@ const scaleOf = (s: any) => s.tableScale as number | undefined;
 const tableSlides = (deck: any) => deck.slides.filter((s: any) => s.body.some((b: any) => b.type === "table"));
 
 // Verifies REQ-232 (UC-25)
-test("a table starts at 0.9 and shrinks in steps of 0.05 to no less than 0.7 to fit", () => {
+test("a table starts at 0.9 and shrinks in steps of 0.05 to no less than 0.6 to fit", () => {
   assert.equal(TABLE_SCALE_DEFAULT, 0.9);
-  assert.equal(TABLE_SCALE_MIN, 0.7);
+  assert.equal(TABLE_SCALE_MIN, 0.6);
   assert.equal(TABLE_SCALE_STEP, 0.05);
-  const allowed = [0.9, 0.85, 0.8, 0.75, 0.7];
+  const allowed = [0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6];
   const seen = new Set<number>();
   let previous = 1;
-  for (let n = 1; n <= 11; n++) {
+  for (let n = 1; n <= 13; n++) {
     const slides = tableSlides(tableDeck(n));
     assert.equal(slides.length, 1, `${n} rows on one slide`);
     const s = scaleOf(slides[0])!;
@@ -66,7 +66,7 @@ test("a table starts at 0.9 and shrinks in steps of 0.05 to no less than 0.7 to 
     seen.add(s);
   }
   assert.equal(scaleOf(tableSlides(tableDeck(2))[0]), 0.9);
-  assert.equal(previous, 0.7, "eleven rows only fit at the minimum");
+  assert.equal(previous, 0.6, "thirteen rows only fit at the minimum");
   assert.ok(seen.size >= 3, `intermediate steps are used: ${[...seen]}`);
 });
 
@@ -91,11 +91,11 @@ test("the caption is divided by the same factor, so it keeps the size of the tex
 });
 
 // Verifies REQ-233, REQ-012 (UC-25)
-test("a table too big at 0.7 is split by rows, each slide holding as many rows as fit at 0.7", () => {
+test("a table too big at 0.6 is split by rows, each slide holding as many rows as fit at 0.6", () => {
   const deck = tableDeck(80, "(Lead-in)");
   const slides = tableSlides(deck);
   assert.ok(slides.length > 1);
-  slides.slice(0, -1).forEach((s: any) => assert.equal(scaleOf(s), 0.7));
+  slides.slice(0, -1).forEach((s: any) => assert.equal(scaleOf(s), 0.6));
   const counts = slides.map((s: any) => s.body.find((b: any) => b.type === "table").children.length - 1);
   assert.equal(counts[0], counts[1], "full slides hold the same number of rows");
   assert.ok(counts[counts.length - 1] <= counts[0]);

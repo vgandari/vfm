@@ -14,6 +14,6 @@ export const DARK_BACKGROUND_LUMINANCE = 0.179;
 /** Table text on a slide is this many times the size of the text around it... */
 export const TABLE_SCALE_DEFAULT = 0.9;
 /** ...and is reduced to no less than this to make a table fit. */
-export const TABLE_SCALE_MIN = 0.7;
+export const TABLE_SCALE_MIN = 0.6;
 /** The reduction step. */
 export const TABLE_SCALE_STEP = 0.05;

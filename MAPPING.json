@@ -550,7 +550,7 @@
       ],
       "kind": "automated"
     },
-    "tests/table-fit.test.ts::a table starts at 0.9 and shrinks in steps of 0.05 to no less than 0.7 to fit": {
+    "tests/table-fit.test.ts::a table starts at 0.9 and shrinks in steps of 0.05 to no less than 0.6 to fit": {
       "requirements": [
         "REQ-232"
       ],
@@ -577,7 +577,7 @@
       ],
       "kind": "automated"
     },
-    "tests/table-fit.test.ts::a table too big at 0.7 is split by rows, each slide holding as many rows as fit at 0.7": {
+    "tests/table-fit.test.ts::a table too big at 0.6 is split by rows, each slide holding as many rows as fit at 0.6": {
       "requirements": [
         "REQ-233",
         "REQ-012"

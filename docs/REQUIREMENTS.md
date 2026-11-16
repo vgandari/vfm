@@ -173,6 +173,6 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | ID | Requirement | Method |
 | --- | --- | --- |
 | REQ-231 | When a `@slide` block holds a table and a lead-in, vfm shall place every row of the table on the slides and the lead-in on the last one, and shall not drop a table that fits a slide without the lead-in. | T |
-| REQ-232 | On a slide vfm shall set the text of a table to 0.9 times the size of the text around it, and when the slide does not fit shall reduce that factor in steps of 0.05 to no less than 0.7 until it fits. | T |
-| REQ-233 | When a table does not fit a slide at 0.7, vfm shall continue it on further slides by rows as REQ-012 says, putting on each slide the most rows that fit at 0.7, and shall set each slide's text at the largest factor from REQ-232 at which it fits. | T |
+| REQ-232 | On a slide vfm shall set the text of a table to 0.9 times the size of the text around it, and when the slide does not fit shall reduce that factor in steps of 0.05 to no less than 0.6 until it fits. | T |
+| REQ-233 | When a table does not fit a slide at 0.6, vfm shall continue it on further slides by rows as REQ-012 says, putting on each slide the most rows that fit at 0.6, and shall set each slide's text at the largest factor from REQ-232 at which it fits. | T |
 | REQ-234 | vfm shall keep the table caption at the size of the text around it, whatever the factor. | T |

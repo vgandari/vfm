@@ -2,7 +2,7 @@
  * slides/tableScale.ts
  *
  * Sizes the text of the tables on a slide (REQ-232). Table text starts at 0.9 times the text around it and is
- * reduced in steps of 0.05 to no less than 0.7 until the slide fits. The factor is stored on the slide
+ * reduced in steps of 0.05 to no less than 0.6 until the slide fits. The factor is stored on the slide
  * (`tableScale`) and the stylesheet applies it.
  */
 

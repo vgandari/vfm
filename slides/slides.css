@@ -139,9 +139,9 @@
 .vfm-slide li { margin: 0.2em 0; }
 .vfm-slide img { max-width: 100%; height: auto; }
 .vfm-slide figure { margin: 0 0 0.6em; }
-.vfm-slide figcaption { font-size: 0.7em; color: var(--_muted); }
+.vfm-slide figcaption { font-size: 0.6em; color: var(--_muted); }
 .vfm-slide pre { font-size: 0.75em; }
-.vfm-slide table { font-size: calc(var(--vfm-table-scale, 0.9) * 1em); } /* 0.9 by default, down to 0.7 to fit (REQ-232) */
+.vfm-slide table { font-size: calc(var(--vfm-table-scale, 0.9) * 1em); } /* 0.9 by default, down to 0.6 to fit (REQ-232) */
 .vfm-slide table caption { font-size: calc(1em / var(--vfm-table-scale, 0.9)); } /* the caption keeps the size around the table (REQ-234) */
 
 /* Repeated context on a continuation */
