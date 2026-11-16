@@ -118,3 +118,18 @@ test("the slide's table size rules beat the document's: on a slide the content s
     assert.ok(wins(spec(slideSel!), spec(docSel!)), `${element}: "${slideSel}" must out-rank "${docSel}"`);
   }
 });
+
+// Verifies REQ-235 (UC-25)
+test("on a slide the cell padding and line height scale with the table text, and out-rank the document's", () => {
+  const slideSheet = css("slides/slides.css");
+  const docSheet = css("CustomMarkdown.module.css");
+  const rule = /\.vfm-slide\.vfm-slide table th,\s*\.vfm-slide\.vfm-slide table td \{([^}]*)\}/.exec(slideSheet)?.[1];
+  assert.ok(rule, "a slide rule for th and td exists");
+  assert.match(rule!, /padding: [\d.]+em [\d.]+em/, "padding is in em, so it shrinks with the text");
+  assert.doesNotMatch(rule!, /padding:[^;]*px/);
+  assert.match(rule!, /line-height: 1\.3/);
+  // The document's rule is `.markdownBody table th, .markdownBody table td` (classes 1, elements 2): ours must be stronger.
+  assert.match(docSheet, /\.markdownBody table th,\s*\.markdownBody table td \{[^}]*padding: 6px 13px/s);
+  // The document keeps its own pixel padding (REQ-151).
+  assert.doesNotMatch(docSheet.replace(/\.markdownBody table th,\s*\.markdownBody table td \{[^}]*\}/s, ""), /table t[dh][^{]*\{[^}]*padding/);
+});

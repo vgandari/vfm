@@ -115,7 +115,8 @@
       "REQ-231",
       "REQ-232",
       "REQ-233",
-      "REQ-234"
+      "REQ-234",
+      "REQ-235"
     ],
     "UC-24": [
       "REQ-211",
@@ -591,6 +592,15 @@
       "requirements": [
         "REQ-232",
         "REQ-234"
+      ],
+      "use_cases": [
+        "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::on a slide the cell padding and line height scale with the table text, and out-rank the document's": {
+      "requirements": [
+        "REQ-235"
       ],
       "use_cases": [
         "UC-25"
