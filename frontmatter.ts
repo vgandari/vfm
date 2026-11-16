@@ -28,6 +28,9 @@
  *   tags          list of strings, or a comma-separated string; a leading "#"
  *                 is dropped (Obsidian style)
  *   bibliography  file name or list of file names (not resolved here)
+ *   theme-color   accent color: #rgb, #rrggbb, rgb(r, g, b), hsl(h, s%, l%) or a color name. Slide title
+ *                 separators use it; title and section slides use a lighter tint of it as background.
+ *                 An invalid value is ignored (slides report a `theme-color` diagnostic).
  *   author(s)     string | list of strings | list of objects:
  *                   name: string | {given, family}
  *                   affiliation(s): string | object | list of either; a string
@@ -68,6 +71,8 @@ export interface FrontmatterMeta {
   tags: string[];
   bibliography: string[];
   authors: Author[];
+  /** `theme-color`: a CSS color (#rgb, #rrggbb, rgb(), hsl() or a color name) used as the slide accent. */
+  themeColor?: string;
 }
 
 export interface ParsedFrontmatter {

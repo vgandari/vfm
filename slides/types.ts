@@ -43,7 +43,8 @@ export type DiagnosticCode =
   | "layout-ignored"
   | "leadin-dropped"
   | "layout-no-image"
-  | "step-noop";
+  | "step-noop"
+  | "theme-color";
 
 export interface Diagnostic {
   code: DiagnosticCode;
@@ -83,6 +84,8 @@ export interface HeadingRef {
   inline: Inline[];
   label?: string | null;
   loc: SourceLoc;
+  /** 1-based line in the text the parser saw (after `@include` expansion); what `data-line` carries. */
+  line: number;
 }
 
 /** Parser output: a transparent container in document mode. */
@@ -100,6 +103,9 @@ export interface SlideBlock {
   children: Block[];
   loc: SourceLoc;
   endLoc: SourceLoc;
+  /** Lines of the `@slide` and `@end` directives in the text the parser saw (see HeadingRef.line). */
+  openLine: number;
+  closeLine: number;
 }
 
 export interface ContextItem {
@@ -116,6 +122,8 @@ export interface Slide {
   kind: "slide";
   title: Inline[];
   titleSource: "override" | "heading" | "none";
+  /** Line (in the parsed text) the title came from: the `@slide[...]` opener or the heading. Absent for none. */
+  titleLine?: number;
   continuation: { index: number; of: number };
   layout: "single" | "rtext" | "ltext" | "2col";
   context: ContextItem[];
@@ -124,6 +132,8 @@ export interface Slide {
   /** Only references not shown by an earlier slide, under showrefs. */
   references: RefEntry[];
   leadin?: Inline[];
+  /** Line of the `@end(...)` that holds the lead-in. */
+  leadinLine?: number;
   /** steps[0] is empty; steps[k] holds the ids of what appears at step k. */
   steps: string[][];
   /** Step at which the lead-in appears, under stepleadin. */

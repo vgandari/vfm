@@ -38,6 +38,8 @@ export interface SlideRenderContext {
   numberOf: Map<string, number>;
   /** Link reference definitions, looked up document-wide so `[text][ref]` works on any slide. */
   definitions: Block[];
+  /** Validated accent color from the YAML header (`theme-color`). */
+  themeColor?: string;
 }
 
 function sliceRegistry(registry: NormalizedRegistry, labels: Set<string>): NormalizedRegistry {
