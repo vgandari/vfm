@@ -58,3 +58,9 @@ the two repositories, and each repository maps its own to its own requirements.
 | UC-44 | The author writes standard Markdown (CommonMark and GitHub's extensions) and gets what other tools give, so a file moves between tools without surprises. | request |
 | UC-45 | The author writes alerts, highlights, math, code with a language, theorems and footnotes, and gets the box, the mark, the equation, the colored code, the numbered environment and the note. | request |
 | UC-46 | The author numbers headings to a chosen depth and shifts them to fit a larger document. | request |
+
+## New in `slides-tutorial`
+
+| ID | Use case | Origin |
+| --- | --- | --- |
+| UC-47 | A person who has a document or an outline learns to turn it into slides by following examples: they open a complete deck, change it and see the result, and learn what VFM reports when something does not fit. | request |

@@ -1,0 +1,2 @@
+@slide[Thank you]
+@end

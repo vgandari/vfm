@@ -234,3 +234,15 @@ published suites of CommonMark, GFM, cmark-gfm and markdown-it (`tests/fixtures/
 | ID | Requirement | Method |
 | --- | --- | --- |
 | REQ-317 | vfm shall ship `docs/tutorial/TUTORIAL.md`, a tutorial in its own flavor that renders as a document and as a deck without error, resolves every cross-reference in it, shows every syntax feature of the README's "Syntax extensions" list, and holds only examples that render on their own. | T |
+
+## F. New in `slides-tutorial`
+
+Tests for these are in `tests/slides-tutorial.test.ts`. The example decks are in `docs/tutorial/slides/` and the tutorial text is `docs/tutorial/SLIDES_TUTORIAL.md`.
+
+### Learning to make slides (UC-47)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-318 | vfm shall ship the example decks of `docs/tutorial/slides/`, each of which builds as a deck with no diagnostic of severity error, renders every one of its slides, and renders as a document. | T |
+| REQ-319 | The example decks shall show, with the structure that `SLIDES_TUTORIAL.md` states for each: a title slide made from the YAML header; a title from the `[title]` override, from the heading and left blank; dividers merged into one agenda slide; a title-only slide; the layouts `rtext`, `ltext` and `2col` with pictures; reveal steps for list items and for the lead-in; paragraph reduction by shape (long paragraph, bold paragraph, ordinals, a colon, a number); a `---` that ends a slide; a cross-reference kept on its own slide and dropped from another, `noxrefs`, `nodoc` and a numbered equation; citations with `showrefs`; presenter notes; a footnote; `theme-color`, `separator-color`, `section-color` and `title-image`; math, a diagram, an algorithm, a score and code; and `@include`. | T |
+| REQ-320 | Every example in `SLIDES_TUTORIAL.md` that holds an `@slide` block shall build as a deck without a diagnostic of severity error, every deck in `docs/tutorial/slides/` shall be named in the tutorial, and every deck the tutorial names shall exist. | T |

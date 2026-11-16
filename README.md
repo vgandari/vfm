@@ -294,7 +294,11 @@ chose to add to their own server and is not part of rendering.
 [`docs/tutorial/TUTORIAL.md`](docs/tutorial/TUTORIAL.md) is one long tutorial for people learning Markdown and this flavor in particular. It is
 written in VFM and meant to be opened in a preview: every example is shown as the text you type and as what it gives. It covers
 CommonMark and GFM first, then everything in "Syntax extensions", then slides, and it ends with questions and exercises. Its last
-four slides make a small deck, so it also shows slide mode. `tests/tutorial.test.ts` keeps it honest: it must render, every
+four slides make a small deck, so it also shows slide mode.
+[`docs/tutorial/SLIDES_TUTORIAL.md`](docs/tutorial/SLIDES_TUTORIAL.md) does the same for slides: eleven complete example decks in
+`docs/tutorial/slides/` (first slides, titles, layouts, reveal steps, paragraph reduction, cross-references, citations and notes, colors,
+drawn content, includes, a whole talk), each explained in the tutorial. `tests/slides-tutorial.test.ts` builds every deck and checks the
+structure the tutorial promises. `tests/tutorial.test.ts` keeps it honest: it must render, every
 cross-reference in it must resolve, every example must render on its own, and each feature must appear.
 
 ## Tests
