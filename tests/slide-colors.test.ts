@@ -94,7 +94,8 @@ test("with a theme color, section-color replaces the section tint and the title 
   const withBoth = sectionDeck('theme-color: "#1a6ea8"\nsection-color: "#fff3b0"\n');
   assert.doesNotMatch(slideHtml(withBoth, 1), /vfm-tinted/);
   assert.match(slideHtml(withBoth, 1), /--vfm-slide-section-bg:#fff3b0/);
-  assert.match(slideHtml(withBoth, 0), /vfm-cover vfm-tinted/);
+  assert.match(slideHtml(withBoth, 0), /vfm-cover vfm-cover-colored/);
+  assert.match(slideHtml(withBoth, 0), /--vfm-slide-cover-bg:#1a6ea8/);
   const without = sectionDeck('theme-color: "#1a6ea8"\n');
   assert.match(slideHtml(without, 1), /vfm-divider vfm-tinted/);
   assert.doesNotMatch(slideHtml(without, 1), /vfm-section-colored/);
@@ -194,10 +195,15 @@ test("title-image without a title is reported and ignored", () => {
   assert.deepEqual(deck.imageUrls, []);
 });
 
-// Verifies REQ-215 (UC-24)
-test("without title-image the title slide is as before", () => {
+// Verifies REQ-107, REQ-215 (UC-13, UC-24)
+test("without title-image the title slide is the plain theme color, with text chosen by luminance", () => {
   const deck = api.buildSlideDeck(`${header('theme-color: "#1a6ea8"\n')}@slide[Body]\nText.\n@end\n`);
   const h = slideHtml(deck, 0);
-  assert.match(h, /class="vfm-slide vfm-cover vfm-tinted"/);
+  assert.match(h, /class="vfm-slide vfm-cover vfm-cover-colored vfm-on-dark"/);
+  assert.match(h, /--vfm-slide-cover-bg:#1a6ea8/);
+  const pale = api.buildSlideDeck(`${header('theme-color: "#fff3b0"\n')}@slide[Body]\nText.\n@end\n`);
+  assert.match(slideHtml(pale, 0), /vfm-cover vfm-cover-colored vfm-on-light/);
+  const sheet = css("slides/slides.css");
+  assert.match(sheet, /\.vfm-slide\.vfm-cover-colored[^{]*\{[^}]*--_bg: var\(--vfm-slide-cover-bg\)/s);
   assert.doesNotMatch(h, /vfm-cover-bg|vfm-cover-scrim|vfm-cover-image/);
 });

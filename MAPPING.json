@@ -57,7 +57,8 @@
       "REQ-102",
       "REQ-103",
       "REQ-104",
-      "REQ-105"
+      "REQ-105",
+      "REQ-107"
     ],
     "UC-14": [
       "REQ-111",
@@ -119,11 +120,12 @@
     ]
   },
   "test_cases": {
-    "tests/slide-polish.test.ts::theme-color sets the accent on every slide and tints only the title and section slides": {
+    "tests/slide-polish.test.ts::theme-color sets the accent on every slide, tints the section slides and colors the title slide as it is": {
       "requirements": [
         "REQ-101",
         "REQ-102",
-        "REQ-105"
+        "REQ-105",
+        "REQ-107"
       ],
       "use_cases": [
         "UC-13"
@@ -320,7 +322,7 @@
       ],
       "kind": "automated"
     },
-    "tests/slide-polish.test.ts::table text is 0.9 times the text around it, in documents and slides; other text keeps its size": {
+    "tests/slide-polish.test.ts::table text is 0.8 times the text around it, in documents and slides; captions and other text keep their size": {
       "requirements": [
         "REQ-151",
         "REQ-152"
@@ -513,11 +515,13 @@
       ],
       "kind": "automated"
     },
-    "tests/slide-colors.test.ts::without title-image the title slide is as before": {
+    "tests/slide-colors.test.ts::without title-image the title slide is the plain theme color, with text chosen by luminance": {
       "requirements": [
+        "REQ-107",
         "REQ-215"
       ],
       "use_cases": [
+        "UC-13",
         "UC-24"
       ],
       "kind": "automated"

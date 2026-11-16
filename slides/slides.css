@@ -141,8 +141,8 @@
 .vfm-slide figure { margin: 0 0 0.6em; }
 .vfm-slide figcaption { font-size: 0.7em; color: var(--_muted); }
 .vfm-slide pre { font-size: 0.75em; }
-.vfm-slide table { font-size: 0.9em; } /* slightly smaller than the text around it (REQ-151) */
-.vfm-slide table caption { font-size: 1.1111em; }
+.vfm-slide table { font-size: 0.8em; } /* slightly smaller than the text around it (REQ-151) */
+.vfm-slide table caption { font-size: 1.25em; }
 
 /* Repeated context on a continuation */
 .vfm-continued,
@@ -237,7 +237,10 @@
 }
 
 .vfm-slide.vfm-section-colored,
+.vfm-slide.vfm-section-colored,
 :root[data-theme="dark"] .vfm-slide.vfm-section-colored { --_bg: var(--vfm-slide-section-bg); }
+.vfm-slide.vfm-cover-colored,
+:root[data-theme="dark"] .vfm-slide.vfm-cover-colored { --_bg: var(--vfm-slide-cover-bg); }
 /* `section-color`: light text on a dark background, dark text on a light one (REQ-206). */
 .vfm-slide.vfm-on-dark,
 :root[data-theme="dark"] .vfm-slide.vfm-on-dark {

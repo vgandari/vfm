@@ -91,12 +91,14 @@ const themeStyle = (ctx: SlideRenderContext, extra: Record<string, string> = {})
 
 function renderCover(slide: Slide, ctx: SlideRenderContext): ReactElement {
   const c = slide.cover!;
+  // A title image replaces the background; otherwise the theme color is the background as it is, with light or dark text (REQ-107).
+  const coverClass = c.image ? " vfm-cover-image" : ctx.themeColor ? ` vfm-cover-colored ${isDarkColor(ctx.themeColor) ? "vfm-on-dark" : "vfm-on-light"}` : "";
   return h(
     "section",
     {
-      className: `vfm-slide vfm-cover${c.image ? " vfm-cover-image" : ctx.themeColor ? " vfm-tinted" : ""}`,
+      className: `vfm-slide vfm-cover${coverClass}`,
       "data-layout": "single",
-      ...themeStyle(ctx),
+      ...themeStyle(ctx, !c.image && ctx.themeColor ? { "--vfm-slide-cover-bg": ctx.themeColor } : {}),
     },
     c.image ? h("img", { className: "vfm-cover-bg", src: c.image, alt: "" }) : null,
     c.image ? h("div", { className: "vfm-cover-scrim" }) : null,
