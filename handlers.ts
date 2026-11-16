@@ -178,10 +178,19 @@ export const paragraphHandler: Handler = (state, node) => {
   const children: ElementContent[] = [mediaEl];
   if (figcaption) children.push(figcaption);
 
-  return el("figure", {
+  const figure = el("figure", {
     className: ["labeled-figure"],
     ...(id ? { id } : {}),
   }, children);
+
+  // Text written around the image stays: before it as a paragraph above the figure, after it as one below.
+  const at = para.children.indexOf(imgNode);
+  const around = (nodes: any[]): Element[] => {
+    const blank = nodes.every((c) => c.type === "text" && !c.value.trim());
+    return blank ? [] : [el("p", {}, state.all({ ...para, children: nodes } as any))];
+  };
+  const out: Element[] = [...around(para.children.slice(0, at)), figure, ...around(para.children.slice(at + 1))];
+  return out.length === 1 ? figure : out;
 };
 
 // ─── Table handler ────────────────────────────────────────────────────────────

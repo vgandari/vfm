@@ -51,6 +51,7 @@ import type {
   PhrasingContent,
 } from "mdast";
 import { visit } from "unist-util-visit";
+import { fromMarkdown } from "mdast-util-from-markdown";
 
 // ─── Shared label data attached to nodes ─────────────────────────────────────
 
@@ -173,12 +174,22 @@ function rawImageLabel(img: Image, source: string): string | undefined {
   return undefined;
 }
 
+const plainText = (n: any): string => (typeof n.value === "string" ? n.value : (n.children ?? []).map(plainText).join(""));
+const HARD_BREAK = /(?:\\| {2,})\r?\n/;
+
 function processFigureParagraph(para: Paragraph, source: string): void {
   const imgIdx = para.children.findIndex((c) => c.type === "image");
   if (imgIdx === -1) return;
 
   const img = para.children[imgIdx] as Image;
   const rawLabel = rawImageLabel(img, source);
+  // mdast drops a hard line break from the alt text ("here\\\nit is" becomes "hereit is"): put it back as a newline.
+  if (rawLabel !== undefined && HARD_BREAK.test(rawLabel)) {
+    img.alt = rawLabel
+      .split(HARD_BREAK)
+      .map((piece) => plainText(fromMarkdown(piece)))
+      .join("\n");
+  }
   /** Records the caption as written, without a `{#label}` that is embedded in it. */
   const keepSource = () => {
     if (rawLabel === undefined) return;
