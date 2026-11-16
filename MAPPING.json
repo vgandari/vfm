@@ -680,6 +680,33 @@
       ],
       "kind": "automated"
     },
+    "tests/fit.test.ts::a lone float that is too tall is scaled down to fit, never below MIN_SHRINK": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "tests/fit.test.ts::text is never scaled: a lone non-float that is too tall does not fit, and so are several children": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
+    "tests/fit.test.ts::a scaled float whose box still ends below the region does not fit": {
+      "requirements": [
+        "REQ-011"
+      ],
+      "use_cases": [
+        "UC-03"
+      ],
+      "kind": "automated"
+    },
     "test/slides.test.ts::directive syntax errors are fatal and located": {
       "requirements": [
         "REQ-044"
