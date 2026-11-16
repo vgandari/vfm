@@ -29,6 +29,7 @@
     "bibliography-server.ts",
     "bibliography-client.ts",
     "bibtex.ts",
+    "constants.ts",
     "registry.ts",
     "handlers.ts",
     "AlgorithmPseudocode.tsx",
