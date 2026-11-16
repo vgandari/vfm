@@ -94,7 +94,7 @@ registry.
   background of section slides exactly as written (default: `theme-color`), with light text when the color is dark (relative luminance below 0.179, where white has more contrast than the dark text) and dark text otherwise;
   `title-image: cover.jpg` replaces the title slide's background with that image under a dark scrim and white text. Invalid
   colors are reported (`separator-color`, `section-color`) and ignored; `title-image` without a `title` is reported and ignored.
-- **Slide typography** in the VS Code preview, the HTML export and the PDF is the document's (headings `##` 1.5em, `###` 1.25em, code 85 %, document list and paragraph spacing) at slide size: the `.vfm-slide` heading, paragraph, list and `pre` rules in `slides/slides.css` tie with the document's and lose. They apply to a host that renders slides outside `.markdownBody`.
+- **Slide typography** (heading sizes, paragraph spacing, list indentation, code size) is not set by `slides/slides.css`. It comes from the document stylesheet: see "Hosting slides".
 - **Table text** is 0.9 times the surrounding size in documents. On slides it is 0.9 too, and shrinks in steps of 0.05 to 0.6
   until the table fits; only then is a tall table split across slides, its header repeated. Cell padding and line height shrink with the text, and captions keep the surrounding size.
   A table is never dropped because the block has an `@end(lead-in)`.
@@ -162,6 +162,21 @@ deck.diagnostics;   // everything `check` reports, with codes and locations
 
 `Slide.steps` / `data-step` attributes drive reveal stepping: show elements whose
 `data-step` ≤ the current step; hidden items keep their space.
+
+### Hosting slides
+
+`slides/slides.css` styles the slide *stage*: the 1280 × 720 frame, title and rule, layouts, covers, section slides, tables (REQ-232),
+figures, lead-ins and footnotes. It does **not** style the text inside a slide: heading sizes, paragraph spacing, list
+indentation, code blocks, math, links and citations. Those come from the document stylesheet, `CustomMarkdown.module.css`,
+whose `.markdownBody` class a host puts on the element that holds the slide stage. `vfm-preview` does this
+(`../vfm-preview/src/webview/Slides.tsx`, `stageClass`), and it is the reference host: copy it.
+
+A host that renders slides without `.markdownBody` gets the browser's default headings, paragraphs, lists and code, and no
+styling for math, citations or cross-references. To get the same look, apply `.markdownBody` to the stage as `vfm-preview` does.
+
+Why slide rules do not simply set these? Slide and document rules for the same element have the same specificity and the
+document stylesheet comes later, so the document would win anyway; the slide rules for them were dead and are removed. Making
+the slide stylesheet win is deferred (REQ-245, UC-27; its test is marked `todo` and fails by design).
 
 ### Paragraphs, sentences and separators
 

@@ -128,24 +128,16 @@
 }
 
 /* Slide content typography.
-   Inside `.markdownBody` (the VS Code preview, the HTML export and the PDF all render slides there) many of these rules tie with
-   the document's rules of the same specificity, and the document stylesheet comes later in the bundle, so the document wins:
-   h2/h3/h4 sizes and spacing, p, ul/ol/li spacing and `pre` size. What shows there is the document typography at slide size
-   (h2 1.5em, h3 1.25em, code 85 %). They are kept for a host that renders slides without `.markdownBody`. Table rules below
-   use a doubled class to win on purpose (REQ-232). */
-.vfm-slide h2, .vfm-slide h3, .vfm-slide h4 {
-  margin: 0.4em 0 0.25em;
-  line-height: 1.2;
-}
-.vfm-slide h2 { font-size: 1.15em; }
-.vfm-slide h3 { font-size: 1.05em; color: var(--_muted); }
-.vfm-slide p { margin: 0 0 0.6em; }
-.vfm-slide ul, .vfm-slide ol { margin: 0 0 0.5em; padding-left: 1.3em; }
-.vfm-slide li { margin: 0.2em 0; }
+   Slides do not set heading sizes, paragraph spacing, list indentation or code size: the host wraps the stage in `.markdownBody`
+   (the document stylesheet, CustomMarkdown.module.css) and the document's rules style that content. Only declarations the
+   document leaves unset are made here. A host that does not wrap slides in `.markdownBody` gets the browser's defaults for the
+   rest; see "Hosting slides" in README.md. Making slide rules win over the document's is deferred (REQ-246). */
+.vfm-slide h3 { color: var(--_muted); }
+.vfm-slide ul, .vfm-slide ol { margin: 0 0 0.5em; }
+.vfm-slide li { margin-top: 0.2em; }
 .vfm-slide img { max-width: 100%; height: auto; }
 .vfm-slide figure { margin: 0 0 0.6em; }
 .vfm-slide figcaption { font-size: 0.6em; color: var(--_muted); }
-.vfm-slide pre { font-size: 0.75em; }
 .vfm-slide.vfm-slide table { font-size: calc(var(--vfm-table-scale, 0.9) * 1em); } /* 0.9 by default, down to 0.6 to fit (REQ-232). Doubled class: the slide sits inside .markdownBody, whose table rule comes later in the bundle and would win a tie. */
 .vfm-slide.vfm-slide table caption { font-size: calc(1em / var(--vfm-table-scale, 0.9)); } /* the caption keeps the size around the table (REQ-234) */
 /* Cell padding and line height are in em, so a table shrunk to fit loses row height as well as text size (REQ-235). Fixed

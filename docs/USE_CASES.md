@@ -48,3 +48,4 @@ maps it only to its own requirements.
 | --- | --- | --- |
 | UC-25 | The author puts a table on a slide, with or without a lead-in under it, and sees the whole table with its text as large as the slide allows. | bug report, request |
 | UC-26 | The author puts two tables side by side on one `2col` slide. | request |
+| UC-27 | The author, or a developer hosting vfm slides, sets the typography of slide headings, paragraphs, lists and code independently of the document's. | deferred; request |

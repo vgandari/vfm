@@ -200,3 +200,18 @@ test("a table split off by a lead-in leaves a lone last row with the header copi
   }
   assert.ok(sawLoneRow, "the sweep reaches a table whose last slide holds one row");
 });
+
+// ─── Slide typography (UC-27), deferred ──────────────────────────────────────
+
+// Verifies REQ-245 (UC-27)
+test("slide typography rules out-rank the document's (deferred: fails until REQ-245 is built)", { todo: "REQ-245 is deferred" }, () => {
+  const spec = (selector: string): [number, number] => [(selector.match(/\.[\w-]+/g) ?? []).length, (selector.match(/(^|[\s>+~])[a-z][\w-]*/gi) ?? []).length];
+  const wins = (a: [number, number], b: [number, number]) => a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]);
+  const slideSheet = css("slides/slides.css");
+  for (const element of ["h2", "h3", "h4", "p", "li", "pre"]) {
+    // The document styles the element as `.markdownBody <element>` (one class, one element).
+    const slideSel = new RegExp(`^([^{}/]*\\b${element})\\s*\\{[^}]*font-size|^([^{}/]*\\b${element})\\s*\\{[^}]*margin`, "m").exec(slideSheet);
+    assert.ok(slideSel, `${element}: slides.css sets its typography`);
+    assert.ok(wins(spec((slideSel![1] ?? slideSel![2]).trim()), [1, 1]), `${element}: "${slideSel![1] ?? slideSel![2]}" must out-rank ".markdownBody ${element}"`);
+  }
+});

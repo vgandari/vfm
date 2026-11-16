@@ -185,3 +185,12 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-241 | On a `2col` slide vfm shall lay tables out as ordinary blocks in the two columns, balanced at block boundaries and together with any headings and text in the block, so that two tables, each under its own heading, sit side by side; a table alone on a `2col` slide shall take the whole slide. | T |
 | REQ-242 | On a slide in any other layout vfm shall keep one table or other float per slide as before. | T |
 | REQ-243 | When the tables and text of a `2col` block do not fit side by side, vfm shall reduce the table text as REQ-232 says and, if they still do not fit, shall continue on the next slide, not drop a table. | T |
+
+### Slide typography (UC-27) — deferred
+
+Status: **Deferred**. Not implemented, so its test is marked `todo` and fails by design. Today the document stylesheet
+styles slide content (see `README.md`, "Hosting slides"). Decide this before it is built: it changes how every slide looks.
+
+| ID | Requirement | Method | Status |
+| --- | --- | --- | --- |
+| REQ-245 | When slides are rendered inside the document stylesheet's `.markdownBody`, vfm shall style the headings, paragraphs, lists and code of a slide from `slides/slides.css`, with selectors that out-rank the document's rules for the same elements. | T | Deferred |

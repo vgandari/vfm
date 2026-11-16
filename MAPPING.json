@@ -116,6 +116,9 @@
       "REQ-242",
       "REQ-243"
     ],
+    "UC-27": [
+      "REQ-245"
+    ],
     "UC-25": [
       "REQ-231",
       "REQ-232",
@@ -655,6 +658,15 @@
       ],
       "use_cases": [
         "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::slide typography rules out-rank the document's (deferred: fails until REQ-245 is built)": {
+      "requirements": [
+        "REQ-245"
+      ],
+      "use_cases": [
+        "UC-27"
       ],
       "kind": "automated"
     },
