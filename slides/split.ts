@@ -137,6 +137,11 @@ function isFloatUnit(u: Unit): boolean {
   return u.parts.some((p) => p.kind === "float");
 }
 
+/** A float that is a table; two of these may share a `2col` slide that has no text (REQ-241). */
+function isTableUnit(u: Unit): boolean {
+  return u.parts.some((p) => p.kind === "float" && p.node.type === "table");
+}
+
 export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
   const { block } = prepared;
   const drafts: Draft[] = [];
@@ -191,7 +196,12 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
   };
 
   const tryPlace = (d: Draft, units: Unit[], withLeadin: boolean): boolean => {
-    if (units.some(isFloatUnit) && d.units.some(isFloatUnit)) return false;
+    if (units.some(isFloatUnit) && d.units.some(isFloatUnit)) {
+      // The one exception: on a `2col` slide with no text, tables sit side by side, one per column (REQ-241).
+      const tablesOnly = [...d.units, ...units].filter(isFloatUnit).every(isTableUnit);
+      const noText = [...d.units, ...units].every(isImageUnit);
+      if (!(block.options.layout === "2col" && tablesOnly && noText)) return false;
+    }
     if (units.some(isImageUnit)) {
       const hasText = d.units.some((u) => !isImageUnit(u));
       // Image-only slides hold one image; on 2col, two (one per column).

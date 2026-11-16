@@ -111,6 +111,11 @@
       "REQ-207",
       "REQ-208"
     ],
+    "UC-26": [
+      "REQ-241",
+      "REQ-242",
+      "REQ-243"
+    ],
     "UC-25": [
       "REQ-231",
       "REQ-232",
@@ -604,6 +609,42 @@
       ],
       "use_cases": [
         "UC-25"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::two tables on a 2col slide with no text go side by side, one per column; a third starts a new slide": {
+      "requirements": [
+        "REQ-241"
+      ],
+      "use_cases": [
+        "UC-26"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::a table and a picture, or the lone table, on a 2col slide behave as for pictures": {
+      "requirements": [
+        "REQ-241"
+      ],
+      "use_cases": [
+        "UC-26"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::with text, or in another layout, a second table still goes to the next slide": {
+      "requirements": [
+        "REQ-242"
+      ],
+      "use_cases": [
+        "UC-26"
+      ],
+      "kind": "automated"
+    },
+    "tests/table-fit.test.ts::two tables that do not fit side by side go to separate slides rather than being dropped": {
+      "requirements": [
+        "REQ-243"
+      ],
+      "use_cases": [
+        "UC-26"
       ],
       "kind": "automated"
     },

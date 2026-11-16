@@ -177,3 +177,11 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-233 | When a table does not fit a slide at 0.6, vfm shall continue it on further slides by rows as REQ-012 says, putting on each slide the most rows that fit at 0.6, and shall set each slide's text at the largest factor from REQ-232 at which it fits. | T |
 | REQ-235 | On a slide vfm shall size the padding and the line height of table cells in proportion to the table text, so that reducing the factor of REQ-232 reduces the height of a row as well as the size of its text. | T |
 | REQ-234 | vfm shall keep the table caption at the size of the text around it, whatever the factor. | T |
+
+### Two tables on a `2col` slide (UC-26)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-241 | On a `2col` slide that has tables or images and no text, vfm shall give each table or image its own column, up to two, as REQ-172 says for images. | T |
+| REQ-242 | On a slide in any other layout, or on a `2col` slide that has text, vfm shall keep one table or other float per slide as before. | T |
+| REQ-243 | When two tables on a `2col` slide do not fit side by side, vfm shall reduce the table text as REQ-232 says, and if they still do not fit, shall put the second on the next slide. | T |
