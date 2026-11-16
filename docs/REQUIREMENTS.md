@@ -56,7 +56,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | ID | Requirement | Method |
 | --- | --- | --- |
 | REQ-101 | When the YAML header holds `theme-color` with a valid CSS color, vfm shall draw the rule below every slide title in that color. | T |
-| REQ-102 | When `theme-color` is valid, vfm shall fill the background of the title slide and of every section slide (divider) with the theme color mixed 14 % into white, and shall draw text on those slides in the default dark text color. | T |
+| REQ-102 | When `theme-color` is valid, vfm shall fill the background of the title slide (unless `title-image` is set) and of every section slide (divider, unless `section-color` is set) with the theme color mixed 14 % into white, and shall draw text on those slides in the default dark text color. | T |
 | REQ-103 | vfm shall accept `#rgb`, `#rrggbb`, `rgb()`, `hsl()` and CSS color names as `theme-color`, and shall pass no other text to the stylesheet. | T |
 | REQ-104 | When `theme-color` is present and not valid, vfm shall use the default colors and shall report a diagnostic with code `theme-color` and the line of the header. | T |
 | REQ-105 | When `theme-color` is absent, vfm shall render slides with the default colors, identical to the previous release. | T |
@@ -129,3 +129,38 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-043 | vfm shall give every block element it renders a `data-line` attribute holding the line in the author's file, header and included text included. | UC-07 | README |
 | REQ-044 | vfm shall report each directive, include, label and citation problem as a diagnostic with its severity, its file and its line. | UC-11 | README |
 | REQ-045 | vfm shall attach each `@note` to the slide that holds the content before it, shall never render it in the document, and shall expose the notes of a slide separately from its body. | UC-09 | README |
+
+## C. New in `slide-colors`
+
+### Separator color (UC-22)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-201 | When the YAML header holds `separator-color` with a valid color, vfm shall draw the rule below every slide title in that color, whether or not `theme-color` is set. | T |
+| REQ-202 | When `separator-color` is absent, vfm shall draw the rule in `theme-color`, as before. | T |
+
+### Section color (UC-23)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-203 | When the YAML header holds `section-color` with a valid color, vfm shall fill the background of every section slide (divider or agenda) with exactly that color, whether or not `theme-color` is set. | T |
+| REQ-204 | When `section-color` is absent, vfm shall fill the background of section slides as REQ-102 says. | T |
+| REQ-205 | `section-color` shall not change the background of the title slide or of content slides. | T |
+| REQ-206 | On a section slide with `section-color`, vfm shall draw the text in white-ish when the background's relative luminance (WCAG 2.x) is below 0.179, the point where white text has more contrast than dark text, and in the default dark text color otherwise. | T |
+
+### Both colors
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-207 | vfm shall accept for `separator-color` and `section-color` the same forms as `theme-color` (REQ-103) and shall pass no other text to the stylesheet. | T |
+| REQ-208 | When `separator-color` or `section-color` is present and not valid, vfm shall use the default for that key and shall report a diagnostic whose code is that key and whose line is the key's line in the header. | T |
+
+### Title image (UC-24)
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-211 | When the YAML header holds `title-image` and a title slide exists, vfm shall draw that image over the whole title slide, covering it without distortion, in place of the background color or tint. | T |
+| REQ-212 | vfm shall pass the `title-image` URL through `resolveUrl` and shall list it among the deck's `imageUrls`, so a host resolves and preloads it like any slide image. | T |
+| REQ-213 | On a title slide with `title-image`, vfm shall draw a translucent dark layer between the image and the text and shall draw the text in white, so the text stays legible on any image. | T |
+| REQ-214 | When `title-image` is present and the deck has no title slide (no `title` in the header), vfm shall report a diagnostic with code `title-image` and ignore the key. | T |
+| REQ-215 | When `title-image` is absent, vfm shall render the title slide as before. | T |

@@ -90,6 +90,10 @@ registry.
 - **Theme color**: `theme-color: "#1a6ea8"` in the YAML header (`#rgb`, `#rrggbb`, `rgb()`, `hsl()` or a CSS color name; see
   `slides/themeColor.ts`). Slides draw the rule under each title in it, and the title and section slides use a 14 % tint of it,
   in white, as background with dark text. An invalid value is reported (`theme-color`) and ignored.
+- **Independent colors**: `separator-color` sets the rule under slide titles (default: `theme-color`); `section-color` sets the
+  background of section slides exactly as written (default: the tint of `theme-color`), with light text when the color is dark (relative luminance below 0.179, where white has more contrast than the dark text) and dark text otherwise;
+  `title-image: cover.jpg` replaces the title slide's background with that image under a dark scrim and white text. Invalid
+  colors are reported (`separator-color`, `section-color`) and ignored; `title-image` without a `title` is reported and ignored.
 - **Table text** is 0.9 times the surrounding size, in documents and on slides.
 - **Front matter**: YAML with title, authors, affiliations, abstract, etc.
 

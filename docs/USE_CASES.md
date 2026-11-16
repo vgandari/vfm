@@ -33,3 +33,11 @@ maps it only to its own requirements.
 | UC-18 | The reader finds table text slightly smaller than the surrounding text, so wide tables fit. | request |
 | UC-19 | The author double-clicks a slide title or a lead-in in the slide preview and lands on the line of the file that produced it. | bug report |
 | UC-20 | The author adds images of any size and they are shown whole on the slide; two images on a `2col` slide each get a column. | bug report |
+
+## New in `slide-colors`
+
+| ID | Use case | Origin |
+| --- | --- | --- |
+| UC-22 | The author sets the color of the rule under slide titles on its own, without it being tied to the theme color. | request |
+| UC-23 | The author sets the background color of section slides on its own, without it being tied to the theme color. | request |
+| UC-24 | The author replaces the background of the title slide with an image. | request |
