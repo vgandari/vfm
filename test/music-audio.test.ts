@@ -5,6 +5,7 @@ import { midiToNotes } from "../music-audio.ts";
 
 const abcjs = createRequire(import.meta.url)("abcjs");
 
+// Verifies REQ-038 (UC-06)
 test("midiToNotes reads the notes abcjs writes for a tune", () => {
   const midi = abcjs.synth.getMidiFile("X:1\nM:4/4\nL:1/4\nK:C\nCDEF|GABc|", { midiOutputType: "binary" })[0];
   const notes = midiToNotes(midi);
@@ -15,6 +16,7 @@ test("midiToNotes reads the notes abcjs writes for a tune", () => {
   assert.ok(notes.every((n) => n.dur > 0));
 });
 
+// Verifies REQ-038 (UC-06)
 test("midiToNotes follows repeats and ignores garbage", () => {
   const once = midiToNotes(abcjs.synth.getMidiFile("X:1\nL:1/4\nK:C\nCDEF|", { midiOutputType: "binary" })[0]);
   const twice = midiToNotes(abcjs.synth.getMidiFile("X:1\nL:1/4\nK:C\n|:CDEF:|", { midiOutputType: "binary" })[0]);

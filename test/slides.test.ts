@@ -32,6 +32,7 @@ after(() => cleanup());
 
 const codes = (ds: any[]) => ds.map((d) => d.code);
 
+// Verifies REQ-033 (UC-11, UC-03)
 test("directive syntax errors are fatal and located", () => {
   const cases: Array<[string, RegExp]> = [
     ["@slide(bogus)\nx\n@end", /unknown option "bogus"/],
@@ -52,11 +53,13 @@ test("directive syntax errors are fatal and located", () => {
   assert.equal(ds.find((d: any) => d.code === "syntax").loc.line, 3);
 });
 
+// Verifies REQ-033 (UC-11, UC-03)
 test("directives inside code fences are left alone", () => {
   const ds = api.checkSlides("```\n@slide(bogus)\n```\n");
   assert.deepEqual(ds, []);
 });
 
+// Verifies REQ-004 (UC-03)
 test("document mode: wrappers are transparent, nodoc is removed", () => {
   const { renderToStaticMarkup } = createRequire(import.meta.url)("react-dom/server");
   const html = renderToStaticMarkup(
@@ -69,6 +72,7 @@ test("document mode: wrappers are transparent, nodoc is removed", () => {
   assert.doesNotMatch(html, /Hidden title|Shown|lead-in text|lead/);
 });
 
+// Verifies REQ-004, REQ-033 (UC-03, UC-11)
 test("document mode: a reference into a nodoc block is an error, and so is an unknown label", () => {
   const withNodoc = "See [@fig:a].\n\n@slide(nodoc)\n![Cap](a.png) {#fig:a}\n@end\n";
   assert.throws(() => pipeline.renderMarkdown(withNodoc), /nodoc/);
@@ -77,6 +81,7 @@ test("document mode: a reference into a nodoc block is an error, and so is an un
   assert.doesNotThrow(() => pipeline.renderMarkdown("See [@fig:nope]."));
 });
 
+// Verifies REQ-005 (UC-03)
 test("slide mode keeps only @slide content, with title resolution", () => {
   const deck = api.buildSlideDeck("# Intro\n\nProse that is pruned.\n\n@slide\nKept paragraph.\n@end\n\n@slide[Own title]\nSecond.\n@end\n\n@slide[]\nThird.\n@end\n");
   assert.equal(deck.slides.length, 3);
@@ -86,11 +91,13 @@ test("slide mode keeps only @slide content, with title resolution", () => {
   assert.doesNotMatch(text, /pruned/);
 });
 
+// Verifies REQ-005 (UC-03)
 test("a blank-title block without a heading has titleSource none", () => {
   const deck = api.buildSlideDeck("@slide\nOnly.\n@end\n");
   assert.equal(deck.slides[0].titleSource, "none");
 });
 
+// Verifies REQ-011 (UC-03)
 test("splitting is greedy, repeats the title, numbers continuations and puts the lead-in last", () => {
   const paras = Array.from({ length: 12 }, (_, i) => `Paragraph number ${i} has some text in it that takes a line or two to say.`).join("\n\n");
   const deck = api.buildSlideDeck(`# T\n\n@slide\n${paras}\n@end(The lead-in.)\n`);
@@ -105,6 +112,7 @@ test("splitting is greedy, repeats the title, numbers continuations and puts the
   assert.ok(codes(deck.diagnostics).includes("split"));
 });
 
+// Verifies REQ-020 (UC-05)
 test("a cross-reference unit is dropped when its target is on another slide", () => {
   const filler = Array.from({ length: 10 }, (_, i) => `Filler paragraph ${i} with enough words to occupy a good part of a line.`).join("\n\n");
   const src = `@slide\nBefore.\nThis sentence cites [@fig:a].\n\n${filler}\n\n![Cap](a.png) {#fig:a}\n@end\n`;
@@ -117,6 +125,7 @@ test("a cross-reference unit is dropped when its target is on another slide", ()
   assert.ok(codes(deck.diagnostics).includes("drop-follows"));
 });
 
+// Verifies REQ-020 (UC-05)
 test("a cross-reference unit survives when its target is on the same slide", () => {
   const deck = api.buildSlideDeck("@slide\nSee [@fig:a].\n\n![Cap](a.png) {#fig:a}\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -124,6 +133,7 @@ test("a cross-reference unit survives when its target is on the same slide", () 
   assert.ok(!codes(deck.diagnostics).includes("drop-xref"));
 });
 
+// Verifies REQ-020 (UC-05)
 test("a reference to a label in no @slide block is dropped early; noxrefs drops all", () => {
   const a = api.buildSlideDeck("![Cap](a.png) {#fig:a}\n\n@slide\nKeep this.\nDrop [@fig:a] this.\n@end\n");
   assert.doesNotMatch(JSON.stringify(a.slides[0].body), /Drop/);
@@ -132,6 +142,7 @@ test("a reference to a label in no @slide block is dropped early; noxrefs drops 
   assert.match(JSON.stringify(b.slides[0].body), /Keep this/);
 });
 
+// Verifies REQ-005 (UC-03)
 test("adjacent dividers merge into one nested agenda", () => {
   const src = "# Doc\n\n@slide\n## Part A\n@end\n\nIgnored prose.\n\n@slide\n### A1\n@end\n\n@slide\n## Part B\n@end\n\n@slide\nContent.\n@end\n";
   const deck = api.buildSlideDeck(src);
@@ -144,6 +155,7 @@ test("adjacent dividers merge into one nested agenda", () => {
   assert.equal(agenda.body[0].children[0].children.at(-1).type, "list");
 });
 
+// Verifies REQ-005 (UC-03)
 test("a title-only block is its own slide and never joins an agenda", () => {
   const deck = api.buildSlideDeck("@slide[divider 1]\n@end\n\n@slide\n# divider 2\n@end\n");
   assert.equal(deck.slides.length, 2);
@@ -153,6 +165,7 @@ test("a title-only block is its own slide and never joins an agenda", () => {
   assert.equal(around.slides.length, 3);
 });
 
+// Verifies REQ-006 (UC-03)
 test("layouts: rtext sends images to the image region, 2col with an image goes single", () => {
   const rtext = api.buildSlideDeck("@slide(rtext)\nText.\n\n![Cap](a.png)\n@end\n");
   assert.equal(rtext.slides[0].layout, "rtext");
@@ -164,6 +177,7 @@ test("layouts: rtext sends images to the image region, 2col with an image goes s
   assert.equal(twocol.slides[0].layout, "single");
 });
 
+// Verifies REQ-013 (UC-02)
 test("steplists numbers list items in order; stepleadin follows the last item", () => {
   const deck = api.buildSlideDeck("@slide(steplists, stepleadin)\n- one\n  - nested\n- two\n@end(Done.)\n");
   const s = deck.slides[0];
@@ -175,11 +189,13 @@ test("steplists numbers list items in order; stepleadin follows the last item", 
   assert.equal(items[1].data.hProperties["data-step"], 3);
 });
 
+// Verifies REQ-013 (UC-02)
 test("step options with nothing to step are a no-op with a note", () => {
   const deck = api.buildSlideDeck("@slide(steplists, stepleadin)\n```\ncode\n```\n@end\n");
   assert.equal(codes(deck.diagnostics).filter((c: string) => c === "step-noop").length, 2);
 });
 
+// Verifies REQ-011 (UC-03)
 test("a list continuation repeats the parent item", () => {
   const items = Array.from({ length: 14 }, (_, i) => `  - child item ${i} with a few words`).join("\n");
   const deck = api.buildSlideDeck(`@slide\n- parent item\n${items}\n@end\n`);
@@ -189,6 +205,7 @@ test("a list continuation repeats the parent item", () => {
   assert.match(JSON.stringify(second.body[0]), /parent item/);
 });
 
+// Verifies REQ-011 (UC-03)
 test("a code listing or theorem that does not fit is left off the slide, with a hint, not an error", () => {
   const code = "```\n" + Array.from({ length: 80 }, (_, i) => `line ${i}`).join("\n") + "\n```";
   const thm = ":::thm Big\n" + Array.from({ length: 80 }, (_, i) => `Sentence ${i} of a theorem that is far too long.`).join("\n\n") + "\n:::";
@@ -205,6 +222,7 @@ test("a code listing or theorem that does not fit is left off the slide, with a 
   }
 });
 
+// Verifies REQ-005 (UC-03)
 test("when a title is shared by several slides, every one of them shows its counter", () => {
   const filler = Array.from({ length: 14 }, (_, i) => `Filler paragraph ${i} with enough words to occupy a good part of a line.`).join("\n\n");
   const deck = api.buildSlideDeck(`@slide[Shared]\n${filler}\n@end\n`);
@@ -214,6 +232,7 @@ test("when a title is shared by several slides, every one of them shows its coun
   html.forEach((h: string, i: number) => assert.match(h, new RegExp(`\\(${i + 1}/${deck.slides.length}\\)`)));
 });
 
+// Verifies REQ-007, REQ-033 (UC-03, UC-11)
 test("@include expands recursively, detects cycles and maps lines to files", () => {
   const files: Record<string, string> = {
     "main.md": "",
@@ -231,6 +250,7 @@ test("@include expands recursively, detects cycles and maps lines to files", () 
   assert.ok(missing.diagnostics.some((d: any) => /cannot read/.test(d.message)));
 });
 
+// Verifies REQ-007, REQ-033 (UC-03, UC-11)
 test("diagnostics from included text name the original file", () => {
   const files: Record<string, string> = { "bad.md": "@slide(bogus)\nx\n@end" };
   const r = api.expandIncludes("intro\n@include(bad.md)", { file: "main.md", read: (p: string) => files[p] ?? null });
@@ -245,6 +265,7 @@ import { createRequire } from "node:module";
 const html = (deck: any, i = 0) =>
   createRequire(import.meta.url)("react-dom/server").renderToStaticMarkup(api.renderSlide(deck.slides[i], deck.render));
 
+// Verifies REQ-011 (UC-03)
 test("at most one theorem, admonition, quote or listing per slide", () => {
   const src = "@slide\n> [!NOTE]\n> First.\n\n> Second quote.\n\n```js\ncode();\n```\n@end\n";
   const deck = api.buildSlideDeck(src);
@@ -252,6 +273,7 @@ test("at most one theorem, admonition, quote or listing per slide", () => {
   for (const s of deck.slides) assert.equal(s.body.length, 1);
 });
 
+// Verifies REQ-011 (UC-03)
 test("floats take the image region in rtext / ltext, like images", () => {
   const deck = api.buildSlideDeck("@slide(rtext)\nIntro text.\n\n:::thm Name\n$a$\n:::\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -261,6 +283,7 @@ test("floats take the image region in rtext / ltext, like images", () => {
   assert.equal(twocol.slides[0].layout, "single");
 });
 
+// Verifies REQ-011 (UC-03)
 test("a second float spills onto its own slide in rtext", () => {
   const deck = api.buildSlideDeck("@slide(rtext)\nText.\n\n> One.\n\n> Two.\n@end\n");
   assert.equal(deck.slides.length, 2);
@@ -268,6 +291,7 @@ test("a second float spills onto its own slide in rtext", () => {
   assert.equal(deck.slides[1].body[0].type, "blockquote");
 });
 
+// Verifies REQ-019, REQ-020 (UC-05)
 test("only referenced items are numbered; the rest keep just their caption", () => {
   const src = "@slide\nSee [@fig:b].\n\n![First caption](a.png) {#fig:a}\n\n![Second caption](b.png) {#fig:b}\n@end\n";
   const deck = api.buildSlideDeck(src);
@@ -278,6 +302,7 @@ test("only referenced items are numbered; the rest keep just their caption", () 
   assert.doesNotMatch(out, /Figure \d+: First caption/);
 });
 
+// Verifies REQ-039 (UC-03)
 test("only footnotes defined inside the @slide block are shown, numbered per slide", () => {
   const src = "@slide\nClaim.[^a] Other.[^out]\n\n[^a]: Defined inside the block.\n[^unused]: Never cited.\n@end\n\nLater prose.\n\n[^out]: Defined outside the block.\n";
   const deck = api.buildSlideDeck(src);
@@ -292,12 +317,14 @@ test("only footnotes defined inside the @slide block are shown, numbered per sli
   assert.match(warn[0].message, /out/);
 });
 
+// Verifies REQ-039 (UC-03)
 test("footnote references are errors in a title or lead-in", () => {
   assert.ok(api.checkSlides("@slide[Title[^a\\]]\nx\n@end").some((d: any) => /footnote/.test(d.message)));
   assert.ok(api.checkSlides("@slide\nx\n@end(Lead[^a])").some((d: any) => /footnote/.test(d.message)));
 });
 
 
+// Verifies REQ-011 (UC-03)
 test("tables are floats: one per slide, in the image region", () => {
   const t = "| a | b |\n| - | - |\n| 1 | 2 |";
   const two = api.buildSlideDeck(`@slide\n${t}\n\n${t}\n@end\n`);
@@ -307,6 +334,7 @@ test("tables are floats: one per slide, in the image region", () => {
   assert.equal(beside.slides[0].images[0].type, "table");
 });
 
+// Verifies REQ-006 (UC-03)
 test("rtext / ltext revert to one column when no text shares the slide", () => {
   const alone = api.buildSlideDeck("@slide(ltext)\n> Only a quote.\n@end\n");
   assert.equal(alone.slides[0].layout, "single");
@@ -316,6 +344,7 @@ test("rtext / ltext revert to one column when no text shares the slide", () => {
   assert.equal(imgOnly.slides[0].layout, "single");
 });
 
+// Verifies REQ-009, REQ-111 (UC-02, UC-14)
 test("the YAML header makes a title slide", () => {
   const src = "---\ntitle: My Talk\nsubtitle: A subtitle\nauthors:\n  - name: Ada\n    affiliation: Lab\n  - name: Alan\n    affiliation: Lab\ndate: 2026-10-19\n---\n\n@slide\nBody.\n@end\n";
   const deck = api.buildSlideDeck(src);
@@ -332,12 +361,14 @@ test("the YAML header makes a title slide", () => {
   assert.equal(api.buildSlideDeck("@slide\nNo header.\n@end\n").slides.length, 1);
 });
 
+// Verifies REQ-010 (UC-02)
 test("a slide number is rendered when given", () => {
   const deck = api.buildSlideDeck("@slide\nHi.\n@end\n");
   const markup = createRequire(import.meta.url)("react-dom/server").renderToStaticMarkup(api.renderSlide(deck.slides[0], deck.render, { number: 7 }));
   assert.match(markup, /vfm-slide-number">7</);
 });
 
+// Verifies REQ-030 (UC-09)
 test("notes go with the slide holding the content before them, and only that slide", () => {
   const filler = Array.from({ length: 12 }, (_, i) => `Paragraph ${i} with a fair amount of text in it so that the slide fills up quickly.`);
   // note A after paragraph 0 (slide 1), note B after the last paragraph (last slide)
@@ -351,6 +382,7 @@ test("notes go with the slide holding the content before them, and only that sli
   for (const s of deck.slides.slice(1, -1)) assert.equal(s.notes.length, 0);
 });
 
+// Verifies REQ-030 (UC-09)
 test("several notes in one block are combined in order, and a note before any content goes to the first slide", () => {
   const deck = api.buildSlideDeck("@slide\n@note(First)\nText.\n\n@note(Second)\n@note(Third, with (nested) parens)\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -358,6 +390,7 @@ test("several notes in one block are combined in order, and a note before any co
   assert.deepEqual(deck.slides[0].notes.map(inline), ["First", "Second", "Third, with (nested) parens"]);
 });
 
+// Verifies REQ-030 (UC-09)
 test("notes in the next block belong to that block's slides", () => {
   const deck = api.buildSlideDeck("@slide\nOne.\n@note(for one)\n@end\n\n@slide\nTwo.\n@note(for two)\n@end\n");
   assert.equal(deck.slides.length, 2);
@@ -366,6 +399,7 @@ test("notes in the next block belong to that block's slides", () => {
   assert.match(JSON.stringify(deck.slides[1].notes), /for two/);
 });
 
+// Verifies REQ-030 (UC-09)
 test("a multi-line note keeps line numbers and is one note", () => {
   const deck = api.buildSlideDeck("@slide\nText.\n@note(line one\nline two)\n\nMore.\n@end\n");
   assert.equal(deck.slides[0].notes.length, 1);
@@ -373,6 +407,7 @@ test("a multi-line note keeps line numbers and is one note", () => {
   assert.ok(bad.some((d: any) => d.code === "syntax"));
 });
 
+// Verifies REQ-030 (UC-09)
 test("a note never appears in the document, and outside a block it is plain text", () => {
   const out = createRequire(import.meta.url)("react-dom/server").renderToStaticMarkup(
     pipeline.renderMarkdown("Before.\n\n@slide\nIn slide.\n@note(secret)\n@end\n")
@@ -385,6 +420,7 @@ test("a note never appears in the document, and outside a block it is plain text
   assert.ok(api.checkSlides("@slide\n@note no parens\n@end").some((d: any) => /parentheses/.test(d.message)));
 });
 
+// Verifies REQ-030 (UC-09)
 test("notes on dividers are combined, and renderNotes leaves them out of the slide", () => {
   const deck = api.buildSlideDeck("@slide\n## A\n@note(a)\n@end\n\n@slide\n## B\n@note(b)\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -399,6 +435,7 @@ test("notes on dividers are combined, and renderNotes leaves them out of the sli
 
 const renderHtml = (src: string) => ssr.renderToStaticMarkup(ssr.renderMarkdown(src));
 
+// Verifies REQ-021 (UC-06)
 test("algorithm, music and mermaid blocks are fenced code with a language", () => {
   const src = [
     "```alg Find the max {#alg:max}",
@@ -435,11 +472,13 @@ test("algorithm, music and mermaid blocks are fenced code with a language", () =
   assert.doesNotMatch(html, /__(algorithm|music|mermaid)-block/);
 });
 
+// Verifies REQ-021 (UC-06)
 test("the old @@@ and &&& delimiters are no longer special", () => {
   const html = renderHtml("@@@\nplain\n@@@\n");
   assert.doesNotMatch(html, /algorithm-block/);
 });
 
+// Verifies REQ-021 (UC-06)
 test("preprocessing keeps line numbers: a node after a block reports its true line", () => {
   const src = "```mus\nX:1\nK:C\nCDEF|\n```\n\n:::thm T\ninner\nlines\n:::\n\nTarget paragraph.\n";
   const { tree } = pipeline.parseForSlides(src);
@@ -449,6 +488,7 @@ test("preprocessing keeps line numbers: a node after a block reports its true li
   assert.equal(div.children[0].position.start.line, 8);
 });
 
+// Verifies REQ-008 (UC-03)
 test("a document separator inside a @slide block starts a new slide and is not shown", () => {
   const deck = api.buildSlideDeck("@slide[T]\nFirst.\n\n---\n\nSecond.\n\n***\n\n***\n\nThird.\n@end\n");
   assert.equal(deck.slides.length, 3);
@@ -484,6 +524,7 @@ function shown(deck: any): string[] {
 }
 const slideText = (body: string, front = "") => shown(api.buildSlideDeck(`${front}@slide\n${body}\n@end\n`));
 
+// Verifies REQ-015 (UC-12)
 test("sentences end at terminal punctuation plus a newline, with no abbreviation rules", () => {
   assert.deepEqual(slideText("The study was led by Dr. Chen at the university.\nResults came out in 2021.\nA follow-up is planned.", "---\nparagraphs: full\n---\n"),
     ["The study was led by Dr. Chen at the university. Results came out in 2021. A follow-up is planned."]);
@@ -491,28 +532,33 @@ test("sentences end at terminal punctuation plus a newline, with no abbreviation
   assert.deepEqual(slideText("It ended. So did this. Fine."), ["It ended. So did this. Fine."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: a bold sentence is picked, bold is kept, brackets go", () => {
   const out = slideText("Retention improved sharply this year.\n**Repeat purchases rose 18%** after the loyalty program launched (see the appendix for methodology).\nThe team also redesigned the onboarding emails, which had been unchanged for years.\nSupport tickets were flat.");
   assert.deepEqual(out, ["Retention improved sharply this year.", "**Repeat purchases rose 18%** after the loyalty program launched."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: a list after a colon becomes bullets", () => {
   // The intro stays as the parent bullet, so the list keeps its context.
   assert.deepEqual(slideText("The platform supports several export formats: PDF, HTML, PowerPoint, and plain text."),
     ["The platform supports several export formats:", "  PDF", "  HTML", "  PowerPoint", "  plain text"]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: a lone statistic becomes a callout", () => {
   assert.deepEqual(slideText("Customer churn fell to 4.2% in the third quarter after the pricing change."),
     ["CALLOUT **4.2%** | Customer churn fell in the third quarter after the pricing change."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: asides between commas and in brackets are removed", () => {
   assert.deepEqual(slideText("The pilot, which ran in three regions over six months, exceeded its targets (see Table 2)."), ["The pilot exceeded its targets."]);
   // A list of short items is not an aside.
   assert.deepEqual(slideText("We bought apples, oranges, and pears today."), ["We bought apples, oranges, and pears today."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: bold-only paragraph is verbatim, lead-ins go, ordinals make a numbered list", () => {
   assert.deepEqual(slideText("**Our priority this year is retention, not acquisition.**\n\nAcquisition costs have risen steadily.\nRetention has become the cheaper way to grow."),
     ["**Our priority this year is retention, not acquisition.**", "Acquisition costs have risen steadily.", "Retention has become the cheaper way to grow."]);
@@ -521,6 +567,7 @@ test("reducer: bold-only paragraph is verbatim, lead-ins go, ordinals make a num
     ["1. Export the data from the old system.", "2. Clean up duplicate records.", "3. Import the file into the new system."]);
 });
 
+// Verifies REQ-030 (UC-09)
 test("reducer: a long paragraph is split by topic; modes first-sentence, notes-only and full", () => {
   const long = "Our first office opened in 2009 with four employees.\nGrowth was slow at first.\nBy 2014 we had moved to a larger building.\nHiring accelerated after that move.\nThe second half of this document turns to our product roadmap.\nThe roadmap is organized around three themes.\nEach theme has a named owner who reports quarterly.";
   const auto = slideText(long);
@@ -532,12 +579,14 @@ test("reducer: a long paragraph is split by topic; modes first-sentence, notes-o
   assert.ok(bad.diagnostics.some((d: any) => d.code === "paragraph-mode"));
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer output is always made of the paragraph's own words", () => {
   const src = "Alpha beta gamma delta.\nEpsilon zeta eta theta (iota kappa).\nLambda mu, nu xi omicron, pi rho sigma.\nTau upsilon: phi, chi, psi.";
   const words = new Set(src.toLowerCase().match(/\p{L}+/gu));
   for (const line of slideText(src)) for (const w of line.toLowerCase().match(/\p{L}+/gu) ?? []) assert.ok(words.has(w), w);
 });
 
+// Verifies REQ-024 (UC-07)
 test("block elements carry data-line, the line in the author's file (header and blocks included)", () => {
   const src = "---\ntitle: T\n---\n\n# Head\n\n```alg Cap\nbody\nmore\n```\n\n- [ ] task\n- [x] done\n\nLast para.\n";
   const html = renderHtml(src);
@@ -548,25 +597,30 @@ test("block elements carry data-line, the line in the author's file (header and 
   assert.match(html, /<p[^>]*data-line="15"[^>]*>Last para/);
 });
 
+// Verifies REQ-014 (UC-12)
 test("language defaults to English; another language gets no English rules", () => {
   const src = "Revenue grew.\nMoreover, repeat purchases rose.";
   assert.deepEqual(slideText(src), ["Revenue grew.", "Repeat purchases rose."]);
   assert.deepEqual(slideText(src, "---\nlang: xx\n---\n"), ["Revenue grew.", "Moreover, repeat purchases rose."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("a paragraph ending in a colon takes the list that follows it as its children", () => {
   assert.deepEqual(slideText("The weights are as follows:\n\n- first: 2\n- bold: 2"), ["The weights are as follows:", "  first: 2", "  bold: 2"]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("a bold value with no leading word keeps its whole sentence as the caption", () => {
   assert.deepEqual(slideText("The reducer was rated useful in **82%** of cases."), ["CALLOUT **82%** | The reducer was rated useful in **82%** of cases."]);
 });
 
+// Verifies REQ-022 (UC-03)
 test("HTML comments never reach a slide", () => {
   const deck = api.buildSlideDeck("@slide\n<!-- a note to self -->\nKept.\n@end\n");
   assert.ok(!JSON.stringify(deck.slides.map((s: any) => s.body)).includes("note to self"));
 });
 
+// Verifies REQ-011 (UC-03)
 test("a reduced paragraph stays on one slide when it fits", () => {
   const filler = Array.from({ length: 7 }, (_, i) => `Filler paragraph ${i} with enough words to occupy a good part of a line.`).join("\n\n");
   const deck = api.buildSlideDeck(`@slide\n${filler}\n\nFirst kept sentence of the pair.\nSecond kept sentence of the pair.\n@end\n`);
@@ -574,6 +628,7 @@ test("a reduced paragraph stays on one slide when it fits", () => {
   assert.equal(holding.length, 1);
 });
 
+// Verifies REQ-005 (UC-03)
 test("a block with several sections that spans slides takes each slide's title from its heading", () => {
   const section = (name: string) => `## ${name}\n\n` + Array.from({ length: 14 }, (_, i) => `${name} paragraph ${i} with enough words to occupy a good part of a line.`).join("\n\n");
   const deck = api.buildSlideDeck(`@slide\n${section("Alpha")}\n\n${section("Beta")}\n@end\n`);
@@ -590,6 +645,7 @@ test("a block with several sections that spans slides takes each slide's title f
   assert.equal(alpha[0].titleSource, "heading");
 });
 
+// Verifies REQ-005 (UC-03)
 test("a [title] on the block is kept; a block that fits on one slide keeps its heading in effect", () => {
   const withTitle = api.buildSlideDeck("@slide[Mine]\n## A\n\nText.\n\n## B\n\nMore.\n@end\n");
   assert.equal(withTitle.slides[0].titleSource, "override");
@@ -600,6 +656,7 @@ test("a [title] on the block is kept; a block that fits on one slide keeps its h
   assert.match(JSON.stringify(noHeading.slides[0].title), /Only/);
 });
 
+// Verifies REQ-019, REQ-020 (UC-05)
 test("numberCaptions: referenced numbers only what a cross-reference points to, without gaps", () => {
   const src = "![One](a.png) {#fig:a}\n\n![Two](b.png) {#fig:b}\n\n![Three](c.png) {#fig:c}\n\nSee [@fig:c] and [@fig:a].\n";
   const all = renderHtml(src);
@@ -616,6 +673,7 @@ test("numberCaptions: referenced numbers only what a cross-reference points to, 
   assert.match(html, /See <a[^>]*>Figure 2<\/a> and <a[^>]*>Figure 1<\/a>/);
 });
 
+// Verifies REQ-005 (UC-03)
 test("a series of same-level headings with no content between them still becomes a bulleted list", () => {
   // Blocks holding only headings are merged into one list slide (an agenda), at any depth.
   const deck = api.buildSlideDeck("@slide\n## One\n@end\n\n@slide\n## Two\n@end\n\n@slide\n## Three\n@end\n\n@slide\nContent.\n@end\n");
@@ -630,6 +688,7 @@ test("a series of same-level headings with no content between them still becomes
   assert.equal(one.slides[0].titleSource, "none");
 });
 
+// Verifies REQ-005 (UC-03)
 test("one block holding only a run of same-level headings is a bulleted list slide", () => {
   const deck = api.buildSlideDeck("@slide\n## A\n## B\n## C\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -637,6 +696,7 @@ test("one block holding only a run of same-level headings is a bulleted list sli
   assert.equal(deck.slides[0].body[0].children.length, 3);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: only asides that open like one are cut between commas; digit separators are not commas", () => {
   const long = "Over the course of the last decade, open access journals have grown across publishers, regions and disciplines.";
   assert.deepEqual(slideText(long), [long]);
@@ -644,6 +704,7 @@ test("reducer: only asides that open like one are cut between commas; digit sepa
   assert.deepEqual(slideText(nums), [nums]);
 });
 
+// Verifies REQ-020 (UC-05)
 test("a heading survives when the sentence after it is dropped for a cross-reference", () => {
   // The figure is in no @slide block, so the sentence citing it is dropped; its heading must stay.
   const deck = api.buildSlideDeck("![Cap](a.png) {#fig:a}\n\n@slide\n# Results\n\nSee [@fig:a] for the data.\nThe second sentence stays.\n@end\n");
@@ -655,6 +716,7 @@ test("a heading survives when the sentence after it is dropped for a cross-refer
 
 // ─── Underline: single tilde ──────────────────────────────────────────────────
 
+// Verifies REQ-040 (UC-01)
 test("~text~ is underlined, ~~text~~ is still struck through, and stray tildes stay literal", () => {
   const html = renderHtml("An ~underlined phrase~ and ~~struck~~ text, with ~**bold** inside~ too.");
   assert.match(html, /<u>underlined phrase<\/u>/);
@@ -667,11 +729,13 @@ test("~text~ is underlined, ~~text~~ is still struck through, and stray tildes s
   assert.match(renderHtml("`~code~` here"), /<code>~code~<\/code>/);
 });
 
+// Verifies REQ-040 (UC-01)
 test("underline works inside fenced divs, headings and list items", () => {
   const html = renderHtml("# A ~title~\n\n- an ~item~\n\n:::thm T\nInside ~the div~.\n:::\n");
   assert.equal((html.match(/<u>/g) ?? []).length, 3);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: the main clause of 'While A, B' is the bullet; lists and bold are left alone", () => {
   assert.deepEqual(
     slideText("While the majority of journals charge authors nothing, article-processing charges have become common at the largest publishers."),
@@ -692,6 +756,7 @@ test("reducer: the main clause of 'While A, B' is the bullet; lists and bold are
     ["While the majority charge nothing, fees have become common among the largest publishers."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: the main clause is found even when the background clause holds italics", () => {
   assert.deepEqual(
     slideText("Though it could be argued that *PLOS ONE* is a general science journal, the vast majority of its articles are in biomedicine."),
@@ -699,6 +764,7 @@ test("reducer: the main clause is found even when the background clause holds it
   );
 });
 
+// Verifies REQ-012, REQ-011 (UC-03)
 test("a table taller than a slide continues on following slides with its header repeated", () => {
   const rows = Array.from({ length: 80 }, (_, i) => `| row ${i} | x${i} |`).join("\n");
   const deck = api.buildSlideDeck(`@slide[Big]\n| name | value |\n| - | - |\n${rows}\n@end\n`);
@@ -713,6 +779,7 @@ test("a table taller than a slide continues on following slides with its header 
   assert.deepEqual(seen, Array.from({ length: 80 }, (_, i) => String(i)));
 });
 
+// Verifies REQ-011 (UC-03)
 test("a table with no header row that does not fit is left off; so is any other float", () => {
   const rows = Array.from({ length: 80 }, (_, i) => `| row ${i} | x${i} |`).join("\n");
   const noHeader = api.buildSlideDeck(`@slide\nKept.\n\n| | |\n| - | - |\n${rows}\n@end\n`);
@@ -726,12 +793,14 @@ test("a table with no header row that does not fit is left off; so is any other 
   assert.ok(!deck.diagnostics.some((d: any) => d.severity === "error"));
 });
 
+// Verifies REQ-011 (UC-03)
 test("a single sentence taller than a slide is still an overflow error", () => {
   const sentence = Array.from({ length: 4000 }, (_, i) => `word${i}`).join(" ") + ".";
   const deck = api.buildSlideDeck(`@slide\n${sentence}\n@end\n`);
   assert.ok(deck.diagnostics.some((d: any) => d.code === "overflow" && d.severity === "error"));
 });
 
+// Verifies REQ-022 (UC-03)
 test("raw HTML is not part of the flavor: it shows as text; comments stay invisible", () => {
   const html = renderHtml("A <sup>a</sup> note and <br> a break.\n\n<div>block</div>\n\n<!-- hidden -->\n\n:::thm T\nInside <b>div</b>.\n:::\n");
   assert.doesNotMatch(html, /<sup>|<br|<div>block|<b>/);
@@ -741,6 +810,7 @@ test("raw HTML is not part of the flavor: it shows as text; comments stay invisi
   assert.doesNotMatch(html, /hidden/); // comments are not shown
 });
 
+// Verifies REQ-022 (UC-03)
 test("raw HTML shows as text on slides too", () => {
   const deck = api.buildSlideDeck("@slide\nA table note <sup>a</sup> here.\n@end\n");
   const values: string[] = [];
@@ -750,6 +820,7 @@ test("raw HTML shows as text on slides too", () => {
   assert.doesNotMatch(JSON.stringify(deck.slides[0].body), /"type":"html"/);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: citations and cross-references survive even inside brackets, parentheses and asides", () => {
   for (const src of [
     "Prior work (@cite(smith2020)) found the effect.",
@@ -767,6 +838,7 @@ test("reducer: citations and cross-references survive even inside brackets, pare
   assert.deepEqual(slideText("Prior work found the effect (see the appendix)."), ["Prior work found the effect."]);
 });
 
+// Verifies REQ-014 (UC-12)
 test("reducer: a citation in the background clause keeps the sentence whole", () => {
   const src = "While earlier work @cite(smith2020) disagreed, the effect was large and consistent across all of the regions.";
   assert.deepEqual(slideText(src), [src]);

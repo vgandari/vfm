@@ -20,12 +20,14 @@ const PASTED = `@article{shannon1948,
 
 // ─── ids and the extra fields ─────────────────────────────────────────────────
 
+// Verifies REQ-037 (UC-04)
 test("newEntryId makes version 4 UUIDs", () => {
   const ids = new Set(Array.from({ length: 50 }, newEntryId));
   assert.equal(ids.size, 50);
   for (const id of ids) assert.match(id, UUID_V4);
 });
 
+// Verifies REQ-037 (UC-04)
 test("newEntryId works without crypto.randomUUID", () => {
   const original = globalThis.crypto.randomUUID;
   try {
@@ -36,6 +38,7 @@ test("newEntryId works without crypto.randomUUID", () => {
   }
 });
 
+// Verifies REQ-037 (UC-04)
 test("validateBibEntry carries id, rawSource and the server's times, and checks them", () => {
   const base = { citeKey: "k", entryType: "misc", fields: {}, authors: [], editors: [] };
   const id = newEntryId().toUpperCase();
@@ -55,6 +58,7 @@ const entry = (over: Partial<BibEntry> = {}): BibEntry => ({
   citeKey: "k", entryType: "misc", fields: { title: "T" }, authors: [], editors: [], ...over,
 });
 
+// Verifies REQ-037 (UC-04)
 test("bibEntryProblems accepts a good entry and explains the bad ones", () => {
   assert.deepEqual(bibEntryProblems(entry()), []);
   assert.deepEqual(bibEntryProblems(entry({ fields: {}, authors: ["Doe, Jane"] })), []);
@@ -70,6 +74,7 @@ test("bibEntryProblems accepts a good entry and explains the bad ones", () => {
 
 // ─── prepareBibTeX ────────────────────────────────────────────────────────────
 
+// Verifies REQ-037 (UC-04)
 test("prepareBibTeX gives each entry its own id and keeps what was pasted", () => {
   const prepared = prepareBibTeX(`${PASTED}\n@misc{other, title={Other}}`);
   assert.equal(prepared.entries.length, 2);
@@ -80,6 +85,7 @@ test("prepareBibTeX gives each entry its own id and keeps what was pasted", () =
   assert.ok(canSubmit(prepared));
 });
 
+// Verifies REQ-037 (UC-04)
 test("prepareBibTeX reports entries it cannot read, and entries the server would refuse", () => {
   const broken = prepareBibTeX("@article{a, title = {never closed");
   assert.equal(broken.errors.length, 1);
@@ -94,6 +100,7 @@ test("prepareBibTeX reports entries it cannot read, and entries the server would
   assert.equal(canSubmit(prepareBibTeX("just some words")), false);
 });
 
+// Verifies REQ-037 (UC-04)
 test("a crossref is resolved, so what is sent is complete", () => {
   const prepared = prepareBibTeX("@inproceedings{c, title={T}, crossref={p}}\n@proceedings{p, title={Proc}, publisher={ACM}}");
   const child = prepared.entries.find((e) => e.entry.citeKey === "c")!.entry;
@@ -116,6 +123,7 @@ function fakeServer(respond: (body: any) => Response | Promise<Response>) {
 const stored = (body: any) => ({ ...body, createdAt: "2026-10-07T12:00:00Z", lastModified: "2026-10-07T12:00:00Z" });
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
+// Verifies REQ-037 (UC-04)
 test("createBibEntry posts the entry and returns it as stored", async () => {
   const { calls, fetchImpl } = fakeServer((body) => json(stored(body)));
   const { entry: prepared } = prepareBibTeX(PASTED).entries[0];
@@ -144,6 +152,7 @@ test("createBibEntry posts the entry and returns it as stored", async () => {
   assert.equal(result.id, prepared.id);
 });
 
+// Verifies REQ-037 (UC-04)
 test("createBibEntry makes an id if the entry has none", async () => {
   const { calls, fetchImpl } = fakeServer((body) => json(stored(body)));
   await createBibEntry(entry(), { fetch: fetchImpl });
@@ -151,6 +160,7 @@ test("createBibEntry makes an id if the entry has none", async () => {
   assert.equal(calls[0].url, "/update_bibtex", "same origin by default");
 });
 
+// Verifies REQ-037 (UC-04)
 test("createBibEntry refuses a bad entry without sending it", async () => {
   const { calls, fetchImpl } = fakeServer((body) => json(stored(body)));
   await assert.rejects(createBibEntry(entry({ fields: {} }), { fetch: fetchImpl }), /needs a title|title or at least one author/);
@@ -158,6 +168,7 @@ test("createBibEntry refuses a bad entry without sending it", async () => {
   assert.equal(calls.length, 0);
 });
 
+// Verifies REQ-037 (UC-04)
 test("createBibEntry turns the server's refusals into BibServerError", async () => {
   for (const [status, code, message] of [
     [409, "key_in_use", 'Cite key "k" is already used by another entry'],
@@ -183,6 +194,7 @@ test("createBibEntry turns the server's refusals into BibServerError", async () 
   });
 });
 
+// Verifies REQ-037 (UC-04)
 test("createBibEntry reports an unreachable server, and a reply for the wrong entry", async () => {
   const down = (async () => { throw new TypeError("fetch failed"); }) as unknown as typeof fetch;
   await assert.rejects(createBibEntry(entry(), { fetch: down }), (err: unknown) => {
@@ -198,6 +210,7 @@ test("createBibEntry reports an unreachable server, and a reply for the wrong en
   await assert.rejects(createBibEntry(entry(), { fetch: bad.fetchImpl }), BibEntryValidationError);
 });
 
+// Verifies REQ-037 (UC-04)
 test("describeBibError says something a person can act on", () => {
   assert.match(describeBibError(new BibServerError(409, "key_in_use", "x")), /already used/);
   assert.match(describeBibError(new BibServerError(0, "network", "Could not reach the server (x)")), /Could not reach/);

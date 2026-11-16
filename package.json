@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.tsx",
   "scripts": {
-    "test": "node --experimental-transform-types --import ./test/register.mjs --disable-warning=ExperimentalWarning --test \"test/*.test.ts\""
+    "test": "node --experimental-transform-types --import ./test/register.mjs --disable-warning=ExperimentalWarning --test \"test/*.test.ts\" \"tests/*.test.ts\""
   },
   "exports": {
     ".": "./index.tsx",

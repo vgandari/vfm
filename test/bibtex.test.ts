@@ -27,6 +27,7 @@ const SOURCE = `
 const { entries, errors, warnings } = parseBibTeX(SOURCE);
 const entry = (key: string) => entries.find((e) => e.citeKey === key)!;
 
+// Verifies REQ-034 (UC-04)
 test("crossref: a child inherits what it lacks, from a parent that comes later", () => {
   const c = entry("Child2020");
   assert.equal(c.fields.booktitle, "Proceedings of Things");
@@ -43,11 +44,13 @@ test("crossref: a child inherits what it lacks, from a parent that comes later",
   assert.equal(c.fields.crossref, "proc2020", "the field itself is kept");
 });
 
+// Verifies REQ-034 (UC-04)
 test("crossref: a child with its own year keeps its own date", () => {
   assert.equal(entry("own").fields.year, "2019");
   assert.equal(entry("own").fields.month, undefined);
 });
 
+// Verifies REQ-034 (UC-04)
 test("crossref: periodical title becomes journal; inbook inherits the author", () => {
   assert.equal(entry("a3").fields.journal, "The Periodical");
   assert.equal(entry("ch").fields.booktitle, "The Book");
@@ -55,6 +58,7 @@ test("crossref: periodical title becomes journal; inbook inherits the author", (
   assert.deepEqual(entry("ch").editors, ["Ed, Eve"]);
 });
 
+// Verifies REQ-034 (UC-04)
 test("biblatex aliases fill only what is missing, and keep the original", () => {
   assert.equal(entry("a1").fields.journal, "Bell System Technical Journal");
   assert.equal(entry("a1").fields.journaltitle, "Bell System Technical Journal");
@@ -68,6 +72,7 @@ test("biblatex aliases fill only what is missing, and keep the original", () => 
   assert.equal(entry("bad").fields.year, undefined);
 });
 
+// Verifies REQ-034 (UC-04)
 test("a bad crossref is a warning and the entry is kept", () => {
   const text = warnings.map((w) => w.message).join("\n");
   assert.match(text, /'orphan' has crossref 'nope'/);
@@ -76,24 +81,28 @@ test("a bad crossref is a warning and the entry is kept", () => {
   assert.ok(entries.some((e) => e.citeKey === "orphan"));
 });
 
+// Verifies REQ-034 (UC-04)
 test("a repeated cite key is an error, but keys that differ in case are distinct", () => {
   assert.equal(errors.length, 1);
   assert.match(errors[0].message, /duplicate cite key 'foo'/);
   assert.ok(entry("foo") && entry("Foo"));
 });
 
+// Verifies REQ-034 (UC-04)
 test("crossref keys are case-sensitive", () => {
   const { entries, warnings } = parseBibTeX("@misc{c, title={C}, crossref={Parent}}\n@proceedings{parent, title={P}, publisher={Pub}}");
   assert.equal(entries.find((e) => e.citeKey === "c")!.fields.publisher, undefined);
   assert.match(warnings[0].message, /crossref 'Parent'/);
 });
 
+// Verifies REQ-034 (UC-04)
 test("any entry type and field name is kept", () => {
   const { entries } = parseBibTeX("@dataset{d, title={T}, weirdfield={w}}");
   assert.equal(entries[0].entryType, "dataset");
   assert.equal(entries[0].fields.weirdfield, "w");
 });
 
+// Verifies REQ-034 (UC-04)
 test("an @ in a %-comment line is not an entry, and a commented-out entry is ignored", () => {
   const { entries, errors } = parseBibTeX(`
 % a note about @inbook and @cite(x) that is just prose
@@ -104,6 +113,7 @@ test("an @ in a %-comment line is not an entry, and a commented-out entry is ign
   assert.equal(errors.length, 0);
 });
 
+// Verifies REQ-034 (UC-04)
 test("each entry keeps its text as written in rawSource", () => {
   const text = "@string{j = \"Journal\"}\n\n@article{a, title={A}, journal=j}\n% a comment\n@book(b, title = {B})\n";
   const { entries } = parseBibTeX(text);
