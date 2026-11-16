@@ -61,7 +61,7 @@ test("separator-color sets the title rule on every slide, with no theme color an
   }
 });
 
-// Verifies REQ-201, REQ-202 (UC-22, UC-13)
+// Verifies REQ-201, REQ-202 (UC-22, UC-35)
 test("separator-color and theme-color are independent; without the first the rule follows the second", () => {
   const both = api.buildSlideDeck(`${header('theme-color: "#1a6ea8"\nseparator-color: "#e07b00"\n')}@slide[Body]\nText.\n@end\n`);
   const h = slideHtml(both, 1);
@@ -89,7 +89,7 @@ test("section-color fills section slides only, as written, without a theme color
   assert.match(sheet, /\.vfm-slide\.vfm-section-colored[^{]*\{[^}]*--_bg: var\(--vfm-slide-section-bg\)/s);
 });
 
-// Verifies REQ-203, REQ-204, REQ-205 (UC-23, UC-13)
+// Verifies REQ-203, REQ-204, REQ-205 (UC-23, UC-35)
 test("with a theme color, section-color replaces the theme color on section slides and the title slide keeps it", () => {
   const withBoth = sectionDeck('theme-color: "#1a6ea8"\nsection-color: "#fff3b0"\n');
   assert.doesNotMatch(slideHtml(withBoth, 1), /vfm-tinted/);
@@ -142,7 +142,7 @@ test("separator-color and section-color accept what theme-color accepts and noth
   for (let i = 0; i < bad.slides.length; i++) assert.doesNotMatch(slideHtml(bad, i), /--vfm-slide-rule|--vfm-slide-section-bg|onload|url\(/);
 });
 
-// Verifies REQ-208 (UC-22, UC-23, UC-11)
+// Verifies REQ-208 (UC-22, UC-23, UC-34)
 test("an invalid separator-color or section-color is reported at its header line and the default is used", () => {
   const deck = api.buildSlideDeck(`---\ntitle: T\nseparator-color: nope\nsection-color: "#12"\n---\n\n@slide[S]\n@end\n`);
   const sep = deck.diagnostics.find((x: any) => x.code === "separator-color");
@@ -155,11 +155,11 @@ test("an invalid separator-color or section-color is reported at its header line
   assert.equal(ok.diagnostics.filter((d: any) => d.code === "separator-color" || d.code === "section-color").length, 0);
 });
 
-// ─── Title image (UC-24) ─────────────────────────────────────────────────────
+// ─── Title image (UC-40) ─────────────────────────────────────────────────────
 
 const imageDeck = (extra = "", opts: any = {}) => api.buildSlideDeck(`${header(`title-image: images/cover.jpg\n${extra}`)}@slide[Body]\nText.\n@end\n`, opts);
 
-// Verifies REQ-211, REQ-213 (UC-24)
+// Verifies REQ-211, REQ-213 (UC-40)
 test("title-image puts the image behind the title slide's text, under a scrim, in place of the tint", () => {
   const deck = imageDeck('theme-color: "#1a6ea8"\n');
   const h = slideHtml(deck, 0);
@@ -176,7 +176,7 @@ test("title-image puts the image behind the title slide's text, under a scrim, i
   assert.match(sheet, /\.vfm-slide\.vfm-cover-image[^{]*\{[^}]*--_fg: #ffffff/s);
 });
 
-// Verifies REQ-212 (UC-24)
+// Verifies REQ-212 (UC-40)
 test("title-image goes through resolveUrl, is preloaded, and cannot break out of its attribute", () => {
   const deck = imageDeck("", { resolveUrl: (u: string) => `vscode-resource:/doc/${u}` });
   assert.match(slideHtml(deck, 0), /src="vscode-resource:\/doc\/images\/cover\.jpg"/);
@@ -186,7 +186,7 @@ test("title-image goes through resolveUrl, is preloaded, and cannot break out of
   assert.match(slideHtml(evil, 0), /<img class="vfm-cover-bg" src="x&quot; onerror=&quot;y" alt=""\/>/);
 });
 
-// Verifies REQ-214 (UC-24, UC-11)
+// Verifies REQ-214 (UC-40, UC-34)
 test("title-image without a title is reported and ignored", () => {
   const deck = api.buildSlideDeck(`---\ntitle-image: cover.jpg\n---\n\n@slide[Body]\nText.\n@end\n`);
   const d = deck.diagnostics.find((x: any) => x.code === "title-image");
@@ -196,7 +196,7 @@ test("title-image without a title is reported and ignored", () => {
   assert.deepEqual(deck.imageUrls, []);
 });
 
-// Verifies REQ-107, REQ-215 (UC-13, UC-24)
+// Verifies REQ-107, REQ-215 (UC-35, UC-40)
 test("without title-image the title slide is the plain theme color, with text chosen by luminance", () => {
   const deck = api.buildSlideDeck(`${header('theme-color: "#1a6ea8"\n')}@slide[Body]\nText.\n@end\n`);
   const h = slideHtml(deck, 0);

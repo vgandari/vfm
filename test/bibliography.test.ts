@@ -30,14 +30,14 @@ const render = (e: BibEntry, style: ReferenceStyle) =>
 
 const valid = { citeKey: "k", entryType: "Article", fields: { Title: "T", year: "1948" }, authors: ["A, B"], editors: [] };
 
-// Verifies REQ-036 (UC-04)
+// Verifies REQ-036 (UC-30)
 test("validateBibEntry accepts an entry and normalises case", () => {
   const v = validateBibEntry(valid);
   assert.equal(v.entryType, "article");
   assert.equal(v.fields.title, "T");
 });
 
-// Verifies REQ-036 (UC-04)
+// Verifies REQ-036 (UC-30)
 test("validateBibEntry names the first problem", () => {
   const cases: [unknown, RegExp][] = [
     [null, /entry must be an object/],
@@ -58,7 +58,7 @@ test("validateBibEntry names the first problem", () => {
 
 const respond = (body: unknown, status = 200) => (async () => new Response(JSON.stringify(body), { status })) as typeof fetch;
 
-// Verifies REQ-036 (UC-04)
+// Verifies REQ-036 (UC-30)
 test("fetchBibEntry rejects a bad body or a different key, and maps 404 to null", async () => {
   assert.equal((await fetchBibEntry("k", "/api/bib", respond(valid))).citeKey, "k");
   await assert.rejects(fetchBibEntry("other", "/api/bib", respond(valid)), /requested/);
@@ -69,7 +69,7 @@ test("fetchBibEntry rejects a bad body or a different key, and maps 404 to null"
 
 // ─── cite keys ────────────────────────────────────────────────────────────────
 
-// Verifies REQ-036 (UC-04)
+// Verifies REQ-036 (UC-30)
 test("resolveBibliography resolves each key once, and Foo and foo are different keys", async () => {
   const calls: string[] = [];
   const map = await resolveBibliography(["Foo", "foo", "Foo"], async (k) => {
@@ -81,7 +81,7 @@ test("resolveBibliography resolves each key once, and Foo and foo are different 
   assert.ok(map.get("foo"));
 });
 
-// Verifies REQ-036 (UC-04)
+// Verifies REQ-036 (UC-30)
 test("createFetchResolver caches per key, case-sensitively", async () => {
   let fetches = 0;
   const resolver = createFetchResolver("/api/bib", (async (url: string) => {
@@ -96,14 +96,14 @@ test("createFetchResolver caches per key, case-sensitively", async () => {
 
 // ─── math ─────────────────────────────────────────────────────────────────────
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("cleanLatex leaves $...$ math as written and cleans the text around it", () => {
   assert.equal(cleanLatex("An $O(n \\log n)$ \\emph{algorithm} for {TeX}"), "An $O(n \\log n)$ algorithm for TeX");
   assert.equal(cleanLatex("$\\alpha_{i}$ and $x^{2}$"), "$\\alpha_{i}$ and $x^{2}$");
   assert.equal(cleanLatex("It costs \\$5"), "It costs $5", "an escaped dollar is just a dollar");
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("splitMath separates math from text", () => {
   assert.deepEqual(splitMath("Sorting $n$ items in $O(n)$ time"), [
     { math: false, value: "Sorting " },
@@ -116,7 +116,7 @@ test("splitMath separates math from text", () => {
   assert.deepEqual(splitMath(""), []);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("a title with math reaches the formatted reference intact", () => {
   const e = entry("article", { author: "Doe, Jane", title: "Sorting $n$ Items in $O(n \\log n)$ Time", journal: "J", year: "2020" });
   for (const style of STYLES) assert.match(render(e, style), /Sorting \$n\$ Items in \$O\(n \\log n\)\$ Time/, style);
@@ -132,7 +132,7 @@ const FULL = {
   eprinttype: "arXiv", version: "2.1", holder: "Holder Inc.",
 };
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("biblatex and web types use the matching BibTeX layout", () => {
   for (const style of STYLES) {
     assert.equal(render(entry("report", FULL), style), render(entry("techreport", FULL), style), `report/${style}`);
@@ -147,13 +147,13 @@ test("biblatex and web types use the matching BibTeX layout", () => {
   assert.match(render(entry("thesis", untyped), ReferenceStyle.APA), /Doctoral dissertation/);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("a biblatex thesis shows its institution as the school", () => {
   const thesis = entry("thesis", { author: "Doe, Jane", title: "T", institution: "Princeton University", year: "1938" });
   for (const style of STYLES) assert.match(render(thesis, style), /Princeton University/, style);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("online entries show the access date", () => {
   const e = entry("online", { author: "Doe, Jane", title: "Page", publisher: "Site", year: "2020", month: "5", url: "https://x.org", urldate: "2021-01-02" });
   assert.equal(render(e, ReferenceStyle.APA), "Doe, J. (2020, May). Page. Site. Retrieved January 2, 2021, from https://x.org");
@@ -161,7 +161,7 @@ test("online entries show the access date", () => {
   assert.match(render(e, ReferenceStyle.Vancouver), /\[Internet\]\..*\[cited 2021 Jan 2\]\. Available from: https:\/\/x\.org$/);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("a book inbook shows chapter and pages; a plain book does not show pages", () => {
   const chapter = entry("inbook", { author: "Doe, Jane", title: "The Book", chapter: "7", pages: "10--20", year: "2020", publisher: "Pub" });
   assert.match(render(chapter, ReferenceStyle.APA), /\(Chap\. 7, pp\. 10–20\)/);
@@ -169,7 +169,7 @@ test("a book inbook shows chapter and pages; a plain book does not show pages", 
   assert.doesNotMatch(render(entry("book", { title: "B", pages: "300" }), ReferenceStyle.APA), /300/);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("books show their volume", () => {
   const book = entry("book", { title: "B", volume: "3", year: "2020" });
   assert.match(render(book, ReferenceStyle.APA), /\(Vol\. 3\)/);
@@ -177,7 +177,7 @@ test("books show their volume", () => {
   assert.match(render(book, ReferenceStyle.Vancouver), /Vol\. 3\./);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("software and datasets show their version and a type tag", () => {
   const software = entry("software", { author: "Hipp, D. Richard", title: "SQLite", version: "3.45.0", year: "2024", publisher: "Pub" });
   assert.equal(render(software, ReferenceStyle.APA), "Hipp, D. R. (2024). SQLite (Version 3.45.0) [Computer software]. Pub.");
@@ -188,7 +188,7 @@ test("software and datasets show their version and a type tag", () => {
   assert.match(render(data, ReferenceStyle.Vancouver), /\[dataset\]/);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("patents show their number, country and holder", () => {
   const patent = entry("patent", { author: "Bardeen, John", title: "Circuit Element", number: "2,524,035", location: "US", address: "US", holder: "Bell Labs", year: "1950", month: "10", date: "1950-10-03" });
   assert.match(render(patent, ReferenceStyle.APA), /\(US Patent No\. 2,524,035\)\. Bell Labs\./);
@@ -196,7 +196,7 @@ test("patents show their number, country and holder", () => {
   assert.match(render(patent, ReferenceStyle.Vancouver), /US Patent 2,524,035\. Assignee: Bell Labs\. 1950 Oct 3\./);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("an eprint is shown, and linked for arXiv, only when there is no DOI", () => {
   const preprint = entry("article", { author: "Kingma, Diederik", title: "Adam", year: "2014", eprint: "1412.6980", eprinttype: "arXiv" });
   for (const style of STYLES) assert.match(render(preprint, style), /arXiv:1412\.6980/, style);
@@ -206,7 +206,7 @@ test("an eprint is shown, and linked for arXiv, only when there is no DOI", () =
   assert.doesNotMatch(render(withDoi, ReferenceStyle.APA), /arXiv/);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("a chapter or paper in an edited book shows edition and volume", () => {
   const paper = entry("incollection", { author: "A, B", title: "T", booktitle: "Book", editor: "E, F", edition: "2nd", volume: "3", pages: "1--9", publisher: "P", year: "2020" });
   assert.match(render(paper, ReferenceStyle.APA), /\(2nd ed\., Vol\. 3, pp\. 1–9\)/);
@@ -216,14 +216,14 @@ test("a chapter or paper in an edited book shows edition and volume", () => {
 
 // ─── names ────────────────────────────────────────────────────────────────────
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("APA puts a comma before the ampersand, even for two authors", () => {
   const two = entry("book", { author: "Bardeen, John and Brattain, Walter H.", title: "T", year: "1950" });
   assert.match(render(two, ReferenceStyle.APA), /^Bardeen, J\., & Brattain, W\. H\. \(1950\)/);
   assert.equal(formatReference(two, ReferenceStyle.APA).author, "Bardeen & Brattain", "in-text keeps no comma");
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test('"Last, Jr, First" keeps the suffix', () => {
   const book = entry("book", { author: "King, Jr., Martin Luther", title: "Why We Can't Wait", year: "1964" });
   assert.match(render(book, ReferenceStyle.APA), /^King, M\. L\., Jr\. \(1964\)/);
@@ -232,7 +232,7 @@ test('"Last, Jr, First" keeps the suffix', () => {
   assert.equal(formatReference(book, ReferenceStyle.APA).author, "King");
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test('"First von Last" starts the family name at the first lowercase word', () => {
   const family = (author: string) => formatReference(entry("misc", { author, title: "T" }), ReferenceStyle.APA).author;
   assert.equal(family("Pablo de Roda Gil"), "de Roda Gil");
@@ -244,7 +244,7 @@ test('"First von Last" starts the family name at the first lowercase word', () =
 
 // ─── formatting: dates ────────────────────────────────────────────────────────
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("month is shown (and the day, when the date field has it)", () => {
   const article = entry("article", { author: "Doe, Jane", title: "T", journal: "J", year: "2020", month: "may", volume: "3", date: "2020-05-17" });
   assert.match(render(article, ReferenceStyle.APA), /\(2020\)\./, "APA dates journal articles by year alone");
@@ -254,7 +254,7 @@ test("month is shown (and the day, when the date field has it)", () => {
   assert.match(render(web, ReferenceStyle.APA), /\(2020, May 17\)/);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("a month without a year is ignored", () => {
   assert.doesNotMatch(render(entry("article", { title: "T", month: "May" }), ReferenceStyle.MLA), /May/);
 });
@@ -268,7 +268,7 @@ const ALL_TYPES = [
 ];
 const BAD_TEXT = /undefined|null|NaN|\(\)|, ,|\.\.|\( |,\.|\s,|\[\]/;
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("removing any one field, or all of them, never throws or leaves debris", () => {
   for (const type of ALL_TYPES) {
     for (const style of STYLES) {
@@ -287,13 +287,13 @@ test("removing any one field, or all of them, never throws or leaves debris", ()
   }
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test("an entry with neither title nor names leads with its cite key", () => {
   for (const style of STYLES) assert.match(render(entry("misc", {}), style), /^\[k\]/);
   assert.equal(render(entry("misc", { title: "T" }), ReferenceStyle.MLA).startsWith("[k]"), false);
 });
 
-// Verifies REQ-035 (UC-04)
+// Verifies REQ-035 (UC-30)
 test('a name list that is only "and others" does not throw', () => {
   for (const style of STYLES) {
     for (const names of [["others"], ["{}"], [","], ["Doe, Jane", "others"]]) {

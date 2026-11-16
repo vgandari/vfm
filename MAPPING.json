@@ -11,7 +11,7 @@
       "REQ-022",
       "REQ-039"
     ],
-    "UC-04": [
+    "UC-30": [
       "REQ-016",
       "REQ-034",
       "REQ-035",
@@ -27,7 +27,7 @@
       "REQ-021",
       "REQ-038"
     ],
-    "UC-07": [
+    "UC-31": [
       "REQ-043"
     ],
     "UC-28": [
@@ -38,13 +38,13 @@
     "UC-29": [
       "REQ-040"
     ],
-    "UC-09": [
+    "UC-32": [
       "REQ-045"
     ],
-    "UC-10": [
+    "UC-33": [
       "REQ-042"
     ],
-    "UC-11": [
+    "UC-34": [
       "REQ-041",
       "REQ-044"
     ],
@@ -52,7 +52,7 @@
       "REQ-014",
       "REQ-015"
     ],
-    "UC-13": [
+    "UC-35": [
       "REQ-101",
       "REQ-102",
       "REQ-103",
@@ -66,18 +66,18 @@
       "REQ-113",
       "REQ-114"
     ],
-    "UC-15": [
+    "UC-36": [
       "REQ-121",
       "REQ-123"
     ],
-    "UC-16": [
+    "UC-37": [
       "REQ-131",
       "REQ-132",
       "REQ-133",
       "REQ-134",
       "REQ-136"
     ],
-    "UC-17": [
+    "UC-38": [
       "REQ-141",
       "REQ-142",
       "REQ-143",
@@ -87,7 +87,7 @@
       "REQ-151",
       "REQ-152"
     ],
-    "UC-19": [
+    "UC-39": [
       "REQ-161",
       "REQ-162"
     ],
@@ -127,7 +127,7 @@
       "REQ-234",
       "REQ-235"
     ],
-    "UC-24": [
+    "UC-40": [
       "REQ-211",
       "REQ-212",
       "REQ-213",
@@ -144,7 +144,7 @@
         "REQ-107"
       ],
       "use_cases": [
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -153,7 +153,7 @@
         "REQ-105"
       ],
       "use_cases": [
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -163,7 +163,7 @@
         "REQ-102"
       ],
       "use_cases": [
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -172,7 +172,7 @@
         "REQ-103"
       ],
       "use_cases": [
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -181,15 +181,15 @@
         "REQ-104"
       ],
       "use_cases": [
-        "UC-13",
-        "UC-11"
+        "UC-35",
+        "UC-34"
       ],
       "kind": "automated"
     },
     "tests/slide-polish.test.ts::the accent is inline on the slide element, so the HTML export carries it with the page": {
       "requirements": [],
       "use_cases": [
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -226,7 +226,7 @@
         "REQ-121"
       ],
       "use_cases": [
-        "UC-15"
+        "UC-36"
       ],
       "kind": "automated"
     },
@@ -235,7 +235,7 @@
         "REQ-121"
       ],
       "use_cases": [
-        "UC-15"
+        "UC-36"
       ],
       "kind": "automated"
     },
@@ -244,7 +244,7 @@
         "REQ-123"
       ],
       "use_cases": [
-        "UC-15"
+        "UC-36"
       ],
       "kind": "automated"
     },
@@ -253,7 +253,7 @@
         "REQ-131"
       ],
       "use_cases": [
-        "UC-16"
+        "UC-37"
       ],
       "kind": "automated"
     },
@@ -262,7 +262,7 @@
         "REQ-132"
       ],
       "use_cases": [
-        "UC-16"
+        "UC-37"
       ],
       "kind": "automated"
     },
@@ -271,7 +271,7 @@
         "REQ-133"
       ],
       "use_cases": [
-        "UC-16"
+        "UC-37"
       ],
       "kind": "automated"
     },
@@ -280,7 +280,7 @@
         "REQ-134"
       ],
       "use_cases": [
-        "UC-16"
+        "UC-37"
       ],
       "kind": "automated"
     },
@@ -289,7 +289,7 @@
         "REQ-136"
       ],
       "use_cases": [
-        "UC-16"
+        "UC-37"
       ],
       "kind": "automated"
     },
@@ -298,7 +298,7 @@
         "REQ-131"
       ],
       "use_cases": [
-        "UC-16"
+        "UC-37"
       ],
       "kind": "automated"
     },
@@ -307,7 +307,7 @@
         "REQ-141"
       ],
       "use_cases": [
-        "UC-17"
+        "UC-38"
       ],
       "kind": "automated"
     },
@@ -316,7 +316,7 @@
         "REQ-142"
       ],
       "use_cases": [
-        "UC-17"
+        "UC-38"
       ],
       "kind": "automated"
     },
@@ -325,7 +325,7 @@
         "REQ-143"
       ],
       "use_cases": [
-        "UC-17"
+        "UC-38"
       ],
       "kind": "automated"
     },
@@ -334,7 +334,7 @@
         "REQ-146"
       ],
       "use_cases": [
-        "UC-17"
+        "UC-38"
       ],
       "kind": "automated"
     },
@@ -353,7 +353,7 @@
         "REQ-161"
       ],
       "use_cases": [
-        "UC-19"
+        "UC-39"
       ],
       "kind": "automated"
     },
@@ -362,7 +362,7 @@
         "REQ-161"
       ],
       "use_cases": [
-        "UC-19"
+        "UC-39"
       ],
       "kind": "automated"
     },
@@ -371,7 +371,7 @@
         "REQ-162"
       ],
       "use_cases": [
-        "UC-19"
+        "UC-39"
       ],
       "kind": "automated"
     },
@@ -381,7 +381,7 @@
         "REQ-162"
       ],
       "use_cases": [
-        "UC-19"
+        "UC-39"
       ],
       "kind": "automated"
     },
@@ -446,7 +446,7 @@
       ],
       "use_cases": [
         "UC-22",
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -468,7 +468,7 @@
       ],
       "use_cases": [
         "UC-23",
-        "UC-13"
+        "UC-35"
       ],
       "kind": "automated"
     },
@@ -498,7 +498,7 @@
       "use_cases": [
         "UC-22",
         "UC-23",
-        "UC-11"
+        "UC-34"
       ],
       "kind": "automated"
     },
@@ -508,7 +508,7 @@
         "REQ-213"
       ],
       "use_cases": [
-        "UC-24"
+        "UC-40"
       ],
       "kind": "automated"
     },
@@ -517,7 +517,7 @@
         "REQ-212"
       ],
       "use_cases": [
-        "UC-24"
+        "UC-40"
       ],
       "kind": "automated"
     },
@@ -526,8 +526,8 @@
         "REQ-214"
       ],
       "use_cases": [
-        "UC-24",
-        "UC-11"
+        "UC-40",
+        "UC-34"
       ],
       "kind": "automated"
     },
@@ -537,8 +537,8 @@
         "REQ-215"
       ],
       "use_cases": [
-        "UC-13",
-        "UC-24"
+        "UC-35",
+        "UC-40"
       ],
       "kind": "automated"
     },
@@ -712,7 +712,7 @@
         "REQ-044"
       ],
       "use_cases": [
-        "UC-11",
+        "UC-34",
         "UC-03"
       ],
       "kind": "automated"
@@ -722,7 +722,7 @@
         "REQ-044"
       ],
       "use_cases": [
-        "UC-11",
+        "UC-34",
         "UC-03"
       ],
       "kind": "automated"
@@ -743,7 +743,7 @@
       ],
       "use_cases": [
         "UC-03",
-        "UC-11"
+        "UC-34"
       ],
       "kind": "automated"
     },
@@ -880,7 +880,7 @@
       ],
       "use_cases": [
         "UC-03",
-        "UC-11"
+        "UC-34"
       ],
       "kind": "automated"
     },
@@ -891,7 +891,7 @@
       ],
       "use_cases": [
         "UC-03",
-        "UC-11"
+        "UC-34"
       ],
       "kind": "automated"
     },
@@ -993,7 +993,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1002,7 +1002,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1011,7 +1011,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1020,7 +1020,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1029,7 +1029,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1038,7 +1038,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1137,7 +1137,7 @@
         "REQ-045"
       ],
       "use_cases": [
-        "UC-09"
+        "UC-32"
       ],
       "kind": "automated"
     },
@@ -1155,7 +1155,7 @@
         "REQ-043"
       ],
       "use_cases": [
-        "UC-07"
+        "UC-31"
       ],
       "kind": "automated"
     },
@@ -1373,7 +1373,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1382,7 +1382,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1391,7 +1391,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1400,7 +1400,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1410,8 +1410,8 @@
         "REQ-041"
       ],
       "use_cases": [
-        "UC-04",
-        "UC-11"
+        "UC-30",
+        "UC-34"
       ],
       "kind": "automated"
     },
@@ -1420,7 +1420,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1429,7 +1429,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1438,7 +1438,7 @@
         "REQ-016"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1447,7 +1447,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1456,7 +1456,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1465,7 +1465,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1474,7 +1474,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1483,7 +1483,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1492,7 +1492,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1501,7 +1501,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1510,7 +1510,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1519,7 +1519,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1528,7 +1528,7 @@
         "REQ-034"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1537,7 +1537,7 @@
         "REQ-036"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1546,7 +1546,7 @@
         "REQ-036"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1555,7 +1555,7 @@
         "REQ-036"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1564,7 +1564,7 @@
         "REQ-036"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1573,7 +1573,7 @@
         "REQ-036"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1582,7 +1582,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1591,7 +1591,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1600,7 +1600,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1609,7 +1609,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1618,7 +1618,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1627,7 +1627,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1636,7 +1636,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1645,7 +1645,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1654,7 +1654,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1663,7 +1663,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1672,7 +1672,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1681,7 +1681,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1690,7 +1690,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1699,7 +1699,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1708,7 +1708,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1717,7 +1717,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1726,7 +1726,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1735,7 +1735,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1744,7 +1744,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1753,7 +1753,7 @@
         "REQ-035"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1762,7 +1762,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1771,7 +1771,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1780,7 +1780,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1789,7 +1789,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1798,7 +1798,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1807,7 +1807,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1816,7 +1816,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1825,7 +1825,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1834,7 +1834,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1843,7 +1843,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1852,7 +1852,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1861,7 +1861,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1870,7 +1870,7 @@
         "REQ-037"
       ],
       "use_cases": [
-        "UC-04"
+        "UC-30"
       ],
       "kind": "automated"
     },
@@ -1897,7 +1897,7 @@
         "REQ-042"
       ],
       "use_cases": [
-        "UC-10"
+        "UC-33"
       ],
       "kind": "automated"
     },
@@ -1906,77 +1906,15 @@
         "REQ-042"
       ],
       "use_cases": [
-        "UC-10"
+        "UC-33"
       ],
       "kind": "automated"
-    },
-    "al/MT-04": {
-      "requirements": [],
-      "use_cases": [
-        "UC-04",
-        "UC-11"
-      ],
-      "kind": "manual",
-      "status": "not run"
-    },
-    "al/MT-05": {
-      "requirements": [],
-      "use_cases": [
-        "UC-07"
-      ],
-      "kind": "manual",
-      "status": "not run"
-    },
-    "al/MT-06": {
-      "requirements": [],
-      "use_cases": [
-        "UC-07",
-        "UC-19"
-      ],
-      "kind": "manual",
-      "status": "not run"
-    },
-    "al/MT-07": {
-      "requirements": [],
-      "use_cases": [
-        "UC-07"
-      ],
-      "kind": "manual",
-      "status": "not run"
-    },
-    "al/MT-08": {
-      "requirements": [],
-      "use_cases": [
-        "UC-13",
-        "UC-17"
-      ],
-      "kind": "manual",
-      "status": "not run"
-    },
-    "al/MT-12": {
-      "requirements": [],
-      "use_cases": [
-        "UC-10",
-        "UC-17"
-      ],
-      "kind": "manual",
-      "status": "not run"
-    },
-    "al/MT-13": {
-      "requirements": [],
-      "use_cases": [
-        "UC-11"
-      ],
-      "kind": "manual",
-      "status": "not run"
     },
     "al/MT-14": {
       "requirements": [
         "REQ-143"
       ],
-      "use_cases": [
-        "UC-17"
-      ],
+      "use_cases": [],
       "kind": "manual",
       "status": "not run"
     },
@@ -1986,8 +1924,7 @@
         "REQ-146"
       ],
       "use_cases": [
-        "UC-20",
-        "UC-17"
+        "UC-20"
       ],
       "kind": "manual",
       "status": "not run"
@@ -1998,9 +1935,7 @@
         "REQ-102",
         "REQ-107"
       ],
-      "use_cases": [
-        "UC-13"
-      ],
+      "use_cases": [],
       "kind": "manual",
       "status": "not run"
     },
@@ -2034,9 +1969,7 @@
         "REQ-211",
         "REQ-213"
       ],
-      "use_cases": [
-        "UC-24"
-      ],
+      "use_cases": [],
       "kind": "manual",
       "status": "not run"
     }

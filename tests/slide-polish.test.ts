@@ -53,7 +53,7 @@ const header = (extra = "") => `---\ntitle: T\n${extra}---\n\n`;
 
 // ─── Theme color ──────────────────────────────────────────────────────────────
 
-// Verifies REQ-101, REQ-102, REQ-105, REQ-107 (UC-13)
+// Verifies REQ-101, REQ-102, REQ-105, REQ-107 (UC-35)
 test("theme-color sets the accent on every slide and colors the title and section slides as it is, untinted", () => {
   const deck = api.buildSlideDeck(`${header('theme-color: "#1a6ea8"\n')}@slide[Section]\n@end\n\n@slide[Body]\nText.\n@end\n`);
   assert.equal(deck.slides.length, 3);
@@ -69,7 +69,7 @@ test("theme-color sets the accent on every slide and colors the title and sectio
   assert.doesNotMatch(body, /vfm-tinted|vfm-cover-colored|vfm-section-colored/);
 });
 
-// Verifies REQ-105 (UC-13)
+// Verifies REQ-105 (UC-35)
 test("without theme-color the slides carry no color style and no tint", () => {
   const deck = api.buildSlideDeck(`${header()}@slide[Section]\n@end\n\n@slide[Body]\nText.\n@end\n`);
   for (let i = 0; i < deck.slides.length; i++) {
@@ -80,7 +80,7 @@ test("without theme-color the slides carry no color style and no tint", () => {
   assert.equal(deck.diagnostics.filter((d: any) => d.code === "theme-color").length, 0);
 });
 
-// Verifies REQ-101, REQ-102 (UC-13), by inspection of the stylesheet
+// Verifies REQ-101, REQ-102 (UC-35), by inspection of the stylesheet
 test("the stylesheet draws the title rule from the accent and never tints a color", () => {
   const sheet = css("slides/slides.css");
   assert.match(sheet, /\.vfm-slide-title \{[^}]*border-bottom: 3px solid var\(--vfm-slide-rule, var\(--_accent\)\)/s);
@@ -88,7 +88,7 @@ test("the stylesheet draws the title rule from the accent and never tints a colo
   assert.doesNotMatch(sheet, /color-mix|vfm-tinted/);
 });
 
-// Verifies REQ-103 (UC-13)
+// Verifies REQ-103 (UC-35)
 test("parseThemeColor accepts the listed forms and nothing else", () => {
   for (const ok of ["#abc", "#1A6EA8", "rgb(1, 2, 3)", "rgb(255,255,255)", "hsl(205, 73%, 38%)", "teal", "RebeccaPurple"]) {
     assert.ok(parseThemeColor(ok), ok);
@@ -99,7 +99,7 @@ test("parseThemeColor accepts the listed forms and nothing else", () => {
   assert.equal(parseThemeColor("#ABC"), "#abc");
 });
 
-// Verifies REQ-104 (UC-13, UC-11)
+// Verifies REQ-104 (UC-35, UC-34)
 test("an invalid theme-color is reported at its header line and the defaults are used", () => {
   const deck = api.buildSlideDeck(`---\ntitle: T\ntheme-color: "fuchsia; x"\n---\n\n@slide\nText.\n@end\n`);
   const d = deck.diagnostics.find((x: any) => x.code === "theme-color");
@@ -108,7 +108,7 @@ test("an invalid theme-color is reported at its header line and the defaults are
   assert.doesNotMatch(slideHtml(deck, 0), /--vfm-slide-accent/);
 });
 
-// Verifies REQ-106 (UC-13), by inspection: the export bundles the same renderer, which writes the style inline
+// Verifies REQ-106 (UC-35), by inspection: the export bundles the same renderer, which writes the style inline
 test("the accent is inline on the slide element, so the HTML export carries it with the page", () => {
   const deck = api.buildSlideDeck(`${header("theme-color: teal\n")}@slide\nText.\n@end\n`);
   assert.match(slideHtml(deck, 1), /style="--vfm-slide-accent:teal"/);
@@ -156,7 +156,7 @@ test("top-level affiliations that no author refers to are listed once, without n
 
 // ─── Math in captions ────────────────────────────────────────────────────────
 
-// Verifies REQ-121 (UC-15)
+// Verifies REQ-121 (UC-36)
 test("captions of figures, tables, listings, algorithms, scores and diagrams render $math$", () => {
   const md = [
     "![Fig $a_1$](a.png){#fig:a}",
@@ -192,13 +192,13 @@ test("captions of figures, tables, listings, algorithms, scores and diagrams ren
   assert.match(h, /Listing 1: Lst /);
 });
 
-// Verifies REQ-121 (UC-15), slides
+// Verifies REQ-121 (UC-36), slides
 test("math in a caption renders on a slide", () => {
   const deck = api.buildSlideDeck("@slide\n![Decay $N_0$](a.png)\n@end\n");
   assert.match(slideHtml(deck), /<annotation encoding="application\/x-tex">N_0<\/annotation>/);
 });
 
-// Verifies REQ-123 (UC-15)
+// Verifies REQ-123 (UC-36)
 test("a $ that does not close in a caption stays a dollar sign, and plain captions stay plain", () => {
   const h = docHtml("![Costs $5 and more](a.png)\n\n![Plain caption](b.png)\n");
   assert.match(h, /Costs \$5 and more\./);
@@ -208,12 +208,12 @@ test("a $ that does not close in a caption stays a dollar sign, and plain captio
 
 // ─── Subscripts and superscripts ─────────────────────────────────────────────
 
-// Verifies REQ-131 (UC-16)
+// Verifies REQ-131 (UC-37)
 test("^{x} is a superscript and _{x} a subscript", () => {
   assert.match(docHtml("H_{2}O and x^{2}\n"), /H<sub>2<\/sub>O and x<sup>2<\/sup>/);
 });
 
-// Verifies REQ-132 (UC-16)
+// Verifies REQ-132 (UC-37)
 test("sub/superscripts work in headings, list items, table cells, captions, slide titles and lead-ins", () => {
   const h = docHtml("# Head^{1}\n\n- item_{i}\n\n| a^{x} | b |\n|---|---|\n| 1 | _{2} |\n\n![Cap H_{2}O](a.png)\n");
   assert.match(h, /Head<sup>1<\/sup>/);
@@ -227,7 +227,7 @@ test("sub/superscripts work in headings, list items, table cells, captions, slid
   assert.match(s, /Lead H<sub>2<\/sub>O/);
 });
 
-// Verifies REQ-133 (UC-16)
+// Verifies REQ-133 (UC-37)
 test("sub/superscript syntax is left alone in code, math and link destinations", () => {
   const h = docHtml("`c^{2}` and $y^{2}$ and [t](http://x.test/a_{b})\n\n```\nz_{1}\n```\n");
   assert.match(h, /<code>c\^\{2\}<\/code>/);
@@ -237,7 +237,7 @@ test("sub/superscript syntax is left alone in code, math and link destinations",
   assert.doesNotMatch(h, /<sup>2<\/sup>/);
 });
 
-// Verifies REQ-134 (UC-16)
+// Verifies REQ-134 (UC-37)
 test("braces hold inline Markdown and nest; empty or unclosed pairs stay literal", () => {
   const h = docHtml("m_{*i*} and a^{b_{c}}\n\nempty ^{} and open x_{ab\n\nsnake_case_name\n");
   assert.match(h, /m<sub><em>i<\/em><\/sub>/);
@@ -247,14 +247,14 @@ test("braces hold inline Markdown and nest; empty or unclosed pairs stay literal
   assert.match(h, /snake_case_name/);
 });
 
-// Verifies REQ-136 (UC-16)
+// Verifies REQ-136 (UC-37)
 test("a backslash makes the pair literal", () => {
   const h = docHtml("a\\^{b} and c\\_{d}\n");
   assert.match(h, /a\^\{b\} and c_\{d\}/);
   assert.doesNotMatch(h, /<su[bp]>/);
 });
 
-// Verifies REQ-131 (UC-16): neighbors of the syntax keep working
+// Verifies REQ-131 (UC-37): neighbors of the syntax keep working
 test("underline, strikethrough and footnotes still work beside sub/superscripts", () => {
   const h = docHtml("~u~ and ~~s~~ and x^{2} and a[^1]\n\n[^1]: note\n");
   assert.match(h, /<u>u<\/u>/);
@@ -265,7 +265,7 @@ test("underline, strikethrough and footnotes still work beside sub/superscripts"
 
 // ─── Video ───────────────────────────────────────────────────────────────────
 
-// Verifies REQ-141 (UC-17)
+// Verifies REQ-141 (UC-38)
 test("image destinations with a video extension become <video controls>", () => {
   for (const url of ["a.mov", "dir/b.MP4", "c.m4v", "d.webm", "e.ogv", "f.mov?v=2#t=3"]) {
     assert.ok(isVideoUrl(url), url);
@@ -281,7 +281,7 @@ test("image destinations with a video extension become <video controls>", () => 
   assert.match(docHtml("![Pic](a.png)\n"), /<img/);
 });
 
-// Verifies REQ-142 (UC-17)
+// Verifies REQ-142 (UC-38)
 test("a video is a figure: alt text is the caption and a label numbers it", () => {
   const h = docHtml("![Pouring **fast**](pour.mov){#fig:pour}\n\nSee [@fig:pour].\n");
   assert.match(h, /<figure[^>]*id="fig:pour"/);
@@ -289,7 +289,7 @@ test("a video is a figure: alt text is the caption and a label numbers it", () =
   assert.match(h, /href="#fig:pour"/);
 });
 
-// Verifies REQ-143 (UC-17)
+// Verifies REQ-143 (UC-38)
 test("the video is left to the browser: metadata preload, inline playback, no type attribute", () => {
   const h = docHtml("![Clip](a.mov)\n");
   assert.match(h, /preload="metadata"/);
@@ -298,7 +298,7 @@ test("the video is left to the browser: metadata preload, inline playback, no ty
   assert.doesNotMatch(h, /<source/);
 });
 
-// Verifies REQ-146 (UC-17), REQ-171
+// Verifies REQ-146 (UC-38), REQ-171
 test("on a slide a video is placed like an image, and is not preloaded as one", () => {
   const deck = api.buildSlideDeck("@slide[V](rtext)\nSome text.\n\n![Clip](a.mov)\n@end\n");
   assert.equal(deck.slides[0].layout, "rtext");
@@ -324,7 +324,7 @@ test("table text is 0.9 times the text around it in documents; captions and othe
 
 // ─── Jump to source ──────────────────────────────────────────────────────────
 
-// Verifies REQ-161 (UC-19)
+// Verifies REQ-161 (UC-39)
 test("the title region carries the line of its @slide[title] opener or of its heading", () => {
   const deck = api.buildSlideDeck("# Intro\n\n@slide\nUnder a heading.\n@end\n\n@slide[Override]\nText.\n@end(Lead)\n");
   assert.equal(deck.slides[0].titleLine, 1);
@@ -333,14 +333,14 @@ test("the title region carries the line of its @slide[title] opener or of its he
   assert.match(slideHtml(deck, 1), /<header class="vfm-slide-title" data-line="7">/);
 });
 
-// Verifies REQ-161 (UC-19): a title taken from the heading a split slide starts with
+// Verifies REQ-161 (UC-39): a title taken from the heading a split slide starts with
 test("a slide titled by the heading it starts with points at that heading", () => {
   const deck = api.buildSlideDeck("@slide\n## First\n\nText one.\n\n## Second\n\nText two.\n@end\n");
   const titled = deck.slides.filter((s: any) => s.titleSource === "heading");
   for (const s of titled) assert.ok(typeof s.titleLine === "number" && s.titleLine > 1, JSON.stringify(s.title));
 });
 
-// Verifies REQ-162 (UC-19)
+// Verifies REQ-162 (UC-39)
 test("the lead-in carries the line of its @end", () => {
   const deck = api.buildSlideDeck("@slide[T]\nText.\n@end(Lead-in text)\n");
   assert.equal(deck.slides[0].leadinLine, 3);
@@ -349,7 +349,7 @@ test("the lead-in carries the line of its @end", () => {
   assert.equal(none.slides[0].leadinLine, undefined);
 });
 
-// Verifies REQ-161, REQ-162 (UC-19): section slides and included files keep their lines
+// Verifies REQ-161, REQ-162 (UC-39): section slides and included files keep their lines
 test("a section slide's heading carries its line, and lines follow the source map", () => {
   const deck = api.buildSlideDeck("@slide[Section]\n@end\n");
   assert.match(slideHtml(deck), /<h1 class="vfm-divider-title" data-line="1">/);

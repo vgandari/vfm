@@ -32,7 +32,7 @@ after(() => cleanup());
 
 const codes = (ds: any[]) => ds.map((d) => d.code);
 
-// Verifies REQ-033, REQ-044 (UC-11, UC-03)
+// Verifies REQ-033, REQ-044 (UC-34, UC-03)
 test("directive syntax errors are fatal and located", () => {
   const cases: Array<[string, RegExp]> = [
     ["@slide(bogus)\nx\n@end", /unknown option "bogus"/],
@@ -53,7 +53,7 @@ test("directive syntax errors are fatal and located", () => {
   assert.equal(ds.find((d: any) => d.code === "syntax").loc.line, 3);
 });
 
-// Verifies REQ-033, REQ-044 (UC-11, UC-03)
+// Verifies REQ-033, REQ-044 (UC-34, UC-03)
 test("directives inside code fences are left alone", () => {
   const ds = api.checkSlides("```\n@slide(bogus)\n```\n");
   assert.deepEqual(ds, []);
@@ -72,7 +72,7 @@ test("document mode: wrappers are transparent, nodoc is removed", () => {
   assert.doesNotMatch(html, /Hidden title|Shown|lead-in text|lead/);
 });
 
-// Verifies REQ-004, REQ-033, REQ-044 (UC-03, UC-11)
+// Verifies REQ-004, REQ-033, REQ-044 (UC-03, UC-34)
 test("document mode: a reference into a nodoc block is an error, and so is an unknown label", () => {
   const withNodoc = "See [@fig:a].\n\n@slide(nodoc)\n![Cap](a.png) {#fig:a}\n@end\n";
   assert.throws(() => pipeline.renderMarkdown(withNodoc), /nodoc/);
@@ -232,7 +232,7 @@ test("when a title is shared by several slides, every one of them shows its coun
   html.forEach((h: string, i: number) => assert.match(h, new RegExp(`\\(${i + 1}/${deck.slides.length}\\)`)));
 });
 
-// Verifies REQ-007, REQ-033, REQ-044 (UC-03, UC-11)
+// Verifies REQ-007, REQ-033, REQ-044 (UC-03, UC-34)
 test("@include expands recursively, detects cycles and maps lines to files", () => {
   const files: Record<string, string> = {
     "main.md": "",
@@ -250,7 +250,7 @@ test("@include expands recursively, detects cycles and maps lines to files", () 
   assert.ok(missing.diagnostics.some((d: any) => /cannot read/.test(d.message)));
 });
 
-// Verifies REQ-007, REQ-033, REQ-044 (UC-03, UC-11)
+// Verifies REQ-007, REQ-033, REQ-044 (UC-03, UC-34)
 test("diagnostics from included text name the original file", () => {
   const files: Record<string, string> = { "bad.md": "@slide(bogus)\nx\n@end" };
   const r = api.expandIncludes("intro\n@include(bad.md)", { file: "main.md", read: (p: string) => files[p] ?? null });
@@ -368,7 +368,7 @@ test("a slide number is rendered when given", () => {
   assert.match(markup, /vfm-slide-number">7</);
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("notes go with the slide holding the content before them, and only that slide", () => {
   const filler = Array.from({ length: 12 }, (_, i) => `Paragraph ${i} with a fair amount of text in it so that the slide fills up quickly.`);
   // note A after paragraph 0 (slide 1), note B after the last paragraph (last slide)
@@ -382,7 +382,7 @@ test("notes go with the slide holding the content before them, and only that sli
   for (const s of deck.slides.slice(1, -1)) assert.equal(s.notes.length, 0);
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("several notes in one block are combined in order, and a note before any content goes to the first slide", () => {
   const deck = api.buildSlideDeck("@slide\n@note(First)\nText.\n\n@note(Second)\n@note(Third, with (nested) parens)\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -390,7 +390,7 @@ test("several notes in one block are combined in order, and a note before any co
   assert.deepEqual(deck.slides[0].notes.map(inline), ["First", "Second", "Third, with (nested) parens"]);
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("notes in the next block belong to that block's slides", () => {
   const deck = api.buildSlideDeck("@slide\nOne.\n@note(for one)\n@end\n\n@slide\nTwo.\n@note(for two)\n@end\n");
   assert.equal(deck.slides.length, 2);
@@ -399,7 +399,7 @@ test("notes in the next block belong to that block's slides", () => {
   assert.match(JSON.stringify(deck.slides[1].notes), /for two/);
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("a multi-line note keeps line numbers and is one note", () => {
   const deck = api.buildSlideDeck("@slide\nText.\n@note(line one\nline two)\n\nMore.\n@end\n");
   assert.equal(deck.slides[0].notes.length, 1);
@@ -407,7 +407,7 @@ test("a multi-line note keeps line numbers and is one note", () => {
   assert.ok(bad.some((d: any) => d.code === "syntax"));
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("a note never appears in the document, and outside a block it is plain text", () => {
   const out = createRequire(import.meta.url)("react-dom/server").renderToStaticMarkup(
     pipeline.renderMarkdown("Before.\n\n@slide\nIn slide.\n@note(secret)\n@end\n")
@@ -420,7 +420,7 @@ test("a note never appears in the document, and outside a block it is plain text
   assert.ok(api.checkSlides("@slide\n@note no parens\n@end").some((d: any) => /parentheses/.test(d.message)));
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("notes on dividers are combined, and renderNotes leaves them out of the slide", () => {
   const deck = api.buildSlideDeck("@slide\n## A\n@note(a)\n@end\n\n@slide\n## B\n@note(b)\n@end\n");
   assert.equal(deck.slides.length, 1);
@@ -567,7 +567,7 @@ test("reducer: bold-only paragraph is verbatim, lead-ins go, ordinals make a num
     ["1. Export the data from the old system.", "2. Clean up duplicate records.", "3. Import the file into the new system."]);
 });
 
-// Verifies REQ-030, REQ-045 (UC-09)
+// Verifies REQ-030, REQ-045 (UC-09, UC-32)
 test("reducer: a long paragraph is split by topic; modes first-sentence, notes-only and full", () => {
   const long = "Our first office opened in 2009 with four employees.\nGrowth was slow at first.\nBy 2014 we had moved to a larger building.\nHiring accelerated after that move.\nThe second half of this document turns to our product roadmap.\nThe roadmap is organized around three themes.\nEach theme has a named owner who reports quarterly.";
   const auto = slideText(long);
@@ -586,7 +586,7 @@ test("reducer output is always made of the paragraph's own words", () => {
   for (const line of slideText(src)) for (const w of line.toLowerCase().match(/\p{L}+/gu) ?? []) assert.ok(words.has(w), w);
 });
 
-// Verifies REQ-024, REQ-043 (UC-07)
+// Verifies REQ-024, REQ-043 (UC-31)
 test("block elements carry data-line, the line in the author's file (header and blocks included)", () => {
   const src = "---\ntitle: T\n---\n\n# Head\n\n```alg Cap\nbody\nmore\n```\n\n- [ ] task\n- [x] done\n\nLast para.\n";
   const html = renderHtml(src);

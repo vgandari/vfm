@@ -2,8 +2,7 @@
 
 `vfm` is the core library: it parses Markdown, builds documents and slides, and renders them. The editor extension
 `vfm-preview` (`../vfm-preview`) is a client of it and keeps its own requirements. A requirement lives in exactly one
-of the two repositories. The same ID in both repositories is not expected to denote the same item, and nothing checks
-the two sets against each other. YAML front matter is the host's to read: vfm receives what it needs as arguments of
+of the two repositories. IDs are unique across the two repositories. YAML front matter is the host's to read: vfm receives what it needs as arguments of
 its components (for example `bibliography`, `citations`, `sourceMap`, `resolveUrl`, `measure`), except for the slide
 keys it reads from the content itself (`title`, `theme-color`, `title-image`, …).
 
@@ -34,7 +33,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | UC | Source |
 | --- | --- | --- | --- |
-| REQ-016 | vfm shall resolve `@cite(key)` and `@cite(a, b)` against the entries of the `bibliography` argument (a map from key to entry) of its components, formatted as the `citations` argument says. | UC-04 | README "Citations" |
+| REQ-016 | vfm shall resolve `@cite(key)` and `@cite(a, b)` against the entries of the `bibliography` argument (a map from key to entry) of its components, formatted as the `citations` argument says. | UC-30 | README "Citations" |
 | REQ-019 | vfm shall number labelled headings, figures, tables, listings, equations, algorithms and scores and shall replace `[@label]` with a link showing the number. | UC-05 | vfm README |
 | REQ-020 | In slide mode vfm shall number only items that a surviving cross-reference points to, consecutively across the deck. | UC-05 | vfm README "Numbering" |
 | REQ-021 | vfm shall render fenced blocks with the language `alg`, `mus` or `mermaid` as an algorithm, a score with a Play button, or a diagram numbered as a figure. | UC-06 | vfm README |
@@ -44,17 +43,17 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | UC | Source |
 | --- | --- | --- | --- |
-| REQ-034 | vfm shall parse BibTeX entries of any type and field, resolve `crossref` and biblatex aliases without overwriting fields, keep each entry's source text, and report a repeated key, an unreadable entry or a bad crossref. | UC-04 | `bibtex.ts` |
-| REQ-035 | vfm shall format a reference in APA, MLA or Vancouver style for each entry type, and shall not fail or leave stray punctuation when fields are missing. | UC-04 | `bibliography.ts` |
-| REQ-036 | vfm shall resolve each cited key once, treating keys as case-sensitive, and shall validate each entry it receives. | UC-04 | `bibliography.ts` |
-| REQ-037 | vfm shall validate an entry before sending it to the user's own server, send nothing for an invalid one, and describe a refusal or an unreachable server in words the author can act on. | UC-04 | `bibliography-client.ts` |
+| REQ-034 | vfm shall parse BibTeX entries of any type and field, resolve `crossref` and biblatex aliases without overwriting fields, keep each entry's source text, and report a repeated key, an unreadable entry or a bad crossref. | UC-30 | `bibtex.ts` |
+| REQ-035 | vfm shall format a reference in APA, MLA or Vancouver style for each entry type, and shall not fail or leave stray punctuation when fields are missing. | UC-30 | `bibliography.ts` |
+| REQ-036 | vfm shall resolve each cited key once, treating keys as case-sensitive, and shall validate each entry it receives. | UC-30 | `bibliography.ts` |
+| REQ-037 | vfm shall validate an entry before sending it to the user's own server, send nothing for an invalid one, and describe a refusal or an unreachable server in words the author can act on. | UC-30 | `bibliography-client.ts` |
 | REQ-038 | vfm shall play a score by reading the notes abcjs writes for the tune, following repeats, without loading anything from the network. | UC-06 | `music-audio.ts` |
 | REQ-039 | In slide mode vfm shall show a footnote only on a slide whose text cites it, only when it is defined inside that slide's `@slide` block, numbered from 1 on that slide. | UC-03 | vfm README "Footnotes" |
 | REQ-040 | vfm shall render `~text~` as underline and `~~text~~` as strikethrough, and shall leave a lone tilde as text. | UC-29 | vfm README |
 
 ## B. New in `slide-polish`
 
-### Theme color (UC-13)
+### Theme color (UC-35)
 
 | ID | Requirement | Method |
 | --- | --- | --- |
@@ -74,14 +73,14 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-113 | vfm shall take the name of an affiliation from `name`, `institution`, `organization` or `department`, in that order. | T |
 | REQ-114 | When the header defines top-level `affiliations` and no author refers to any, the title slide shall list all of them once, without numbers. | T |
 
-### Math in captions (UC-15)
+### Math in captions (UC-36)
 
 | ID | Requirement | Method |
 | --- | --- | --- |
 | REQ-121 | vfm shall render `$…$` in the caption of a figure, table, listing, algorithm, score and diagram with KaTeX, in document and slide mode. | T |
 | REQ-123 | A `$` in a caption that does not close shall remain literal text. | T |
 
-### Subscripts and superscripts (UC-16)
+### Subscripts and superscripts (UC-37)
 
 | ID | Requirement | Method |
 | --- | --- | --- |
@@ -91,7 +90,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-134 | The text between the braces shall be inline Markdown, and a brace pair with no text, or with a line break before the closing brace, shall remain literal text. | T |
 | REQ-136 | A backslash before `^` or `_` shall make the pair literal text. | T |
 
-### Video (UC-17)
+### Video (UC-38)
 
 | ID | Requirement | Method |
 | --- | --- | --- |
@@ -107,7 +106,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-151 | In document mode vfm shall set the text of a table to 0.9 times the size of the text around it and shall keep the table's caption at the size of the text around it. | T |
 | REQ-152 | Text that is not in a table shall keep its size. | T |
 
-### Jump to source from titles and lead-ins (UC-19)
+### Jump to source from titles and lead-ins (UC-39)
 
 | ID | Requirement | Method |
 | --- | --- | --- |
@@ -128,11 +127,11 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 
 | ID | Requirement | UC | Source |
 | --- | --- | --- | --- |
-| REQ-041 | vfm shall render a citation key that is not in the bibliography as red text inside the usual brackets, marked as an "unknown citation". | UC-04, UC-11 | README |
-| REQ-042 | vfm shall contain no call that fetches from the network while rendering, apart from the one module that posts entries the user added. | UC-10 | vfm README "No network access" |
-| REQ-043 | vfm shall give every block element it renders a `data-line` attribute holding the line in the author's file, header and included text included. | UC-07 | README |
-| REQ-044 | vfm shall report each directive, include, label and citation problem as a diagnostic with its severity, its file and its line. | UC-11 | README |
-| REQ-045 | vfm shall attach each `@note` to the slide that holds the content before it, shall never render it in the document, and shall expose the notes of a slide separately from its body. | UC-09 | README |
+| REQ-041 | vfm shall render a citation key that is not in the bibliography as red text inside the usual brackets, marked as an "unknown citation". | UC-30, UC-34 | README |
+| REQ-042 | vfm shall contain no call that fetches from the network while rendering, apart from the one module that posts entries the user added. | UC-33 | vfm README "No network access" |
+| REQ-043 | vfm shall give every block element it renders a `data-line` attribute holding the line in the author's file, header and included text included. | UC-31 | README |
+| REQ-044 | vfm shall report each directive, include, label and citation problem as a diagnostic with its severity, its file and its line. | UC-34 | README |
+| REQ-045 | vfm shall attach each `@note` to the slide that holds the content before it, shall never render it in the document, and shall expose the notes of a slide separately from its body. | UC-32 | README |
 
 ## C. New in `slide-colors`
 
@@ -159,7 +158,7 @@ cases, requirements and test cases is in `../MAPPING.json`, checked by `python3 
 | REQ-207 | vfm shall accept for `separator-color` and `section-color` the same forms as `theme-color` (REQ-103) and shall pass no other text to the stylesheet. | T |
 | REQ-208 | When `separator-color` or `section-color` is present and not valid, vfm shall use the default for that key and shall report a diagnostic whose code is that key and whose line is the key's line in the header. | T |
 
-### Title image (UC-24)
+### Title image (UC-40)
 
 | ID | Requirement | Method |
 | --- | --- | --- |

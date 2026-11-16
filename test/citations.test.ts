@@ -38,13 +38,13 @@ const referenceItems = (tree: any): string[] => {
   return list ? list.children.map(text) : [];
 };
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("records cited keys in order of first appearance, once each", async () => {
   const { citeKeys } = await run("@cite(b) @cite(a, b) @cite(c)");
   assert.deepEqual(citeKeys, ["b", "a", "c"]);
 });
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("a citation becomes a linked author-year, and the entry is listed once", async () => {
   const { tree } = await run("See @cite(shannon1948) and again @cite(shannon1948).");
   assert.equal(paragraph(tree), "See (Shannon, 1948) and again (Shannon, 1948).");
@@ -53,7 +53,7 @@ test("a citation becomes a linked author-year, and the entry is listed once", as
   assert.match(items[0], /^Shannon, C\. E\. \(1948\)\. A Theory\./);
 });
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("math in a title becomes inlineMath nodes in the reference list", async () => {
   const { tree } = await run("@cite(math2020)");
   const item = tree.children.find((n: any) => n.type === "list").children[0];
@@ -64,14 +64,14 @@ test("math in a title becomes inlineMath nodes in the reference list", async () 
   assert.match(text(item), /Sorting .* Items in .* Time/);
 });
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("keys are case-sensitive", async () => {
   const { tree } = await run("@cite(Knuth1997) and @cite(knuth1997)");
   assert.equal(paragraph(tree), "(Knuth, 1997) and (unknown citation: knuth1997)");
   assert.equal(referenceItems(tree).length, 1);
 });
 
-// Verifies REQ-016, REQ-041 (UC-04, UC-11)
+// Verifies REQ-016, REQ-041 (UC-30, UC-34)
 test("an unknown key is red text inside the usual brackets, with none of its own", async () => {
   const apa = await run("A @cite(nope) B @cite(shannon1948, nope)");
   assert.equal(paragraph(apa.tree), "A (unknown citation: nope) B (Shannon, 1948; unknown citation: nope)");
@@ -82,13 +82,13 @@ test("an unknown key is red text inside the usual brackets, with none of its own
   assert.equal(paragraph(numbered.tree), "A [unknown citation: nope] B [1, unknown citation: nope]");
 });
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("numbered citations follow the reference list order, lowest first", async () => {
   const { tree } = await run("@cite(Knuth1997, shannon1948)", { referenceStyle: "vancouver" });
   assert.equal(paragraph(tree), "[1, 2]");
 });
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("code and the tree are left alone when no bibliography is given", () => {
   const processor = unified().use(remarkParse).use(remarkCitations, {});
   const tree: any = processor.parse("`@cite(x)` and @cite(y)");
@@ -98,7 +98,7 @@ test("code and the tree are left alone when no bibliography is given", () => {
   assert.equal(paragraph(tree), "@cite(x) and @cite(y)");
 });
 
-// Verifies REQ-016 (UC-04)
+// Verifies REQ-016 (UC-30)
 test("while entries are pending, citations are placeholders and there is no list", async () => {
   const processor = unified().use(remarkParse).use(remarkCitations, { pending: true });
   const tree: any = processor.parse("@cite(a)");
