@@ -153,7 +153,11 @@ export interface Slide {
     date?: string;
     /** `title-image` (URL as rewritten by `resolveUrl`): replaces the slide's background. */
     image?: string;
+    /** Lines of the YAML header that hold each part (1-based, in the text the parser saw), so a host can jump to them. */
+    lines?: { title?: number; subtitle?: number; authors?: number; date?: number };
   };
+  /** The References slide at the end of the deck: `references` are its body, in full size. */
+  referencesSlide?: boolean;
   /** Factor applied to the text of the tables on this slide (0.6 to 0.9); absent when there is no table. */
   tableScale?: number;
   /** Presenter notes: the `@note(...)` blocks after this slide's content and before the next slide's. */
