@@ -1,6 +1,6 @@
 {
   "name": "markdown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.tsx",
   "scripts": {
     "test": "node --experimental-transform-types --import ./test/register.mjs --disable-warning=ExperimentalWarning --test \"test/*.test.ts\" \"tests/*.test.ts\""
@@ -30,6 +30,7 @@
     "bibliography-client.ts",
     "bibtex.ts",
     "constants.ts",
+    "headerLine.ts",
     "registry.ts",
     "handlers.ts",
     "AlgorithmPseudocode.tsx",

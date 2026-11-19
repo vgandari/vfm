@@ -75,3 +75,4 @@ the two repositories, and each repository maps its own to its own requirements.
 | UC-51 | The author cites sources in captions and lead-ins as in text, and the deck ends with a References slide that lists them. | bug report |
 | UC-52 | The author puts two groups of bullets on a `2col` slide and separates them with a blank line, as in any Markdown file. | bug report |
 | UC-55 | The author's math, tables, videos and captions are shown whole and in the same style on every slide. | bug report |
+| UC-58 | A developer installs vfm from GitHub into a project and builds it without a missing file. | bug report |

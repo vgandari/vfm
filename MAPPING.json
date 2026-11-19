@@ -188,6 +188,9 @@
       "REQ-330",
       "REQ-331",
       "REQ-332"
+    ],
+    "UC-58": [
+      "REQ-334"
     ]
   },
   "test_cases": {
@@ -2868,6 +2871,24 @@
       ],
       "use_cases": [
         "UC-50"
+      ],
+      "kind": "automated"
+    },
+    "tests/package-files.test.ts::every file in the package's files list exists": {
+      "requirements": [
+        "REQ-334"
+      ],
+      "use_cases": [
+        "UC-58"
+      ],
+      "kind": "automated"
+    },
+    "tests/package-files.test.ts::every relative import of a shipped source file leads to a shipped file": {
+      "requirements": [
+        "REQ-334"
+      ],
+      "use_cases": [
+        "UC-58"
       ],
       "kind": "automated"
     },

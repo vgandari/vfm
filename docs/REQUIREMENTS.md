@@ -264,4 +264,4 @@ Tests for these are in `tests/slides-tutorial.test.ts`. The example decks are in
 | REQ-331 | A video shall be as wide as its figure or region and 16:9 until its size is known. | T |
 | REQ-332 | A table in a document shall have room for the outside half of its collapsed border, so that it does not scroll. | T |
 | REQ-333 | In a document, a figure's picture and a listing shall be shorter than the window, and a figure and a listing shall be scrolled to with a margin above, so that following a cross-reference shows the figure with its caption without script. | T, D |
-
+| REQ-334 | Every file that a shipped source file imports by a relative path shall be in the `files` list of `package.json`, so that a project that installs vfm from GitHub can build it. | T |
