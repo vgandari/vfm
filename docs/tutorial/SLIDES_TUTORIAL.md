@@ -137,6 +137,7 @@ Open `slides/03-layouts.md` and look at its five slides: a picture beside text i
 Some rules worth knowing:
 
 - `rtext` and `ltext` only matter when the slide has a picture. Without one they give a single column (VFM tells you with `layout-no-image`).
+- On a `2col` slide, a blank line between two groups of bullets starts a new group, and the columns may break between groups, so each group stays whole; a comment line between them neither joins nor separates them. (In the other layouts a blank line between bullets keeps them in one list, as in any Markdown file.)
 - `2col` with one picture falls back to one column for that slide. With two pictures and no text, each picture gets a column.
 - A picture is an image alone in its paragraph. An image in the middle of a sentence stays in the sentence.
 - Pictures and videos shrink to fit their place and keep their proportions. Tables use slightly smaller text and shrink further to fit; a table that is still too tall is split across slides by rows, with its header repeated.
@@ -220,7 +221,7 @@ Numbers are assigned only to things that a surviving reference points to, and th
 
 Open `slides/07-citations-notes-footnotes.md`.
 
-- **Citations.** `@cite(key)` works as in the document. The option `showrefs` lists on each slide the references cited **on that slide** that no earlier slide has already shown, so a long reference list never builds up on one slide. A citation inside a `[title]` or an `@end(lead-in)` is an error.
+- **Citations.** `@cite(key)` works as in the document. The option `showrefs` lists on each slide the references cited **on that slide** that no earlier slide has already shown, so a long reference list never builds up on one slide. A citation works in a figure's or table's caption and in an `@end(lead-in)` too; only a `[title]` cannot hold one (it is an error). The deck ends with a **References** slide that lists every reference the deck cites, once, at body size (on more slides when the list is long). A deck that cites nothing has none.
 - **Presenter notes.** `@note(text)` on a line of its own inside a block is a note for the speaker. It belongs to the slide that holds the content right before it, may run over several lines and holds inline Markdown. It never appears in the document, the audience's slide or the PDF; it appears in the notes panel (**N**) and the presenter window.
 - **Footnotes.** A footnote is shown on a slide only when it is defined **inside that slide's block**, and it is numbered from 1 on that slide. One defined outside the block still works in the document, but slide mode warns (`unknown-footnote`).
 

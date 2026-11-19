@@ -246,3 +246,22 @@ Tests for these are in `tests/slides-tutorial.test.ts`. The example decks are in
 | REQ-318 | vfm shall ship the example decks of `docs/tutorial/slides/`, each of which builds as a deck with no diagnostic of severity error, renders every one of its slides, and renders as a document. | T |
 | REQ-319 | The example decks shall show, with the structure that `SLIDES_TUTORIAL.md` states for each: a title slide made from the YAML header; a title from the `[title]` override, from the heading and left blank; dividers merged into one agenda slide; a title-only slide; the layouts `rtext`, `ltext` and `2col` with pictures; reveal steps for list items and for the lead-in; paragraph reduction by shape (long paragraph, bold paragraph, ordinals, a colon, a number); a `---` that ends a slide; a cross-reference kept on its own slide and dropped from another, `noxrefs`, `nodoc` and a numbered equation; citations with `showrefs`; presenter notes; a footnote; `theme-color`, `separator-color`, `section-color` and `title-image`; math, a diagram, an algorithm, a score and code; and `@include`. | T |
 | REQ-320 | Every example in `SLIDES_TUTORIAL.md` that holds an `@slide` block shall build as a deck without a diagnostic of severity error, every deck in `docs/tutorial/slides/` shall be named in the tutorial, and every deck the tutorial names shall exist. | T |
+
+## New in `preview-bugs`
+
+| ID | Requirement | Method |
+| --- | --- | --- |
+| REQ-321 | vfm shall render the checkbox of a task-list item with its checked state always given, true or false, so that the box shows the state of the item each time the item changes. | T |
+| REQ-322 | vfm shall render `==$…$==` as a highlight that holds the typeset math, in a paragraph, a caption and a lead-in. | T |
+| REQ-323 | vfm shall accept `@cite(…)` in a caption, in document mode and in slide mode, and in a lead-in, shall give each the citation link and the reference-list entry that it gives a citation in text, and shall keep reporting `@cite` in a slide title as a syntax error. | T |
+| REQ-324 | In slide mode vfm shall show a caption without the period that it adds in document mode, and shall keep the punctuation the author wrote. | T |
+| REQ-325 | vfm shall give each figure the source line of its image, and text written around the image the line of its paragraph. | T |
+| REQ-326 | vfm shall give the title slide, and its title, subtitle, authors and date, the source line of the YAML key each came from. | T |
+| REQ-327 | In a `2col` block, vfm shall start a new set of bullets, which may begin a column, at a blank line between two items or two lists, and shall treat an HTML comment between them as neither joining nor separating; numbers shall go on counting through the sets, and other layouts shall read the blank line as Markdown does. | T |
+| REQ-328 | vfm shall end a deck whose citations resolve with a References slide that lists each cited entry once, at the size of body text, in the order of the reference style, continuing on further slides, cut between entries, when they do not fit, and shall not make one for a deck with no resolved citation. | T |
+| REQ-329 | A slide region that holds math shall keep room below its last line for the parts of the math that lie outside its line box. | T |
+| REQ-330 | A table on a slide shall never be wider than its region, shall have room for the outside half of its collapsed border, and shall wrap a word that is longer than its column. | T |
+| REQ-331 | A video shall be as wide as its figure or region and 16:9 until its size is known. | T |
+| REQ-332 | A table in a document shall have room for the outside half of its collapsed border, so that it does not scroll. | T |
+| REQ-333 | In a document, a figure's picture and a listing shall be shorter than the window, and a figure and a listing shall be scrolled to with a margin above, so that following a cross-reference shows the figure with its caption without script. | T, D |
+

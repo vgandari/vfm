@@ -64,3 +64,14 @@ the two repositories, and each repository maps its own to its own requirements.
 | ID | Use case | Origin |
 | --- | --- | --- |
 | UC-47 | A person who has a document or an outline learns to turn it into slides by following examples: they open a complete deck, change it and see the result, and learn what VFM reports when something does not fit. | request |
+
+## New in `preview-bugs`
+
+| ID | Use case | Origin |
+| --- | --- | --- |
+| UC-48 | The author ticks and unticks task checkboxes in the preview, and the preview always shows what the file says. | bug report |
+| UC-49 | The author double-clicks the title slide or a picture in the preview, and lands on the line of the file that wrote it. | bug report |
+| UC-50 | A reader follows a cross-reference to a figure or a listing and sees it with its caption, however large it is. | bug report |
+| UC-51 | The author cites sources in captions and lead-ins as in text, and the deck ends with a References slide that lists them. | bug report |
+| UC-52 | The author puts two groups of bullets on a `2col` slide and separates them with a blank line, as in any Markdown file. | bug report |
+| UC-55 | The author's math, tables, videos and captions are shown whole and in the same style on every slide. | bug report |

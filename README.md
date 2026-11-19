@@ -229,6 +229,8 @@ These fill gaps the spec leaves open; the spec itself is unchanged.
   When no text shares the slide, `rtext` / `ltext` revert to a single column. Floats are never
   dropped by the cross-reference filter. A reference inside one that cannot resolve renders as plain
   text, with a `check` warning.
+- **References slide.** A deck whose citations resolve ends with a `References` slide listing each cited entry once at body size, continuing on more slides when it does not fit. `@cite` is allowed in captions and lead-ins (not in a `[title]`). A slide's caption has no period (a document's has one).
+- **Bullet sets on `2col`.** A blank line between two groups of bullets starts a new set that the columns may break before; a comment between them is transparent.
 - **Numbering.** Only items that a surviving reference points to (on the same slide) are numbered,
   and they are numbered 1, 2, 3 deck-wide with no gaps. Everything else shows just its caption,
   with no "Figure 1.1". (`buildRegistry`'s `visibleLabels` option.)
