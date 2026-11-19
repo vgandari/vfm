@@ -19,6 +19,7 @@ import remarkRehype from "remark-rehype";
 import remarkUnderline from "./underline";
 import remarkSubSup from "./sub-sup";
 import remarkNoHtml from "./no-html";
+import remarkHighlight, { highlightHandler } from "./highlight";
 import { inlineMathHandler } from "./inline-math";
 
 const processor = unified()
@@ -28,11 +29,17 @@ const processor = unified()
   .use(remarkSubSup)
   .use(remarkNoHtml)
   .use(remarkMath)
-  .use(remarkRehype, { handlers: { inlineMath: inlineMathHandler } });
+  .use(remarkHighlight)
+  .use(remarkRehype, { handlers: { inlineMath: inlineMathHandler, highlight: highlightHandler } });
 
-export function captionNodes(source: string): ElementContent[] {
+/** Changes the caption's parsed tree before it becomes hast; the citation plugin passes one that turns `@cite(...)` into links. */
+export type CaptionRewrite = (tree: Root) => void;
+
+export function captionNodes(source: string, rewrite?: CaptionRewrite): ElementContent[] {
   try {
-    const hast = processor.runSync(processor.parse(source) as Root) as HastRoot;
+    const tree = processor.parse(source) as Root;
+    rewrite?.(tree);
+    const hast = processor.runSync(tree) as HastRoot;
     const first = hast.children[0];
     if (hast.children.length === 1 && first.type === "element" && (first as Element).tagName === "p") {
       return (first as Element).children;

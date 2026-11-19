@@ -52,6 +52,7 @@ function imageLines(block: Block): number {
 }
 
 export const estimateFits: Measurer = (slide) => {
+  if (slide.referencesSlide) return slide.references.length * 2 <= CAPACITY; // two lines a reference
   const extra = (slide.leadin ? 2 : 0) + slide.references.length * 2;
   const room = CAPACITY - extra;
   const scale = slide.tableScale ?? TABLE_SCALE_DEFAULT;

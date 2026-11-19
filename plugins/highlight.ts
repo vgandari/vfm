@@ -34,6 +34,8 @@ import type { Handler } from "mdast-util-to-hast";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { gfm } from "micromark-extension-gfm";
 import { gfmFromMarkdown } from "mdast-util-gfm";
+import { math } from "micromark-extension-math";
+import { mathFromMarkdown } from "mdast-util-math";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -147,7 +149,10 @@ const micromarkExtension: MicromarkExtension = {
 
 /** The text between the markers read as inline Markdown. Its positions are relative to the text, so they are dropped. */
 function inlineChildren(text: string): any[] {
-  const tree = fromMarkdown(text, { extensions: [gfm({ singleTilde: false })], mdastExtensions: [gfmFromMarkdown()] });
+  const tree = fromMarkdown(text, {
+    extensions: [gfm({ singleTilde: false }), math()],
+    mdastExtensions: [gfmFromMarkdown(), mathFromMarkdown()],
+  });
   const first = tree.children[0] as any;
   if (tree.children.length !== 1 || first.type !== "paragraph") return [{ type: "text", value: text }];
   const strip = (n: any) => {

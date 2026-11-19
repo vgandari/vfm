@@ -26,6 +26,7 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkUnderline from "../plugins/underline";
 import remarkSubSup from "../plugins/sub-sup";
+import remarkHighlight from "../plugins/highlight";
 import remarkMath from "remark-math";
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
@@ -304,10 +305,8 @@ export function preprocessSlideDirectives(
         ok = false;
       } else {
         closer.leadinSource = p.value;
-        if (citeRe.test(p.value)) {
-          error(lineNo, "@cite is not allowed in a lead-in");
-          ok = false;
-        } else if (noteRe.test(p.value)) {
+        // `@cite` is allowed in a lead-in (it is in a caption too); only a slide title cannot cite.
+        if (noteRe.test(p.value)) {
           error(lineNo, "footnote references are not allowed in a lead-in; put them in the slide body");
           ok = false;
         }
@@ -341,7 +340,7 @@ export function preprocessSlideDirectives(
 
 // ─── Inline markdown for [title] and (lead-in) ───────────────────────────────
 
-const inlineProcessor = unified().use(remarkParse).use(remarkGfm, { singleTilde: false }).use(remarkUnderline).use(remarkSubSup).use(remarkMath);
+const inlineProcessor = unified().use(remarkParse).use(remarkGfm, { singleTilde: false }).use(remarkUnderline).use(remarkSubSup).use(remarkMath).use(remarkHighlight);
 
 export function parseInline(source: string): Inline[] {
   if (!source.trim()) return [];

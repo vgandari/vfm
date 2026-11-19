@@ -27,6 +27,7 @@ import remarkPrependTitle from "./plugins/prepend-title";
 import { injectUuid } from "./plugins/uuid-inject";
 import { parseFrontmatter } from "./frontmatter";
 export { parseFrontmatter, FrontmatterError } from "./frontmatter";
+export { headerKeyLine } from "./headerLine";
 export type {
   Affiliation,
   Author,
@@ -264,8 +265,9 @@ function withPositions(handlers: Record<string, any>): Record<string, any> {
       type,
       (state: State, node: any, parent: any) => {
         const result = handler(state, node, parent);
-        if (result && !Array.isArray(result) && result.type === "element" && !result.position && node.position) {
-          result.position = node.position;
+        // A handler may return several elements (a paragraph around a figure): each one is the node's.
+        for (const el of Array.isArray(result) ? result : [result]) {
+          if (el && el.type === "element" && !el.position && node.position) el.position = node.position;
         }
         return result;
       },
@@ -273,7 +275,7 @@ function withPositions(handlers: Record<string, any>): Record<string, any> {
   );
 }
 
-const LINE_TAGS = new Set(["p", "li", "pre", "table", "blockquote", "div", "ul", "ol", "hr", "h1", "h2", "h3", "h4", "h5", "h6", "tr"]);
+const LINE_TAGS = new Set(["p", "li", "pre", "table", "blockquote", "div", "ul", "ol", "hr", "h1", "h2", "h3", "h4", "h5", "h6", "tr", "figure"]);
 
 /** Marks block elements with `data-line` (1-based line in the author's file), for scroll sync and jump-to-source. */
 function rehypeSourceLines() {
@@ -372,9 +374,12 @@ export function renderMarkdown(
 // out disabled checkboxes. Render them enabled (so they take the system accent
 // color) but inert; CSS adds pointer-events: none.
 
-function TaskCheckbox({ disabled: _disabled, node: _node, ...props }: ComponentProps<"input"> & { node?: unknown }) {
+// `checked` is always passed, as false when the item is open: hast leaves the property out for an open item, and a
+// checkbox that goes from `checked` to no `checked` prop is no longer controlled, so React would leave the box
+// ticked after the author unticked it in the file.
+export function TaskCheckbox({ disabled: _disabled, node: _node, ...props }: ComponentProps<"input"> & { node?: unknown }) {
   if (props.type !== "checkbox") return createElement("input", { ...props, disabled: _disabled });
-  return createElement("input", { ...props, readOnly: true, tabIndex: -1 });
+  return createElement("input", { ...props, checked: Boolean(props.checked), readOnly: true, tabIndex: -1 });
 }
 
 // ─── parseMarkdown ────────────────────────────────────────────────────────────
@@ -415,6 +420,10 @@ export interface RenderTreeOptions {
 /** Renders an already-numbered mdast tree (a slide's content). The tree is not modified. */
 export function renderTree(tree: Root, options: RenderTreeOptions): ReactElement {
   const copy = structuredClone(tree);
+  // Slides show a caption without the period a document adds to it.
+  visit(copy, (node: any) => {
+    if (node.data && ("caption" in node.data || "captionSource" in node.data)) node.data.noCaptionPeriod = true;
+  });
   let pipeline: any = unified()
     .use(remarkCrossRefs, { registry: options.registry, id: null, unresolved: options.unresolved ?? "red" });
   if (options.bibliography) {

@@ -122,6 +122,19 @@
   max-width: 100%;
   object-fit: contain;
 }
+/* The document keeps a figure shorter than the window (CustomMarkdown.module.css); a slide is a fixed stage and fits its figures to the region. */
+.vfm-slide.vfm-slide .labeled-figure img,
+.vfm-slide.vfm-slide .labeled-figure video,
+.vfm-slide.vfm-slide .code-listing pre {
+  max-height: none;
+}
+/* A video fills the width of its region, as wide as the region allows; until its size is known it is 16:9. Chrome sizes a
+   video with no `width` at the 300 × 150 of an empty player, or at the intrinsic size of a small clip. */
+.vfm-slide .vfm-region video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto 16 / 9;
+}
 .vfm-slide .vfm-region figcaption {
   flex: none;
   text-align: center;
@@ -146,7 +159,25 @@
 .vfm-slide.vfm-slide table td {
   padding: 0.22em 0.5em;
   line-height: 1.3;
+  /* A word longer than its column wraps instead of widening the table past the region. */
+  overflow-wrap: anywhere;
 }
+/* A table is never wider than its region: the document's margins around floats do not apply on a slide, and the box counts
+   its padding, which leaves room for the half of the outer border that a collapsed border draws outside the table. */
+.vfm-slide.vfm-slide table {
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 1px;
+}
+
+/* The References slide: its entries at a size to read, without bullets. */
+.vfm-refs-full {
+  font-size: 0.7em;
+  line-height: 1.35;
+}
+.vfm-refs-full ul { list-style: none; padding-left: 0; margin: 0; }
+.vfm-refs-full ol { margin: 0; }
+.vfm-refs-full li { margin-top: 0.5em; }
 
 /* Repeated context on a continuation */
 .vfm-continued,
@@ -204,6 +235,12 @@
 /* Last block in a region carries no trailing margin, so it is not counted as overflow. */
 .vfm-region > :last-child {
   margin-bottom: 0;
+}
+/* KaTeX draws sub- and superscripts, fraction bars and tall delimiters outside the line box it reports, and the region clips
+   whatever lies past its edge. A region with math keeps a little room below its last line. The room is padding, so the fit
+   test counts it too. */
+.vfm-region:has(.katex) {
+  padding-bottom: 0.4em;
 }
 
 /* Footnotes ride at the end of the region that cites them, so the fit test reserves their room. */

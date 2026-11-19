@@ -29,8 +29,11 @@ import { labelsOf, xrefsOf } from "./labels";
 import { estimateFits, type Measurer } from "./measure";
 import { inlineText, plainInline } from "./segment";
 import { renderSlide, type SlideRenderContext } from "./render";
-import { citeKeysIn, splitBlock, toSlide, type Draft, type PreparedBlock, type SplitEnv } from "./split";
+import { citeKeysIn, citingNodes, splitBlock, toSlide, type Draft, type PreparedBlock, type SplitEnv } from "./split";
 import { buildDocStats, PARAGRAPH_MODES, reduceParagraph, type ParagraphsMode } from "./reducer";
+import { columnSets } from "./columnSets";
+import { referencesSlides } from "./referencesSlides";
+import { headerKeyLine } from "../headerLine";
 import { buildUnits, isDefinition, isNote, rootOf, snippet, type Unit } from "./units";
 import { SlideDirectiveError } from "./types";
 import { parseThemeColor } from "./themeColor";
@@ -158,7 +161,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     registry: provisional,
     bibliography: options.bibliography,
     citations: options.citations,
-    citeKeys: [...new Set(citeKeysIn(provisionalRoot.children))],
+    citeKeys: [...new Set(citeKeysIn([...provisionalRoot.children, ...blocks.filter((b) => b.leadin).map((b) => ({ type: "paragraph", children: b.leadin }))]))],
     numberOf: new Map(),
   };
   provisionalCtx.citeKeys.forEach((k, i) => provisionalCtx.numberOf.set(k, i + 1));
@@ -289,7 +292,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
   const prepare = (block: SlideBlock): PreparedBlock => {
     const { title, titleSource, titleLine } = resolveTitle(block);
     const headingText = inlineText(title.length > 0 ? title : (block.headingInEffect?.inline ?? []));
-    const { units, strandedHeadings, startNotes } = buildUnits(block.children, locate, (para) =>
+    const { units, strandedHeadings, startNotes } = buildUnits(block.options.layout === "2col" ? columnSets(block.children) : block.children, locate, (para) =>
       reduceParagraph(para, { stats: docStats, mode: paragraphMode, headingText })
     );
     for (const hd of strandedHeadings) {
@@ -559,7 +562,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     numberingDepth: 0,
     visibleLabels: referenced,
   });
-  const citeKeys = [...new Set(slides.flatMap((s) => citeKeysIn([...s.body, ...s.images])))];
+  const citeKeys = [...new Set(slides.flatMap((s) => citeKeysIn(citingNodes(s))))];
   const known = citeKeys.map(formatKey).filter((r): r is RefEntry => !!r);
   const ordered = sortReferences(known, config.sort);
   const numberOf = new Map(ordered.map((r, i) => [r.citeKey, i + 1]));
@@ -567,7 +570,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
   for (const s of slides) {
     s.references = [];
     if (s.divider || !s.sourceBlock.options.showrefs) continue;
-    const keys = [...new Set(citeKeysIn([...s.body, ...s.images]))].filter((k) => !shown.has(k));
+    const keys = [...new Set(citeKeysIn(citingNodes(s)))].filter((k) => !shown.has(k));
     const refs = keys.map(formatKey).filter((r): r is RefEntry => !!r);
     s.references = sortReferences(refs, config.sort);
     keys.forEach((k) => shown.add(k));
@@ -611,6 +614,11 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     }
   }
 
+  const render: SlideRenderContext = { registry, bibliography: options.bibliography, citations: options.citations, citeKeys, numberOf, definitions, themeColor, separatorColor, sectionColor };
+
+  // ── The References slide(s): every reference the deck cites, at the end ────
+  slides.push(...referencesSlides(ordered, config, (s) => (options.measure ?? estimateFits)(s, () => renderSlide(s, render))));
+
   // ── Stage 7: reveal steps (annotation only) ────────────────────────────────
   slides.forEach((s, index) => assignSteps(s, index, diagnostics));
 
@@ -618,7 +626,7 @@ export function buildSlideDeck(content: string, options: SlideDeckOptions = {}):
     slides,
     diagnostics,
     registry,
-    render: { registry, bibliography: options.bibliography, citations: options.citations, citeKeys, numberOf, definitions, themeColor, separatorColor, sectionColor },
+    render,
     imageUrls: [...imageUrls],
   };
 }
@@ -680,6 +688,12 @@ function coverSlide(content: string): Slide | undefined {
       affiliations: affiliations.map(affiliationText),
       numbered,
       date: meta.date,
+      lines: {
+        title: headerKeyLine(content, ["title"]),
+        subtitle: headerKeyLine(content, ["subtitle"]),
+        authors: headerKeyLine(content, ["author", "authors"]),
+        date: headerKeyLine(content, ["date"]),
+      },
     },
   };
 }

@@ -65,10 +65,12 @@ function ensurePeriod(s: string): string {
 
 // "Figure 1.2: " followed by the caption, which is inline Markdown (math, sub/superscripts, emphasis).
 // `caption` is the caption's source text, not its plain text.
-function captionParts(displayText: string | undefined, caption: string | undefined): ElementContent[] {
-  if (displayText && caption) return [text(`${displayText}: `), ...captionNodes(ensurePeriod(caption))];
+// Slides leave the period off (`data.noCaptionPeriod`, set by renderTree); `data.captionRewrite` turns `@cite(...)` into links.
+function captionParts(displayText: string | undefined, caption: string | undefined, data?: any): ElementContent[] {
+  const nodes = (c: string) => captionNodes(data?.noCaptionPeriod ? c.trimEnd() : ensurePeriod(c), data?.captionRewrite);
+  if (displayText && caption) return [text(`${displayText}: `), ...nodes(caption)];
   if (displayText) return [text(displayText)];
-  if (caption) return captionNodes(ensurePeriod(caption));
+  if (caption) return nodes(caption);
   return [];
 }
 
@@ -76,9 +78,10 @@ function captionParts(displayText: string | undefined, caption: string | undefin
 // Structure: <figcaption><strong>Label N.N: Caption text.</strong></figcaption>
 function buildFigcaption(
   displayText: string | undefined,
-  caption: string | undefined
+  caption: string | undefined,
+  data?: any
 ): Element | null {
-  const parts = captionParts(displayText, caption);
+  const parts = captionParts(displayText, caption, data);
 
   if (parts.length === 0) return null;
 
@@ -89,9 +92,10 @@ function buildFigcaption(
 // Same structure as figcaption but returns ElementContent[] for splicing.
 function buildTableCaptionChildren(
   displayText: string | undefined,
-  caption: string | undefined
+  caption: string | undefined,
+  data?: any
 ): ElementContent[] {
-  const parts = captionParts(displayText, caption);
+  const parts = captionParts(displayText, caption, data);
 
   if (parts.length === 0) return [];
   return [el("strong", {}, parts)];
@@ -174,7 +178,7 @@ export const paragraphHandler: Handler = (state, node) => {
         ...(imgNode.title ? { title: imgNode.title } : {}),
       }, []);
 
-  const figcaption = buildFigcaption(displayText, caption ?? undefined);
+  const figcaption = buildFigcaption(displayText, caption ?? undefined, data);
   const children: ElementContent[] = [mediaEl];
   if (figcaption) children.push(figcaption);
 
@@ -182,6 +186,8 @@ export const paragraphHandler: Handler = (state, node) => {
     className: ["labeled-figure"],
     ...(id ? { id } : {}),
   }, children);
+  // A double click on the picture jumps to the line of the image, not of the paragraph around it.
+  if (imgNode.position) figure.position = imgNode.position;
 
   // Text written around the image stays: before it as a paragraph above the figure, after it as one below.
   const at = para.children.indexOf(imgNode);
@@ -212,7 +218,7 @@ export const tableHandler: Handler = (state, node) => {
   const tableChildren: ElementContent[] = state.all(node);
 
   // Prepend <caption> if we have something to show
-  const captionChildren = buildTableCaptionChildren(displayText, caption);
+  const captionChildren = buildTableCaptionChildren(displayText, caption, data);
   if (captionChildren.length > 0) {
     tableChildren.unshift(el("caption", {}, captionChildren));
   }
@@ -245,7 +251,7 @@ export const codeHandler: Handler = (state, node) => {
   );
   const preEl = el("pre", {}, [codeEl]);
 
-  const figcaption = buildFigcaption(displayText, caption ?? undefined);
+  const figcaption = buildFigcaption(displayText, caption ?? undefined, data);
   const children: ElementContent[] = [preEl];
   if (figcaption) children.push(figcaption);
 

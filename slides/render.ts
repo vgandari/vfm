@@ -91,6 +91,7 @@ const themeStyle = (ctx: SlideRenderContext, extra: Record<string, string> = {})
 
 function renderCover(slide: Slide, ctx: SlideRenderContext): ReactElement {
   const c = slide.cover!;
+  const at = c.lines ?? {};
   // A title image replaces the background; otherwise the theme color is the background as it is, with light or dark text (REQ-107).
   const coverClass = c.image ? " vfm-cover-image" : ctx.themeColor ? ` vfm-cover-colored ${isDarkColor(ctx.themeColor) ? "vfm-on-dark" : "vfm-on-light"}` : "";
   return h(
@@ -98,16 +99,17 @@ function renderCover(slide: Slide, ctx: SlideRenderContext): ReactElement {
     {
       className: `vfm-slide vfm-cover${coverClass}`,
       "data-layout": "single",
+      ...lineAttr(at.title), // a double click on the slide's empty part jumps to the title
       ...themeStyle(ctx, !c.image && ctx.themeColor ? { "--vfm-slide-cover-bg": ctx.themeColor } : {}),
     },
     c.image ? h("img", { className: "vfm-cover-bg", src: c.image, alt: "" }) : null,
     c.image ? h("div", { className: "vfm-cover-scrim" }) : null,
-    h("h1", { className: "vfm-cover-title" }, c.title),
-    c.subtitle ? h("p", { className: "vfm-cover-subtitle" }, c.subtitle) : null,
+    h("h1", { className: "vfm-cover-title", ...lineAttr(at.title) }, c.title),
+    c.subtitle ? h("p", { className: "vfm-cover-subtitle", ...lineAttr(at.subtitle) }, c.subtitle) : null,
     c.authors.length > 0
       ? h(
           "p",
-          { className: "vfm-cover-authors" },
+          { className: "vfm-cover-authors", ...lineAttr(at.authors) },
           ...c.authors.flatMap((a, i) => [
             i > 0 ? ", " : null,
             h("span", { key: i, className: "vfm-cover-author" }, a.name, a.affiliations.length ? h("sup", null, a.affiliations.join(",")) : null),
@@ -117,11 +119,11 @@ function renderCover(slide: Slide, ctx: SlideRenderContext): ReactElement {
     c.affiliations.length > 0
       ? h(
           "ol",
-          { className: "vfm-cover-affiliations" },
+          { className: "vfm-cover-affiliations", ...lineAttr(at.authors) },
           ...c.affiliations.map((a, i) => h("li", { key: i }, c.numbered ? [h("sup", { key: "n" }, i + 1), " "] : null, a))
         )
       : null,
-    c.date ? h("p", { className: "vfm-cover-date" }, c.date) : null
+    c.date ? h("p", { className: "vfm-cover-date", ...lineAttr(at.date) }, c.date) : null
   );
 }
 
@@ -164,7 +166,22 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
             : null)
       : h("header", { className: "vfm-slide-title vfm-empty" });
 
-  const bodyEl = h("div", { className: "vfm-region vfm-body vfm-fit" }, tree(slide.body));
+  // The References slide shows its entries as the slide's own content; any other slide may list new ones small, at the foot.
+  const referencesList = (): Block[] => {
+    const numbered = resolveCitationConfig(ctx.citations).citationStyle === CitationStyle.Number;
+    return [
+      {
+        type: "list",
+        ordered: numbered,
+        start: numbered ? ctx.numberOf.get(slide.references[0].citeKey) ?? 1 : null,
+        spread: false,
+        children: slide.references.map((ref) => referenceItem(ref, null)),
+      } as unknown as Block,
+    ];
+  };
+  const bodyEl = slide.referencesSlide
+    ? h("div", { className: "vfm-region vfm-body vfm-fit vfm-refs-full" }, tree(referencesList()))
+    : h("div", { className: "vfm-region vfm-body vfm-fit" }, tree(slide.body));
   let content: ReactElement;
   if (slide.layout === "rtext" || slide.layout === "ltext") {
     const imagesEl = h("div", { className: "vfm-region vfm-images vfm-fit" }, tree(slide.images));
@@ -185,7 +202,7 @@ export function renderSlide(slide: Slide, ctx: SlideRenderContext, extra: { numb
   }
 
   let refs: ReactElement | null = null;
-  if (slide.references.length > 0) {
+  if (slide.references.length > 0 && !slide.referencesSlide) {
     const numbered = resolveCitationConfig(ctx.citations).citationStyle === CitationStyle.Number;
     const lists: List[] = slide.references.map((ref) => ({
       type: "list",

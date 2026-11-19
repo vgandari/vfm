@@ -84,7 +84,7 @@ function text(value: string): Text {
 
 /** Calls `fn` with the keys of every `@cite(...)` in `node`, in order, with match positions. */
 function eachCitation(
-  node: Text,
+  node: { value: string },
   fn: (keys: string[], start: number, end: number) => void
 ): void {
   const re = new RegExp(CITE_RE_SOURCE, "g");
@@ -128,7 +128,7 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
     // rewritten until this is done.
     const citeKeys: string[] = [];
     const seen = new Set<string>();
-    visit(tree, "text", (node: Text) => {
+    const note = (node: { value: string }) =>
       eachCitation(node, (keys) => {
         for (const key of keys) {
           if (!seen.has(key)) {
@@ -137,6 +137,10 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
           }
         }
       });
+    // A caption is kept as source text on the figure, table or listing it belongs to (labels.ts), not as text nodes.
+    visit(tree, (node: any) => {
+      if (node.type === "text") note(node);
+      else if (typeof node.data?.captionSource === "string") note({ value: node.data.captionSource });
     });
     if (options.deckKeys) {
       citeKeys.length = 0;
@@ -158,7 +162,7 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
 
     const [open, close, separator] = numbered ? ["[", "]", ", "] : ["(", ")", "; "];
 
-    const renderCitation = (keys: string[]): PhrasingContent[] => {
+    const renderCitation = (keys: string[], inCaption = false): PhrasingContent[] => {
       if (!options.bibliography) return [text(`${open}…${close}`)];
 
       const items = keys.map((key) => ({ key, ref: formatted.get(key) }));
@@ -171,10 +175,12 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
       items.forEach(({ key, ref }, i) => {
         if (i > 0) out.push(text(separator));
         if (!ref) {
-          out.push({
-            type: "html",
-            value: `<span style="color:red">unknown citation: ${escapeHtml(key)}</span>`,
-          } as PhrasingContent);
+          // A caption is parsed without raw HTML, so its red text is an element made from an emphasis node.
+          out.push(
+            inCaption
+              ? ({ type: "emphasis", data: { hName: "span", hProperties: { style: "color:red" } }, children: [text(`unknown citation: ${key}`)] } as PhrasingContent)
+              : ({ type: "html", value: `<span style="color:red">unknown citation: ${escapeHtml(key)}</span>` } as PhrasingContent)
+          );
           return;
         }
         const label = numbered
@@ -195,21 +201,27 @@ const remarkCitations: Plugin<[CitationsOptions?], Root> = function (options = {
     };
 
     // Pass 2: rewrite.
-    visit(tree, "text", (node: Text, index, parent: any) => {
-      if (!parent || index === undefined) return;
+    const rewriteText = (root: any, inCaption: boolean) =>
+      visit(root, "text", (node: Text, index, parent: any) => {
+        if (!parent || index === undefined) return;
 
-      const replacement: PhrasingContent[] = [];
-      let last = 0;
-      eachCitation(node, (keys, start, end) => {
-        if (start > last) replacement.push(text(node.value.slice(last, start)));
-        replacement.push(...renderCitation(keys));
-        last = end;
+        const replacement: PhrasingContent[] = [];
+        let last = 0;
+        eachCitation(node, (keys, start, end) => {
+          if (start > last) replacement.push(text(node.value.slice(last, start)));
+          replacement.push(...renderCitation(keys, inCaption));
+          last = end;
+        });
+
+        if (replacement.length === 0) return;
+        if (last < node.value.length) replacement.push(text(node.value.slice(last)));
+        parent.children.splice(index, 1, ...(replacement as any[]));
+        return [SKIP, index + replacement.length];
       });
-
-      if (replacement.length === 0) return;
-      if (last < node.value.length) replacement.push(text(node.value.slice(last)));
-      parent.children.splice(index, 1, ...(replacement as any[]));
-      return [SKIP, index + replacement.length];
+    rewriteText(tree, false);
+    // The handler that builds a caption calls this on the caption's own tree (`data.captionRewrite`, plugins/caption-nodes.ts).
+    visit(tree, (node: any) => {
+      if (typeof node.data?.captionSource === "string") node.data.captionRewrite = (root: Root) => void rewriteText(root, true);
     });
 
     if (!options.bibliography || ordered.length === 0 || options.appendReferences === false) return;

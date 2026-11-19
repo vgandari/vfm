@@ -56,17 +56,27 @@ export interface Draft {
   spill?: boolean;
 }
 
+/** The cite keys in `nodes`, in order: in text, and in the captions of figures, tables and listings (kept as source text). */
 export function citeKeysIn(nodes: readonly any[]): string[] {
   const keys: string[] = [];
   const re = new RegExp(CITE_RE_SOURCE, "g");
+  const scan = (value: string) => {
+    for (const m of value.matchAll(re)) {
+      for (const k of m[1].split(",").map((s: string) => s.trim()).filter(Boolean)) keys.push(k);
+    }
+  };
   for (const n of nodes) {
-    visit(n, "text", (t: any) => {
-      for (const m of t.value.matchAll(re)) {
-        for (const k of m[1].split(",").map((s: string) => s.trim()).filter(Boolean)) keys.push(k);
-      }
+    visit(n, (t: any) => {
+      if (t.type === "text") scan(t.value);
+      else if (typeof t.data?.captionSource === "string") scan(t.data.captionSource);
     });
   }
   return keys;
+}
+
+/** What a slide shows that can cite: its body, its pictures and its lead-in. */
+export function citingNodes(slide: { body: readonly any[]; images: readonly any[]; leadin?: readonly any[] }): any[] {
+  return [...slide.body, ...slide.images, ...(slide.leadin ? [{ type: "paragraph", children: slide.leadin }] : [])];
 }
 
 export function splitsImages(block: SlideBlock): boolean {
@@ -105,7 +115,7 @@ export function toSlide(draft: Draft, env: Pick<SplitEnv, "refsFor" | "shown">, 
   }
   let references: RefEntry[] = [];
   if (block.options.showrefs) {
-    const keys = [...new Set(citeKeysIn([...mat.body, ...mat.images]))].filter((k) => !env.shown.has(k));
+    const keys = [...new Set(citeKeysIn(citingNodes({ ...mat, leadin: withLeadin ? block.leadin : undefined })))].filter((k) => !env.shown.has(k));
     references = env.refsFor(keys);
   }
   return {
@@ -168,7 +178,7 @@ export function splitBlock(prepared: PreparedBlock, env: SplitEnv): Draft[] {
     if (d.closed) return;
     d.closed = true;
     if (block.options.showrefs) {
-      for (const k of citeKeysIn(toSlide(d, env, false).body)) env.shown.add(k);
+      for (const k of citeKeysIn(citingNodes(toSlide(d, env, false)))) env.shown.add(k);
     }
   };
 

@@ -373,6 +373,10 @@
   margin: 0 auto 16px;
   /* Table text is slightly smaller than the text around it (REQ-151). */
   font-size: 0.9em;
+  /* A collapsed border is drawn half outside the table. Without room for it the scroll box found a pixel to scroll to
+     (document) or cut the border off (slides). The box counts its padding in max-width. */
+  box-sizing: border-box;
+  padding: 1px;
 }
 
 .markdownBody table caption {
@@ -434,6 +438,33 @@
 
 .markdownBody :global(.labeled-figure) img {
   max-width: 100%;
+}
+
+/* After a click on a cross-reference the browser scrolls the figure or listing to the top of the page, and the caption sits
+   below it. With no script to measure either, the pictures and listings are kept shorter than the window, so the figure and
+   its caption are on screen together whatever the figure's size. (Cost: a very tall picture is shown smaller, and a very
+   long listing scrolls inside its own box.) */
+@media screen {
+  .markdownBody :global(.labeled-figure) img,
+  .markdownBody :global(.labeled-figure) video {
+    max-height: calc(100vh - 8em);
+    object-fit: contain;
+  }
+  .markdownBody :global(.code-listing) pre {
+    max-height: calc(100vh - 8em);
+    overflow: auto;
+  }
+  .markdownBody :global(.labeled-figure),
+  .markdownBody :global(.code-listing) {
+    scroll-margin-top: 1em;
+  }
+}
+
+/* A video is as wide as the text, and 16:9 until its size is known: Chrome shows a player with no `width` at 300 × 150. */
+.markdownBody :global(.labeled-figure) video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto 16 / 9;
 }
 
 /* ─── Shared caption styling (figcaption for figures and listings) ────────── */
