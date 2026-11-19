@@ -163,6 +163,31 @@
       "REQ-213",
       "REQ-214",
       "REQ-215"
+    ],
+    "UC-48": [
+      "REQ-321"
+    ],
+    "UC-49": [
+      "REQ-325",
+      "REQ-326"
+    ],
+    "UC-50": [
+      "REQ-333"
+    ],
+    "UC-51": [
+      "REQ-323",
+      "REQ-328"
+    ],
+    "UC-52": [
+      "REQ-327"
+    ],
+    "UC-55": [
+      "REQ-322",
+      "REQ-324",
+      "REQ-329",
+      "REQ-330",
+      "REQ-331",
+      "REQ-332"
     ]
   },
   "test_cases": {
@@ -1382,7 +1407,7 @@
       ],
       "kind": "automated"
     },
-    "tests/slides-tutorial.test.ts::deck 11: the whole talk has eight slides that use titles, an agenda, steps, notes, a picture, a table and a citation together": {
+    "tests/slides-tutorial.test.ts::deck 11: the whole talk has eight slides and a References slide that use titles, an agenda, steps, notes, a picture, a table and a citation together": {
       "requirements": [
         "REQ-319"
       ],
@@ -2612,6 +2637,240 @@
       ],
       "kind": "automated"
     },
+    "tests/preview-bugs.test.ts::a task checkbox always says whether it is checked, so unticking an item in the file unticks the box in the preview": {
+      "requirements": [
+        "REQ-321"
+      ],
+      "use_cases": [
+        "UC-48"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::the rendered document uses that checkbox for every task item, open or done": {
+      "requirements": [
+        "REQ-321"
+      ],
+      "use_cases": [
+        "UC-48"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::==$math==: a highlight holds math in a paragraph, a caption and a lead-in": {
+      "requirements": [
+        "REQ-322"
+      ],
+      "use_cases": [
+        "UC-45"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::@cite works in a caption in document mode: a link, and an entry in the reference list": {
+      "requirements": [
+        "REQ-323"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::@cite works in a caption and in a lead-in on a slide, and a cite nowhere else in the deck still counts": {
+      "requirements": [
+        "REQ-323"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a slide title still cannot hold @cite, and a lead-in can": {
+      "requirements": [
+        "REQ-323"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::showrefs lists a reference cited only in a caption or a lead-in": {
+      "requirements": [
+        "REQ-323"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a caption ends with a period in a document and has none on a slide": {
+      "requirements": [
+        "REQ-324"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a slide caption keeps the punctuation the author wrote": {
+      "requirements": [
+        "REQ-324"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a figure carries the line of its image, in a document and on a slide": {
+      "requirements": [
+        "REQ-325"
+      ],
+      "use_cases": [
+        "UC-49"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::text around an image keeps the paragraph's line and the figure keeps the image's": {
+      "requirements": [
+        "REQ-325"
+      ],
+      "use_cases": [
+        "UC-49"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::headerKeyLine finds the line of a top-level key of the YAML header": {
+      "requirements": [
+        "REQ-326"
+      ],
+      "use_cases": [
+        "UC-49"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::each part of the title slide carries the line of the YAML key it came from": {
+      "requirements": [
+        "REQ-326"
+      ],
+      "use_cases": [
+        "UC-49"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::2col: a blank line between two groups of bullets makes two sets, and a comment alone does not": {
+      "requirements": [
+        "REQ-327"
+      ],
+      "use_cases": [
+        "UC-52"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::2col: every set keeps its own items, and numbers go on counting through the sets": {
+      "requirements": [
+        "REQ-327"
+      ],
+      "use_cases": [
+        "UC-52"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::other layouts read a blank line between bullets as Markdown does: one loose list": {
+      "requirements": [
+        "REQ-327"
+      ],
+      "use_cases": [
+        "UC-52"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a deck that cites ends with a References slide that lists each cited entry once, in full size": {
+      "requirements": [
+        "REQ-328"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::the References slide includes entries cited only in a caption or lead-in, and numbered styles keep their numbers": {
+      "requirements": [
+        "REQ-328"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a deck that cites nothing, or has no bibliography, has no References slide": {
+      "requirements": [
+        "REQ-328"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a long reference list continues on further References slides, cut between entries": {
+      "requirements": [
+        "REQ-328"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::the References slide is not a slide of the author's file: no line of the file lands on it": {
+      "requirements": [
+        "REQ-328"
+      ],
+      "use_cases": [
+        "UC-51"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a slide region that holds math keeps room below its last line": {
+      "requirements": [
+        "REQ-329"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a table on a slide is never wider than its region, and a long word wraps": {
+      "requirements": [
+        "REQ-330"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a video fills the width of its figure or region, 16:9 until its size is known": {
+      "requirements": [
+        "REQ-331"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a table in a document has room for the half of its collapsed border that falls outside it": {
+      "requirements": [
+        "REQ-332"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "automated"
+    },
+    "tests/preview-bugs.test.ts::a figure or a listing is shorter than the window, and is scrolled to with room above, so a jump shows it with its caption": {
+      "requirements": [
+        "REQ-333"
+      ],
+      "use_cases": [
+        "UC-50"
+      ],
+      "kind": "automated"
+    },
     "al/MT-14": {
       "requirements": [
         "REQ-143"
@@ -2672,6 +2931,51 @@
         "REQ-213"
       ],
       "use_cases": [],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-23": {
+      "requirements": [
+        "REQ-321"
+      ],
+      "use_cases": [
+        "UC-48"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-24": {
+      "requirements": [
+        "REQ-329",
+        "REQ-330",
+        "REQ-331"
+      ],
+      "use_cases": [
+        "UC-55"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-25": {
+      "requirements": [
+        "REQ-332",
+        "REQ-333"
+      ],
+      "use_cases": [
+        "UC-55",
+        "UC-50"
+      ],
+      "kind": "manual",
+      "status": "not run"
+    },
+    "al/MT-26": {
+      "requirements": [
+        "REQ-325",
+        "REQ-326"
+      ],
+      "use_cases": [
+        "UC-49"
+      ],
       "kind": "manual",
       "status": "not run"
     }

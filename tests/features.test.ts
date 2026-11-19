@@ -136,8 +136,8 @@ test("headings: headingShift moves every heading down that many levels", () => {
 // Verifies REQ-019 (UC-05)
 test("labels: a figure, a listing and a labelled heading are numbered and cross-referenced", () => {
   const html = doc("![A cat](cat.png) {#fig:cat}\n\n```python Hello {#lst:h}\nprint(1)\n```\n\nSee [@fig:cat] and [@lst:h].\n");
-  assert.match(html, /<figure class="labeled-figure" id="fig:cat">.*Figure 1: A cat\./);
-  assert.match(html, /<figure class="code-listing" id="lst:h">.*Listing 1: Hello\./);
+  assert.match(html, /<figure class="labeled-figure" id="fig:cat"(?: data-line="\d+")?>.*Figure 1: A cat\./);
+  assert.match(html, /<figure class="code-listing" id="lst:h"(?: data-line="\d+")?>.*Listing 1: Hello\./);
   assert.match(html, /<a href="#fig:cat" class="xref">Figure 1<\/a>/);
   assert.match(html, /<a href="#lst:h" class="xref">Listing 1<\/a>/);
 });

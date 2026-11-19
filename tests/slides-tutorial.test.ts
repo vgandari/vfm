@@ -142,8 +142,10 @@ test("deck 06: a reference stays on its own slide, is dropped from another, noxr
 // Verifies REQ-319 (UC-47)
 test("deck 07: showrefs lists each reference once, notes are for the presenter only, a footnote shows on its own slide", () => {
   const { deck, source } = build("07-citations-notes-footnotes.md");
-  const s = summarize(deck).slice(1);
+  const all = summarize(deck);
+  const s = all.slice(1, -1);
   assert.deepEqual(s.map((x) => [x.references, x.notes]), [[2, 1], [1, 1], [0, 0]]);
+  assert.equal(all[all.length - 1].title, "References", "the deck ends with its References slide");
   assert.match(slideHtml(deck, 1), /Gruber, 2004/);
   assert.match(slideHtml(deck, 2), /Knuth/);
   assert.doesNotMatch(slideHtml(deck, 2).split("vfm-slide-refs")[1] ?? "", /Gruber, J\./, "a reference already shown is not listed again");
@@ -189,11 +191,11 @@ test("deck 10: @include splices in the agenda and the closing slide, and diagnos
 });
 
 // Verifies REQ-319 (UC-47)
-test("deck 11: the whole talk has eight slides that use titles, an agenda, steps, notes, a picture, a table and a citation together", () => {
+test("deck 11: the whole talk has eight slides and a References slide that use titles, an agenda, steps, notes, a picture, a table and a citation together", () => {
   const { deck } = build("11-a-whole-talk.md");
   const s = summarize(deck);
-  assert.equal(s.length, 8);
-  assert.deepEqual(s.map((x) => x.title), ["", "Why this talk", "Outline", "Sentences", "What earns points", "Weights", "Headline result", "Summary"]);
+  assert.equal(s.length, 9);
+  assert.deepEqual(s.map((x) => x.title), ["", "Why this talk", "Outline", "Sentences", "What earns points", "Weights", "Headline result", "Summary", "References"]);
   assert.deepEqual([s[1].steps, s[1].leadin, s[1].notes], [5, true, 1]);
   assert.equal(count(slideHtml(deck, 2), /<li/g), 3, "the outline is an agenda made of three headings");
   assert.deepEqual([s[4].layout, s[4].images, s[4].steps], ["rtext", 1, 5]);

@@ -42,7 +42,6 @@ test("directive syntax errors are fatal and located", () => {
     ["@slide\n@slide\nx\n@end", /cannot nest/],
     ["@slide(rtext, 2col)\nx\n@end", /only one layout/],
     ["@slide[A @cite(k)]\nx\n@end", /@cite/],
-    ["@slide\nx\n@end(see @cite(k))", /@cite/],
     ["> @slide\nx\n@end", /beginning of its own line/],
   ];
   for (const [src, re] of cases) {
